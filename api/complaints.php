@@ -90,6 +90,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $cid = (int) db()->lastInsertId();
         log_activity($u['id'], $kind . '_raised', 'complaint', $cid, $subject);
 
+        /* Tell the committee */
+        $who = $anon ? 'Anonymous' : ('Flat ' . ($u['flat_no'] ?? ''));
+        notify_committee(
+            'complaint',
+            ($kind === 'suggestion' ? 'New suggestion: ' : 'New complaint: ') . $subject,
+            $who . ' raised this. Tap to read and reply.',
+            [
+                'link'      => 'my-tickets.html',
+                'entity'    => 'complaint',
+                'entity_id' => $cid,
+                'urgent'    => $kind === 'complaint' ? 1 : 0,
+                'by'        => $u['id'],
+            ]
+        );
+
         ok([
             'id'      => $cid,
             'message' => $kind === 'suggestion'
@@ -132,6 +147,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         db()->prepare('UPDATE complaints SET updated_at = NOW() WHERE id = ?')->execute([$id]);
 
+        /* Notify the other side */
+        if ($admin) {
+            notify_flat(
+                $c['flat_id'],
+                'complaint_reply',
+                'Committee replied: ' . $c['subject'],
+                str_cut($txt, 200),
+                [
+                    'link'      => 'my-tickets.html',
+                    'entity'    => 'complaint',
+                    'entity_id' => $id,
+                    'urgent'    => 1,
+                    'by'        => $me['id'],
+                ]
+            );
+        } else {
+            notify_committee(
+                'complaint_reply',
+                'Resident replied: ' . $c['subject'],
+                ((int) $c['is_anonymous'] === 1 ? 'Anonymous' : 'Flat ' . ($me['flat_no'] ?? ''))
+                    . ' - ' . str_cut($txt, 160),
+                [
+                    'link'      => 'my-tickets.html',
+                    'entity'    => 'complaint',
+                    'entity_id' => $id,
+                    'by'        => $me['id'],
+                ]
+            );
+        }
+
         ok(['message' => 'Reply added.']);
     }
 
@@ -167,6 +212,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $st->execute($args);
 
         log_activity($me['id'], 'complaint_updated', 'complaint', $id, $status ?: $priority);
+
+        /* Tell the resident their ticket moved */
+        if (in_array($status, ['in_progress','resolved','closed'], true)) {
+            $cs = db()->prepare('SELECT flat_id, subject FROM complaints WHERE id = ? LIMIT 1');
+            $cs->execute([$id]);
+            $cr = $cs->fetch();
+            if ($cr) {
+                $word = $status === 'in_progress' ? 'is being looked at'
+                      : ($status === 'resolved' ? 'has been resolved' : 'has been closed');
+                notify_flat(
+                    $cr['flat_id'],
+                    'complaint',
+                    'Your ticket ' . $word,
+                    $cr['subject'],
+                    [
+                        'link'      => 'my-tickets.html',
+                        'entity'    => 'complaint',
+                        'entity_id' => $id,
+                        'by'        => $me['id'],
+                    ]
+                );
+            }
+        }
+
         ok(['message' => 'Ticket updated.']);
     }
 
