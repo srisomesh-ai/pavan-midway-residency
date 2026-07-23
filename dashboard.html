@@ -124,6 +124,8 @@ body{
   margin-top:7px;
 }
 .stat.flag{border-color:var(--warn);background:#FCF6E9}
+.stat.tapme{border:1px solid var(--line);transition:transform .08s}
+.stat.tapme:active{transform:scale(.97)}
 .stat.flag .n{color:var(--warn)}
 
 /* ---------- Blocks ---------- */
@@ -424,7 +426,6 @@ body{
     }).catch(function(){});
 
     var fl  = d.flats  || {};
-    var pp  = d.people || {};
     var tot = fl.total || 0;
     var occ = fl.occupied || 0;
     var pct = tot ? Math.round(occ / tot * 100) : 0;
@@ -453,12 +454,30 @@ body{
     h +=   '</div>';
     h += '</section>';
 
-    /* People */
+    /* Details collection */
+    var fm = d.forms || {};
+    var filled = fm.details_filled || 0;
+    var fpct = tot ? Math.round(filled / tot * 100) : 0;
+
     h += '<section class="sec">';
-    h +=   '<div class="sec-head"><h2>People</h2></div>';
-    h +=   '<div class="pair">';
-    h +=     '<div class="stat"><div class="n' + (pp.residents ? '' : ' zero') + '">' + (pp.residents||0) + '</div><div class="l">Residents</div></div>';
-    h +=     '<div class="stat' + (pp.pending ? ' flag' : '') + '"><div class="n' + (pp.pending ? '' : ' zero') + '">' + (pp.pending||0) + '</div><div class="l">Awaiting approval</div></div>';
+    h +=   '<div class="sec-head"><h2>Resident details</h2><span class="note">' + filled + ' of ' + tot + ' flats</span></div>';
+    h +=   '<div class="hero">';
+    h +=     '<div class="hero-top">';
+    h +=       '<div class="big">' + fpct + '<small>%</small></div>';
+    h +=       '<div class="hero-lab">collected<br>' + (tot - filled) + ' remaining</div>';
+    h +=     '</div>';
+    h +=     '<div class="bar"><i class="own" style="width:' + fpct + '%"></i></div>';
+    h +=   '</div>';
+
+    h +=   '<div class="pair" style="margin-top:11px">';
+    h +=     '<button class="stat tapme' + (fm.pending ? ' flag' : '') + '" id="goSubs" style="text-align:left;font-family:inherit;cursor:pointer">';
+    h +=       '<div class="n' + (fm.pending ? '' : ' zero') + '">' + (fm.pending || 0) + '</div>';
+    h +=       '<div class="l">To review</div>';
+    h +=     '</button>';
+    h +=     '<button class="stat tapme" id="goForm" style="text-align:left;font-family:inherit;cursor:pointer">';
+    h +=       '<div class="n" style="font-size:19px;padding-top:4px">Share</div>';
+    h +=       '<div class="l">Resident form</div>';
+    h +=     '</button>';
     h +=   '</div>';
     h += '</section>';
 
@@ -535,12 +554,64 @@ body{
 
     drawRegister("");
 
+    var gs = document.getElementById("goSubs");
+    if(gs) gs.addEventListener("click", function(){ location.href = "submissions.html"; });
+
+    var gf = document.getElementById("goForm");
+    if(gf) gf.addEventListener("click", shareForm);
+
     document.getElementById("tabs").addEventListener("click", function(e){
       var t = e.target.closest(".tab");
       if(!t) return;
       [].forEach.call(this.querySelectorAll(".tab"), function(x){ x.classList.remove("on"); });
       t.classList.add("on");
       drawRegister(t.getAttribute("data-b"));
+    });
+  }
+
+  /* ---------------- Share the resident form ---------------- */
+  function shareForm(){
+    var url = location.href.replace(/dashboard\.html.*$/, "") + "resident-form.html";
+    var msg = "Pavan Midway Residency \u2014 please fill in your flat details:\n" + url;
+
+    document.getElementById("shTitle").textContent = "Resident form";
+    document.getElementById("shSub").textContent = "Share this link with residents";
+
+    var b = "";
+    b += '<div style="background:#E7E2D4;border-radius:11px;padding:13px;font-family:\'Roboto Mono\',monospace;'
+       + 'font-size:11.5px;word-break:break-all;line-height:1.6;color:#12211C;margin-bottom:14px">'
+       + esc(url) + '</div>';
+    b += '<p style="font-size:13px;color:#6C7A72;line-height:1.55;margin:0 0 4px">'
+       + 'Anyone with this link can submit details. Nothing appears in the app until you approve it.</p>';
+    b += '<button id="cpBtn" style="width:100%;margin-top:14px;padding:14px;background:#C08A3E;color:#0C2A21;'
+       + 'border:0;border-radius:12px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer">'
+       + 'Copy link</button>';
+
+    document.getElementById("shBody").innerHTML = b;
+    veil.classList.add("show");
+
+    document.getElementById("cpBtn").addEventListener("click", function(){
+      var self = this;
+      function done(){ self.textContent = "Copied"; setTimeout(function(){ self.textContent = "Copy link"; }, 1800); }
+
+      if(navigator.share){
+        navigator.share({ title:"Pavan Midway Residency", text:msg }).catch(function(){});
+        return;
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(url).then(done).catch(fallback);
+      } else {
+        fallback();
+      }
+
+      function fallback(){
+        var ta = document.createElement("textarea");
+        ta.value = url;
+        ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.select();
+        try{ document.execCommand("copy"); done(); }catch(e){}
+        document.body.removeChild(ta);
+      }
     });
   }
 
