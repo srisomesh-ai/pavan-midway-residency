@@ -197,6 +197,20 @@ Notices can be aimed at everyone, one block, owners only, or tenants only, and u
 
 These are in-app notifications - they appear when the app is open, and the unread count is waiting next time it is opened. Notifications that arrive on a locked phone need Firebase Cloud Messaging; the `push_tokens` table is already in place for that.
 
+## Installing on a phone
+
+The site is a Progressive Web App. Opening it in Chrome on Android shows an
+**Add to home screen** prompt - accepting gives an icon that opens fullscreen
+with no browser bar. Nothing to install from a store.
+
+An offline screen appears instead of a browser error if the connection drops.
+
+### Building an APK
+
+`android/` holds everything needed to wrap the site as a real Android app.
+See `android/README.md` for the steps. The APK loads the live site, so website
+updates reach the app with no rebuild.
+
 ## Troubleshooting
 
 Open `https://your-site.com/api/diag.php` in a browser. It reports PHP version, database connection, table and flat counts, and whether the Authorization header survives your host - then lists any problems it finds. No passwords or tokens are echoed.
@@ -230,6 +244,7 @@ Set `DEBUG` to `false` in `config.php` on production (it already is).
 | 3 | Resident app, visitors, complaints ← done |
 | 4 | Notifications and notice board ← done |
 | 5 | Visitor self-service by QR ← done |
+| 6 | Installable app, APK build files ← done |
 | 3 | Notices + push |
 | 4 | Maintenance billing |
 | 5 | Payments (Razorpay) |
