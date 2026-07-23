@@ -47,16 +47,44 @@ if ($ip_fails >= (MAX_ATTEMPTS * 4)) {
 }
 
 /* -----------------------------------------------------------
-   2. Look up the user by email or username
+   2. Look up the user by email, username or mobile.
+
+   The flat columns only exist once sql/06_resident_app.sql has
+   been imported. Fall back to a plain query so the committee can
+   still sign in on a database that has not been migrated yet.
    ----------------------------------------------------------- */
-$st = db()->prepare(
-    'SELECT id, name, email, username, mobile, password_hash, role, designation,
-            status, photo_url, failed_attempts, locked_until, must_change_pwd
-     FROM users
-     WHERE (email = ? OR username = ?)
-     LIMIT 1'
-);
-$st->execute([$identifier, $identifier]);
+$has_flat_cols = false;
+try {
+    $c = db()->query("SHOW COLUMNS FROM users LIKE 'flat_id'")->fetch();
+    $has_flat_cols = (bool) $c;
+} catch (Exception $e) {
+    $has_flat_cols = false;
+}
+
+if ($has_flat_cols) {
+    $st = db()->prepare(
+        'SELECT u.id, u.name, u.email, u.username, u.mobile, u.password_hash, u.role, u.designation,
+                u.status, u.photo_url, u.failed_attempts, u.locked_until, u.must_change_pwd,
+                u.flat_id, u.resident_type,
+                f.flat_no, f.flat_code, f.floor_label, b.name AS block_name
+         FROM users u
+         LEFT JOIN flats f  ON f.id = u.flat_id
+         LEFT JOIN blocks b ON b.id = f.block_id
+         WHERE (u.email = ? OR u.username = ? OR u.mobile = ?)
+         LIMIT 1'
+    );
+} else {
+    $st = db()->prepare(
+        'SELECT u.id, u.name, u.email, u.username, u.mobile, u.password_hash, u.role, u.designation,
+                u.status, u.photo_url, u.failed_attempts, u.locked_until, u.must_change_pwd,
+                NULL AS flat_id, NULL AS resident_type,
+                NULL AS flat_no, NULL AS flat_code, NULL AS floor_label, NULL AS block_name
+         FROM users u
+         WHERE (u.email = ? OR u.username = ? OR u.mobile = ?)
+         LIMIT 1'
+    );
+}
+$st->execute([$identifier, $identifier, $identifier]);
 $user = $st->fetch();
 
 /* Uniform failure message so we never reveal which accounts exist. */
@@ -113,12 +141,9 @@ if ($user['status'] === 'suspended') {
 }
 
 /* -----------------------------------------------------------
-   6. This login page is admin-only
+   6. Everyone with an active account may log in.
+      The client decides which app to show based on role.
    ----------------------------------------------------------- */
-if (!in_array($user['role'], ['super_admin', 'admin'], true)) {
-    record_attempt($identifier, $ip, 0);
-    fail('This login is for committee members only.', 403);
-}
 
 /* -----------------------------------------------------------
    7. Issue session token
@@ -147,12 +172,26 @@ if (random_int(1, 20) === 1) {
     db()->exec('DELETE FROM login_attempts WHERE created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)');
 }
 
+/* Clear the temporary password once they have logged in */
+/* Clear the temporary password once they have logged in.
+   Column only exists after sql/06_resident_app.sql. */
+try {
+    $st = db()->prepare('UPDATE users SET temp_password = NULL WHERE id = ? AND temp_password IS NOT NULL');
+    $st->execute([$user['id']]);
+} catch (Exception $e) {
+    // not migrated yet - nothing to clear
+}
+
 record_attempt($identifier, $ip, 1);
-log_activity($user['id'], 'login', 'user', $user['id'], 'Admin login');
+log_activity($user['id'], 'login', 'user', $user['id'], $user['role'] . ' login');
+
+$is_admin = in_array($user['role'], ['super_admin', 'admin'], true);
 
 ok([
     'token'      => $raw_token,
     'expires_at' => date('c', strtotime('+' . $days . ' days')),
+    'home'       => $is_admin ? 'dashboard.html'
+                  : ($user['role'] === 'guard' ? 'gate.html' : 'resident.html'),
     'user'       => [
         'id'              => (int) $user['id'],
         'name'            => $user['name'],
@@ -163,6 +202,12 @@ ok([
         'designation'     => $user['designation'],
         'photo_url'       => $user['photo_url'],
         'must_change_pwd' => (int) $user['must_change_pwd'] === 1,
+        'flat_id'         => $user['flat_id'] !== null ? (int) $user['flat_id'] : null,
+        'flat_no'         => $user['flat_no'],
+        'flat_code'       => $user['flat_code'],
+        'floor_label'     => $user['floor_label'],
+        'block_name'      => $user['block_name'],
+        'resident_type'   => $user['resident_type'],
     ],
 ]);
 
