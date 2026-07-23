@@ -27,12 +27,26 @@ try {
     $checks['db_connected'] = true;
 
     $need = ['blocks','flats','users','user_flats','sessions','login_attempts','activity_log','settings'];
+    $need_form = ['submissions','flat_details','form_submits'];
     $have = [];
     foreach ($d->query('SHOW TABLES')->fetchAll(PDO::FETCH_NUM) as $r) {
         $have[] = $r[0];
     }
     $checks['tables_found']   = count($have);
     $checks['tables_missing'] = array_values(array_diff($need, $have));
+
+    $missing_form = array_values(array_diff($need_form, $have));
+    $checks['resident_form_ready'] = empty($missing_form);
+    if (!empty($missing_form)) {
+        $checks['resident_form_missing'] = $missing_form;
+    }
+
+    if (empty($missing_form)) {
+        $checks['submissions_pending'] = (int) $d->query(
+            'SELECT COUNT(*) FROM submissions WHERE review_state = "pending"'
+        )->fetchColumn();
+        $checks['details_collected'] = (int) $d->query('SELECT COUNT(*) FROM flat_details')->fetchColumn();
+    }
 
     if (in_array('flats', $have, true)) {
         $checks['flat_count'] = (int) $d->query('SELECT COUNT(*) FROM flats')->fetchColumn();
@@ -104,6 +118,10 @@ if (!empty($checks['tables_missing']))               $problems[] = 'Missing tabl
 if (isset($checks['flat_count']) && $checks['flat_count'] !== 140) $problems[] = 'Expected 140 flats, found ' . $checks['flat_count'] . '. Run sql/03_migrate_flat_structure.sql then sql/02_seed.sql.';
 if (isset($checks['flats_has_flat_code']) && !$checks['flats_has_flat_code']) $problems[] = 'The flats table is missing flat_code. Run sql/03_migrate_flat_structure.sql.';
 if (empty($checks['admin_exists']))                  $problems[] = 'No admin user found. Import sql/02_seed.sql.';
+if (isset($checks['resident_form_ready']) && !$checks['resident_form_ready']) {
+    $problems[] = 'The resident form will not work yet. Import sql/04_resident_form.sql to create the '
+                . implode(', ', $checks['resident_form_missing']) . ' table(s).';
+}
 
 ok([
     'checks'   => $checks,
