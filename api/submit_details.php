@@ -24,13 +24,20 @@ $ip = client_ip();
 
 /* ---------- Rate limit ---------- */
 $max = (int) setting('form_max_per_ip_hour', 5);
-$st = db()->prepare(
-    'SELECT COUNT(*) FROM form_submits
-     WHERE ip_address = ? AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)'
-);
-$st->execute([$ip]);
-if ((int) $st->fetchColumn() >= $max) {
-    fail('Too many submissions from this device. Please try again in an hour.', 429);
+try {
+    $st = db()->prepare(
+        'SELECT COUNT(*) FROM form_submits
+         WHERE ip_address = ? AND created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)'
+    );
+    $st->execute([$ip]);
+    if ((int) $st->fetchColumn() >= $max) {
+        fail('Too many submissions from this device. Please try again in an hour.', 429);
+    }
+} catch (PDOException $e) {
+    if ($e->getCode() === '42S02') {
+        fail('The form is not set up yet on this server. Please tell the committee to import sql/04_resident_form.sql.', 500);
+    }
+    // any other error here should not block a genuine submission
 }
 
 /* ---------- Helpers ---------- */
@@ -201,45 +208,64 @@ $notes = clean(param('notes'), 1000);
 $lang  = param('lang') === 'te' ? 'te' : 'en';
 
 /* ---------- Duplicate guard ---------- */
-$st = db()->prepare(
-    'SELECT id FROM submissions
-     WHERE flat_id = ? AND owner_mobile = ? AND review_state = "pending"
-       AND created_at > DATE_SUB(NOW(), INTERVAL 10 MINUTE)
-     LIMIT 1'
-);
-$st->execute([$flat_id, $owner_mobile]);
-if ($st->fetch()) {
-    fail('We already received your details for this flat a moment ago. The committee will review them shortly.', 409);
+try {
+    $st = db()->prepare(
+        'SELECT id FROM submissions
+         WHERE flat_id = ? AND owner_mobile = ? AND review_state = "pending"
+           AND created_at > DATE_SUB(NOW(), INTERVAL 10 MINUTE)
+         LIMIT 1'
+    );
+    $st->execute([$flat_id, $owner_mobile]);
+    if ($st->fetch()) {
+        fail('We already received your details for this flat a moment ago. The committee will review them shortly.', 409);
+    }
+} catch (PDOException $e) {
+    if ($e->getCode() === '42S02') {
+        fail('The form is not set up yet on this server. Please tell the committee to import sql/04_resident_form.sql.', 500);
+    }
 }
 
 /* ---------- Insert ---------- */
-$st = db()->prepare(
-    'INSERT INTO submissions
-     (flat_id, owner_name, owner_mobile, owner_mobile_alt, owner_email,
-      vehicle_count, vehicle_1, vehicle_2, vehicle_3,
-      status, family_members,
-      tenant_name, tenant_mobile, tenant_mobile_alt, tenant_family,
-      rent_amount, lease_start, lease_end,
-      vacant_since, looking_to_rent, expected_rent,
-      notes, submitted_ip, submitted_lang)
-     VALUES (?,?,?,?,?, ?,?,?,?, ?,?, ?,?,?,?, ?,?,?, ?,?,?, ?,?,?)'
-);
+try {
+    $st = db()->prepare(
+        'INSERT INTO submissions
+         (flat_id, owner_name, owner_mobile, owner_mobile_alt, owner_email,
+          vehicle_count, vehicle_1, vehicle_2, vehicle_3,
+          status, family_members,
+          tenant_name, tenant_mobile, tenant_mobile_alt, tenant_family,
+          rent_amount, lease_start, lease_end,
+          vacant_since, looking_to_rent, expected_rent,
+          notes, submitted_ip, submitted_lang)
+         VALUES (?,?,?,?,?, ?,?,?,?, ?,?, ?,?,?,?, ?,?,?, ?,?,?, ?,?,?)'
+    );
 
-$st->execute([
-    $flat_id, $owner_name, $owner_mobile, $owner_mobile_alt, $owner_email,
-    $vcount, $v1, $v2, $v3,
-    $status, $family_members,
-    $tenant_name, $tenant_mobile, $tenant_mobile_alt, $tenant_family,
-    $rent_amount, $lease_start, $lease_end,
-    $vacant_since, $looking_to_rent, $expected_rent,
-    $notes, $ip, $lang,
-]);
+    $st->execute([
+        $flat_id, $owner_name, $owner_mobile, $owner_mobile_alt, $owner_email,
+        $vcount, $v1, $v2, $v3,
+        $status, $family_members,
+        $tenant_name, $tenant_mobile, $tenant_mobile_alt, $tenant_family,
+        $rent_amount, $lease_start, $lease_end,
+        $vacant_since, $looking_to_rent, $expected_rent,
+        $notes, $ip, $lang,
+    ]);
 
-$sub_id = (int) db()->lastInsertId();
+    $sub_id = (int) db()->lastInsertId();
+
+} catch (PDOException $e) {
+    /* 42S02 = table does not exist */
+    if ($e->getCode() === '42S02') {
+        fail('The form is not set up yet on this server. Please tell the committee to import sql/04_resident_form.sql.', 500);
+    }
+    fail(DEBUG ? ('Could not save: ' . $e->getMessage()) : 'Could not save your details. Please try again.', 500);
+}
 
 /* Record for rate limiting */
-$st = db()->prepare('INSERT INTO form_submits (ip_address, flat_id) VALUES (?, ?)');
-$st->execute([$ip, $flat_id]);
+try {
+    $st = db()->prepare('INSERT INTO form_submits (ip_address, flat_id) VALUES (?, ?)');
+    $st->execute([$ip, $flat_id]);
+} catch (Exception $e) {
+    // rate limit logging must never block a valid submission
+}
 
 /* Housekeeping */
 if (random_int(1, 30) === 1) {
