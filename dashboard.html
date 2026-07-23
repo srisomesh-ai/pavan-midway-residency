@@ -335,6 +335,7 @@ body{
         <h1 id="uName">&nbsp;</h1>
         <p class="role" id="uRole">&nbsp;</p>
       </div>
+      <span id="bell"></span>
       <button class="exit" id="exit" aria-label="Sign out">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>
@@ -592,6 +593,12 @@ body{
     h +=     '<div class="stat"><div class="n' + (ap.away_now ? '' : ' zero') + '">' + (ap.away_now || 0) + '</div>';
     h +=       '<div class="l">Flats away</div></div>';
     h +=   '</div>';
+    h +=   '<button class="stat tapme" id="goNotices" style="width:100%;margin-top:11px;text-align:left;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:12px">';
+    h +=     '<span style="width:32px;height:32px;border-radius:8px;background:var(--paper-2);display:grid;place-items:center;color:var(--deep);flex-shrink:0">';
+    h +=       '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>';
+    h +=     '<span><span style="display:block;font-size:14px;font-weight:600;color:var(--ink)">Post a notice</span>';
+    h +=     '<span style="display:block;font-size:11.5px;color:var(--muted);margin-top:2px">Every resident is notified</span></span>';
+    h +=   '</button>';
     h += '</section>';
 
     elMain.innerHTML = h;
@@ -611,6 +618,9 @@ body{
 
     var ga = document.getElementById("goAccounts");
     if(ga) ga.addEventListener("click", function(){ location.href = "accounts.html"; });
+
+    var gn = document.getElementById("goNotices");
+    if(gn) gn.addEventListener("click", function(){ location.href = "notices.html"; });
 
     document.getElementById("tabs").addEventListener("click", function(e){
       var t = e.target.closest(".tab");
@@ -860,5 +870,6 @@ body{
 
 })();
 </script>
+<script src="assets/notify.js"></script>
 </body>
 </html>
