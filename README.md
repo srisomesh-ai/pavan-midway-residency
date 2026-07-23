@@ -15,6 +15,8 @@ Mobile-first web app for a 140-flat residential society. Built to run on Android
 | `api/change_password.php` | Password change |
 | `api/dashboard.php` | Summary counters for the admin home |
 | `api/flats.php` | Flat register, grouped by block and floor |
+| `api/diag.php` | Setup checker - open in a browser to test the install |
+| `api/.htaccess` | Passes the Authorization header through on shared hosting |
 | `dashboard.html` | Admin dashboard |
 | `sql/01_schema.sql` | Tables |
 | `sql/02_seed.sql` | 140 flats + default admin + settings |
@@ -88,6 +90,19 @@ Password : Admin@123
 - 2 blocks, 140 flats, all marked vacant and locked
 - 1 super admin
 - Default settings — maintenance amount, due day, and late fee all start at 0 and need committee values
+
+## Troubleshooting
+
+Open `https://your-site.com/api/diag.php` in a browser. It reports PHP version, database connection, table and flat counts, and whether the Authorization header survives your host - then lists any problems it finds. No passwords or tokens are echoed.
+
+Common issues:
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| "Unexpected end of JSON input" | An API file is missing or PHP hit a fatal error | Check `diag.php`; set `DEBUG` true in `config.local.php` |
+| Dashboard bounces back to login | Host strips the `Authorization` header | `api/.htaccess` handles this; the token is also sent in the URL as a fallback |
+| "Setup incomplete" | `config.local.php` missing | Copy `config.sample.php` to `config.local.php` and fill in credentials |
+| Flat count is not 140 | Old seed still loaded | Run `sql/03_migrate_flat_structure.sql` then `sql/02_seed.sql` |
 
 ## Security notes
 
