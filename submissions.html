@@ -217,7 +217,11 @@ body{background:var(--deep);color:var(--ink);
 
       h+='<div class="det">';
       if(s.owner_email) h+=kv("Email",esc(s.owner_email));
-      if(s.vehicles.length) h+=kv("Vehicles",s.vehicles.map(esc).join(", "));
+      if(s.vehicles.length){
+        h+=kv("Vehicles", s.vehicles.map(function(v){
+          return esc(v.number) + (v.label ? ' <span style="color:#6C7A72;font-weight:400">('+esc(v.label)+')</span>' : '');
+        }).join("<br>"));
+      }
 
       if(s.status==="owner"){
         if(s.family_members) h+=kv("People staying",s.family_members);
