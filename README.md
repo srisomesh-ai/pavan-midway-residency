@@ -28,6 +28,7 @@ Mobile-first web app for a 140-flat residential society. Built to run on Android
 | `api/complaints.php` | Complaints, suggestions, replies |
 | `api/notifications.php` | Notification inbox and read state |
 | `api/notices.php` | Committee announcements |
+| `api/gate.php` | Public gate API, no login |
 | `dashboard.html` | Admin dashboard |
 | `resident-form.html` | Public resident form, English and Telugu |
 | `submissions.html` | Committee review screen |
@@ -38,6 +39,7 @@ Mobile-first web app for a 140-flat residential society. Built to run on Android
 | `gate.html` | Security gate screen |
 | `notices.html` | Notice board - post and read |
 | `assets/notify.js` | Notification bell, shared by every page |
+| `assets/qrcode.min.js` | QR generator, runs locally (MIT) |
 | `sql/01_schema.sql` | Tables |
 | `sql/02_seed.sql` | 140 flats + default admin + settings |
 | `sql/03_migrate_flat_structure.sql` | Migration from the old 144-flat seed |
@@ -45,6 +47,7 @@ Mobile-first web app for a 140-flat residential society. Built to run on Android
 | `sql/05_vehicle_types.sql` | Two wheeler / four wheeler per vehicle |
 | `sql/06_resident_app.sql` | Resident logins, visitors, away notices, complaints |
 | `sql/07_notifications.sql` | Notifications and committee notices |
+| `sql/08_open_gate.sql` | Open gate page reached by QR code |
 
 ## Building structure (fixed — not editable from the UI)
 
@@ -149,9 +152,23 @@ Residents can then:
 - **Post an away notice** with dates, a contact number, and who holds the keys
 - **Raise a complaint or suggestion**, with an anonymous option, and follow the committee's replies
 
-The **gate screen** (`gate.html`) is for security staff. The guard records a visitor, it goes to the resident for approval, and the guard then marks entry and exit. Entering a valid gate pass approves the visitor immediately.
+### The gate
 
-Guards can only reach the gate screen. Residents only ever see their own flat's data - this is enforced server side, not just hidden in the interface.
+Security staff do not log in. The committee opens **Logins - Gate** to get a QR code, prints it, and puts it at the gate. Scanning it opens `gate.html` directly.
+
+The guard picks the flat, enters the visitor's name and purpose, and taps send. A card appears showing "waiting for the resident", and updates by itself the moment they answer - allowed or denied, with the reason. Entry and exit are then one tap each. A valid gate pass code skips the wait entirely.
+
+The gate page never shows resident names, phone numbers or flat details - only flat numbers, so it is safe to leave open at a gate.
+
+Three controls sit behind it, all in `settings`:
+
+| Setting | Purpose |
+|---|---|
+| `gate_open` | Set to `0` to switch the page off completely |
+| `gate_key` | Leave empty for an open link. Put a value here and the page needs `?k=<value>`, so the link can be locked down later without reprinting the QR |
+| `gate_max_per_hour` | Entries allowed from one device per hour, default 20 |
+
+Residents only ever see their own flat's data - enforced server side, not just hidden in the interface.
 
 ## Notifications
 
@@ -205,6 +222,7 @@ Set `DEBUG` to `false` in `config.php` on production (it already is).
 | 2 | Resident details form ← done |
 | 3 | Resident app, visitors, complaints ← done |
 | 4 | Notifications and notice board ← done |
+| 5 | Open gate page by QR ← done |
 | 3 | Notices + push |
 | 4 | Maintenance billing |
 | 5 | Payments (Razorpay) |
