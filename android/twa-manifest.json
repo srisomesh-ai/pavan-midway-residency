@@ -1,0 +1,52 @@
+{
+  "packageId": "com.pavanmidway.residency",
+  "host": "hen-oyster-283741.hostingersite.com",
+  "name": "Pavan Midway Residency",
+  "launcherName": "PMR",
+  "display": "standalone",
+  "themeColor": "#123B2E",
+  "themeColorDark": "#0C2A21",
+  "navigationColor": "#123B2E",
+  "navigationColorDark": "#0C2A21",
+  "navigationDividerColor": "#123B2E",
+  "navigationDividerColorDark": "#0C2A21",
+  "backgroundColor": "#123B2E",
+  "enableNotifications": true,
+  "startUrl": "/index.html",
+  "iconUrl": "https://hen-oyster-283741.hostingersite.com/assets/icon-512.png",
+  "maskableIconUrl": "https://hen-oyster-283741.hostingersite.com/assets/icon-maskable-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./pmr-release.keystore",
+    "alias": "pmr"
+  },
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [
+    {
+      "name": "My visitors",
+      "shortName": "Visitors",
+      "url": "/my-visitors.html",
+      "chosenIconUrl": "https://hen-oyster-283741.hostingersite.com/assets/icon-192.png"
+    },
+    {
+      "name": "Notices",
+      "shortName": "Notices",
+      "url": "/notices.html",
+      "chosenIconUrl": "https://hen-oyster-283741.hostingersite.com/assets/icon-192.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://hen-oyster-283741.hostingersite.com/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://hen-oyster-283741.hostingersite.com/",
+  "minSdkVersion": 21,
+  "orientation": "portrait"
+}
