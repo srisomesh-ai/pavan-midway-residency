@@ -114,19 +114,23 @@ $vcount = (int) param('vehicle_count', 0);
 if ($vcount < 0 || $vcount > 3) $vcount = 0;
 
 $vehicles = [null, null, null];
-if ($vcount >= 1) $vehicles[0] = norm_vehicle(param('vehicle_1'));
-if ($vcount >= 2) $vehicles[1] = norm_vehicle(param('vehicle_2'));
-if ($vcount >= 3) $vehicles[2] = norm_vehicle(param('vehicle_3'));
+$vtypes   = [null, null, null];
+if ($vcount >= 1) { $vehicles[0] = norm_vehicle(param('vehicle_1')); $vtypes[0] = param('vehicle_1_type'); }
+if ($vcount >= 2) { $vehicles[1] = norm_vehicle(param('vehicle_2')); $vtypes[1] = param('vehicle_2_type'); }
+if ($vcount >= 3) { $vehicles[2] = norm_vehicle(param('vehicle_3')); $vtypes[2] = param('vehicle_3_type'); }
 
 for ($i = 0; $i < $vcount; $i++) {
     if ($vehicles[$i] === null || strlen($vehicles[$i]) < 6) {
         fail('Please enter vehicle number ' . ($i + 1) . ' (for example TS07AB1234).');
     }
+    if (!in_array($vtypes[$i], ['two_wheeler', 'four_wheeler'], true)) {
+        fail('Please choose whether vehicle ' . ($i + 1) . ' is a two wheeler or a four wheeler.');
+    }
 }
 
-$v1 = $vehicles[0];
-$v2 = $vehicles[1];
-$v3 = $vehicles[2];
+$v1 = $vehicles[0]; $v1t = $vtypes[0];
+$v2 = $vehicles[1]; $v2t = $vtypes[1];
+$v3 = $vehicles[2]; $v3t = $vtypes[2];
 
 /* ---------- Status branch ---------- */
 $status = param('status');
@@ -230,18 +234,20 @@ try {
     $st = db()->prepare(
         'INSERT INTO submissions
          (flat_id, owner_name, owner_mobile, owner_mobile_alt, owner_email,
-          vehicle_count, vehicle_1, vehicle_2, vehicle_3,
+          vehicle_count, vehicle_1, vehicle_1_type, vehicle_2, vehicle_2_type,
+          vehicle_3, vehicle_3_type,
           status, family_members,
           tenant_name, tenant_mobile, tenant_mobile_alt, tenant_family,
           rent_amount, lease_start, lease_end,
           vacant_since, looking_to_rent, expected_rent,
           notes, submitted_ip, submitted_lang)
-         VALUES (?,?,?,?,?, ?,?,?,?, ?,?, ?,?,?,?, ?,?,?, ?,?,?, ?,?,?)'
+         VALUES (?,?,?,?,?, ?,?,?,?,?, ?,?, ?,?, ?,?,?,?, ?,?,?, ?,?,?, ?,?,?)'
     );
 
     $st->execute([
         $flat_id, $owner_name, $owner_mobile, $owner_mobile_alt, $owner_email,
-        $vcount, $v1, $v2, $v3,
+        $vcount, $v1, $v1t, $v2, $v2t,
+        $v3, $v3t,
         $status, $family_members,
         $tenant_name, $tenant_mobile, $tenant_mobile_alt, $tenant_family,
         $rent_amount, $lease_start, $lease_end,
