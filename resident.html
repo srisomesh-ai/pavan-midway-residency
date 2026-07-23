@@ -70,8 +70,8 @@ body{background:var(--deep);color:var(--ink);
 .tile:active{transform:scale(.97)}
 .tile .ti{width:32px;height:32px;border-radius:9px;background:var(--paper-2);
   display:grid;place-items:center;color:var(--deep);margin-bottom:11px}
-.tile .tt{font-size:14px;font-weight:600;color:var(--ink)}
-.tile .ts{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+.tile .tt{display:block;font-size:14px;font-weight:600;color:var(--ink);line-height:1.3}
+.tile .ts{display:block;font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.4}
 .tile.hot{border-color:var(--brass);background:#FDF8EF}
 .tile .badge{position:absolute;top:12px;right:12px;background:var(--brass);color:var(--deep-2);
   font-size:10px;font-weight:600;min-width:19px;height:19px;border-radius:10px;
@@ -187,6 +187,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--deep);
         <h1 id="flatNo">&nbsp;</h1>
         <p class="sub" id="flatSub">&nbsp;</p>
       </div>
+      <span id="bell"></span>
       <button class="exit" id="exit" aria-label="Sign out">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
       </button>
@@ -344,6 +345,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--deep);
     h+=tile("tickets","My tickets", d.complaints.active?d.complaints.active+" being looked at":"Nothing open",
         '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
         d.complaints.active>0, d.complaints.active);
+    h+=tile("notices","Notices","From the committee",
+        '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>', false, 0);
     h+='</div></section>';
 
     /* flat card */
@@ -460,6 +463,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--deep);
 
     if(what==="tickets"){ location.href="my-tickets.html"; return; }
 
+    if(what==="notices"){ location.href="notices.html"; return; }
+
     if(what==="away"){
       if(data.away){
         sheet("Away notice", dstr(data.away.from_date)+" to "+dstr(data.away.to_date),
@@ -552,5 +557,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--deep);
   setInterval(function(){ if(!veil.classList.contains("show")) load(); }, 25000);
 })();
 </script>
+<script src="assets/notify.js"></script>
 </body>
 </html>
