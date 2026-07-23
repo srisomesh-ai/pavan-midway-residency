@@ -1,14 +1,14 @@
 <?php
 /**
- * PUBLIC GATE API - no login required.
- * Reached by scanning the QR code at the gate.
+ * PUBLIC VISITOR API - no login required.
  *
- * GET  /api/gate.php?action=flats            flat list for the picker
- * GET  /api/gate.php?action=today            today's entries (for the guard's screen)
- * GET  /api/gate.php?action=status&id=123    poll one entry for the resident's decision
- * POST /api/gate.php  { action:"create", flat_id, visitor_name, ... }
- * POST /api/gate.php  { action:"entry", id }   mark the visitor in
- * POST /api/gate.php  { action:"exit",  id }   mark the visitor out
+ * The visitor scans the QR at the gate and fills the form on their own
+ * phone. Security staff do nothing - they just look at the visitor's
+ * screen, which shows APPROVED or REJECTED in large type.
+ *
+ * GET  /api/gate.php?action=flats          blocks and flats for the picker
+ * GET  /api/gate.php?action=status&id=123  poll for the resident's decision
+ * POST /api/gate.php  { action:"create", flat_id, visitor_name, visitor_mobile, purpose }
  *
  * Nothing here exposes resident names, phone numbers or flat details.
  */
@@ -98,16 +98,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $mobile = param('visitor_mobile');
-        if ($mobile !== null && trim($mobile) !== '') {
-            $d = preg_replace('/\D/', '', $mobile);
-            if (strlen($d) === 12 && substr($d, 0, 2) === '91') $d = substr($d, 2);
-            if (!preg_match('/^[6-9]\d{9}$/', $d)) {
-                fail('The visitor mobile number is not valid.');
-            }
-            $mobile = $d;
-        } else {
-            $mobile = null;
+        if ($mobile === null || trim($mobile) === '') {
+            fail('Please enter your mobile number.');
         }
+        $d = preg_replace('/\D/', '', $mobile);
+        if (strlen($d) === 12 && substr($d, 0, 2) === '91') $d = substr($d, 2);
+        if (!preg_match('/^[6-9]\d{9}$/', $d)) {
+            fail('Please enter a valid 10 digit mobile number.');
+        }
+        $mobile = $d;
 
         $purpose = param('purpose');
         if (!isset($LABELS[$purpose])) $purpose = 'guest';
@@ -176,7 +175,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $flat_id,
                 'visitor',
                 $name . ' is at the gate',
-                trim($LABELS[$purpose] . ($count > 1 ? ' - ' . $count . ' people' : '')
+                trim($LABELS[$purpose]
+                    . ($count > 1 ? ' - ' . $count . ' people' : '')
+                    . ' - ' . $mobile
                     . '. Tap to allow or deny.'),
                 [
                     'link'      => 'my-visitors.html',
@@ -209,31 +210,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     /* -------- mark entry / exit -------- */
-    if ($action === 'entry' || $action === 'exit') {
-        $id = (int) param('id', 0);
-        if ($id <= 0) fail('Missing visitor id.');
-
-        $st = db()->prepare('SELECT id, status FROM visitors WHERE id = ? LIMIT 1');
-        $st->execute([$id]);
-        $v = $st->fetch();
-        if (!$v) fail('Visitor entry not found.', 404);
-
-        if ($action === 'entry') {
-            if ($v['status'] !== 'approved') {
-                fail('This visitor has not been approved yet.', 409);
-            }
-            db()->prepare('UPDATE visitors SET status = "entered", entry_at = NOW() WHERE id = ?')
-                ->execute([$id]);
-            ok(['message' => 'Entry recorded.']);
-        }
-
-        if (!in_array($v['status'], ['entered', 'approved'], true)) {
-            fail('This visitor is not inside.', 409);
-        }
-        db()->prepare('UPDATE visitors SET status = "exited", exit_at = NOW() WHERE id = ?')
-            ->execute([$id]);
-        ok(['message' => 'Exit recorded.']);
-    }
 
     fail('Unknown action.');
 }
@@ -275,67 +251,81 @@ if ($action === 'flats') {
 /* -------- one entry, for polling the resident's decision -------- */
 if ($action === 'status') {
     $id = (int) param('id', 0);
-    if ($id <= 0) fail('Missing visitor id.');
+    if ($id <= 0) fail('Missing request id.');
 
     $st = db()->prepare(
-        'SELECT v.id, v.visitor_name, v.status, v.deny_reason, v.entry_at, v.exit_at,
-                f.flat_no
-         FROM visitors v JOIN flats f ON f.id = v.flat_id
+        'SELECT v.id, v.visitor_name, v.visitor_mobile, v.visitor_count,
+                v.purpose, v.status, v.deny_reason, v.decided_at, v.created_at,
+                v.gate_pass, f.flat_no, b.name AS block_name
+         FROM visitors v
+         JOIN flats f  ON f.id = v.flat_id
+         JOIN blocks b ON b.id = f.block_id
          WHERE v.id = ? LIMIT 1'
     );
     $st->execute([$id]);
     $v = $st->fetch();
-    if (!$v) fail('Visitor entry not found.', 404);
+    if (!$v) fail('Request not found.', 404);
+
+    /* Auto expire a request nobody answered.
+       The comparison is done inside MySQL so a database on a different
+       timezone to PHP cannot make everything expire instantly. */
+    $mins = (int) setting('visitor_auto_expire_minutes', 30);
+    if ($v['status'] === 'pending' && $mins > 0) {
+        $ex = db()->prepare(
+            'UPDATE visitors
+             SET status = "expired"
+             WHERE id = ? AND status = "pending"
+               AND created_at < DATE_SUB(NOW(), INTERVAL ? MINUTE)'
+        );
+        $ex->execute([$id, $mins]);
+        if ($ex->rowCount() > 0) {
+            $v['status'] = 'expired';
+        }
+    }
+
+    /* Seconds waited so far, again measured by the database */
+    $waited = 0;
+    try {
+        $ws = db()->prepare('SELECT TIMESTAMPDIFF(SECOND, created_at, NOW()) FROM visitors WHERE id = ?');
+        $ws->execute([$id]);
+        $waited = max(0, (int) $ws->fetchColumn());
+    } catch (Exception $e) {
+        $waited = 0;
+    }
+
+    /* Format the stamp on the server so the visitor always sees the
+       society's local time, whatever their phone is set to. */
+    $stamp_src = $v['decided_at'] ?: $v['created_at'];
+    $stamp_date = '';
+    $stamp_time = '';
+    try {
+        $fs = db()->prepare(
+            'SELECT DATE_FORMAT(?, "%e %b %Y") AS d, DATE_FORMAT(?, "%l:%i %p") AS t'
+        );
+        $fs->execute([$stamp_src, $stamp_src]);
+        $fr = $fs->fetch();
+        $stamp_date = $fr['d'] ?? '';
+        $stamp_time = trim($fr['t'] ?? '');
+    } catch (Exception $e) {}
 
     ok([
-        'id'           => (int) $v['id'],
-        'visitor_name' => $v['visitor_name'],
-        'flat_no'      => $v['flat_no'],
-        'status'       => $v['status'],
-        'deny_reason'  => $v['deny_reason'],
-        'entry_at'     => $v['entry_at'],
-        'exit_at'      => $v['exit_at'],
+        'id'            => (int) $v['id'],
+        'visitor_name'  => $v['visitor_name'],
+        'visitor_count' => (int) $v['visitor_count'],
+        'purpose'       => $v['purpose'],
+        'purpose_label' => $LABELS[$v['purpose']] ?? 'Other',
+        'flat_no'       => $v['flat_no'],
+        'block_name'    => $v['block_name'],
+        'status'        => $v['status'],
+        'deny_reason'   => $v['deny_reason'],
+        'gate_pass'     => $v['gate_pass'],
+        'stamp_date'    => $stamp_date,
+        'stamp_time'    => $stamp_time,
+        'waited_secs'   => $waited,
     ]);
 }
 
 /* -------- today's log for the gate screen -------- */
-if ($action === 'today') {
-    $st = db()->query(
-        'SELECT v.id, v.visitor_name, v.visitor_count, v.purpose, v.vehicle_no,
-                v.status, v.deny_reason, v.entry_at, v.exit_at, v.created_at,
-                f.flat_no
-         FROM visitors v JOIN flats f ON f.id = v.flat_id
-         WHERE v.created_at >= CURDATE()
-         ORDER BY v.id DESC
-         LIMIT 100'
-    );
-
-    $out = [];
-    foreach ($st->fetchAll() as $r) {
-        $out[] = [
-            'id'            => (int) $r['id'],
-            'visitor_name'  => $r['visitor_name'],
-            'visitor_count' => (int) $r['visitor_count'],
-            'purpose'       => $r['purpose'],
-            'purpose_label' => $LABELS[$r['purpose']] ?? 'Other',
-            'vehicle_no'    => $r['vehicle_no'],
-            'flat_no'       => $r['flat_no'],
-            'status'        => $r['status'],
-            'deny_reason'   => $r['deny_reason'],
-            'entry_at'      => $r['entry_at'],
-            'exit_at'       => $r['exit_at'],
-            'created_at'    => $r['created_at'],
-        ];
-    }
-
-    $counts = ['waiting' => 0, 'inside' => 0, 'today' => count($out)];
-    foreach ($out as $o) {
-        if ($o['status'] === 'pending') $counts['waiting']++;
-        if ($o['status'] === 'entered') $counts['inside']++;
-    }
-
-    ok(['counts' => $counts, 'visitors' => $out]);
-}
 
 fail('Unknown action.');
 
