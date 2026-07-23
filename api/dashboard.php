@@ -70,6 +70,28 @@ try {
     // submissions tables not created yet - run sql/04_resident_form.sql
 }
 
+/* ---- Resident app counters ---- */
+$app = ['complaints_open' => 0, 'logins' => 0, 'away_now' => 0, 'visitors_today' => 0, 'visitors_pending' => 0];
+try {
+    $app['complaints_open'] = (int) $d->query(
+        'SELECT COUNT(*) FROM complaints WHERE status IN ("open","in_progress")'
+    )->fetchColumn();
+    $app['logins'] = (int) $d->query(
+        'SELECT COUNT(*) FROM users WHERE role = "resident" AND status = "active"'
+    )->fetchColumn();
+    $app['away_now'] = (int) $d->query(
+        'SELECT COUNT(*) FROM away_notices WHERE status = "active"'
+    )->fetchColumn();
+    $app['visitors_today'] = (int) $d->query(
+        'SELECT COUNT(*) FROM visitors WHERE DATE(created_at) = CURDATE()'
+    )->fetchColumn();
+    $app['visitors_pending'] = (int) $d->query(
+        'SELECT COUNT(*) FROM visitors WHERE status = "pending"'
+    )->fetchColumn();
+} catch (Exception $e) {
+    // resident app tables not created yet - run sql/06_resident_app.sql
+}
+
 /* ---- Recent activity ---- */
 $activity = $d->query(
     'SELECT a.action, a.details, a.created_at, u.name AS user_name
@@ -102,6 +124,7 @@ ok([
         'details_filled'=> $details_done,
         'total_flats'   => $flats_total,
     ],
+    'app'    => $app,
     'blocks'   => $blocks,
     'activity' => $activity,
 ]);
