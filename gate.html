@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#0C2A21">
+<meta name="theme-color" content="#123B2E">
 <title>Gate &middot; Pavan Midway Residency</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,69 +17,98 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
-body{background:var(--deep-2);color:var(--ink);
+body{background:var(--deep);color:var(--ink);
   font-family:Inter,system-ui,-apple-system,Roboto,sans-serif;
   display:flex;justify-content:center}
 .vp{width:100%;max-width:430px;background:var(--paper);min-height:100vh;min-height:100dvh;
   display:flex;flex-direction:column;position:relative}
 
-.top{background:var(--deep-2);color:var(--paper);padding:16px 20px 0;position:sticky;top:0;z-index:40}
-.trow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
-.top h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:20px;margin:0}
-.top .sub{font-family:"Roboto Mono",monospace;font-size:9.5px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--brass);margin:3px 0 0}
-.exit{background:rgba(242,239,230,.09);border:1px solid rgba(242,239,230,.16);
-  color:var(--paper);border-radius:10px;padding:9px;cursor:pointer;display:grid;place-items:center}
-.tabs{display:flex}
-.tb{flex:1;background:none;border:0;border-bottom:2.5px solid transparent;
-  color:rgba(242,239,230,.5);font-family:"Roboto Mono",monospace;font-size:10px;
-  letter-spacing:.1em;text-transform:uppercase;padding:11px 4px;cursor:pointer}
-.tb.on{color:var(--paper);border-bottom-color:var(--brass)}
-.tb b{display:block;font-family:Fraunces,serif;font-size:16px;margin-bottom:3px}
+/* header */
+.top{background:var(--deep);color:var(--paper);padding:20px 20px 18px;position:relative;flex-shrink:0}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+  background:linear-gradient(90deg,var(--brass) 0 22%,transparent 22%)}
+.eyebrow{font-family:"Roboto Mono",monospace;font-size:9.5px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--brass);margin:0 0 7px}
+.top h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:23px;margin:0;line-height:1.15}
+.top .sub{margin:5px 0 0;font-size:12.5px;color:rgba(242,239,230,.6)}
 
-.scroll{flex:1;overflow-y:auto;padding:18px 20px 100px}
+/* counters */
+.counts{display:flex;background:var(--deep-2);flex-shrink:0}
+.cbox{flex:1;text-align:center;padding:13px 6px;border-right:1px solid rgba(242,239,230,.09)}
+.cbox:last-child{border-right:0}
+.cn{font-family:Fraunces,serif;font-weight:600;font-size:22px;color:var(--paper);line-height:1}
+.cn.hot{color:var(--brass)}
+.cl{font-family:"Roboto Mono",monospace;font-size:8.5px;letter-spacing:.11em;
+  text-transform:uppercase;color:rgba(242,239,230,.5);margin-top:5px}
 
-.fab{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
-  width:calc(100% - 40px);max-width:390px;padding:17px;background:var(--deep);
-  color:var(--paper);border:0;border-radius:14px;font-family:inherit;
-  font-size:15.5px;font-weight:600;cursor:pointer;z-index:50;
-  box-shadow:0 6px 20px rgba(12,42,33,.3);display:flex;align-items:center;
-  justify-content:center;gap:9px}
-.fab:active{transform:translateX(-50%) scale(.99)}
+.scroll{flex:1;overflow-y:auto;padding:16px 18px 110px;-webkit-overflow-scrolling:touch}
 
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:15px;margin-bottom:11px}
-.card.wait{border-color:var(--brass);background:#FDF8EF}
-.card.in{border-left:3px solid var(--ok)}
-.ch{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
-.fno{width:50px;flex-shrink:0;background:var(--deep);color:var(--paper);
-  border-radius:10px;padding:8px 4px;text-align:center}
-.fno .n{font-family:Fraunces,serif;font-weight:600;font-size:14px;line-height:1}
-.fno .b{font-family:"Roboto Mono",monospace;font-size:8px;color:var(--brass);margin-top:3px}
-.cm{flex:1;min-width:0}
-.cm .n{font-size:15px;font-weight:600;margin-bottom:2px}
-.cm .p{font-size:12px;color:var(--muted)}
-.st{font-family:"Roboto Mono",monospace;font-size:8.5px;letter-spacing:.1em;
-  text-transform:uppercase;padding:5px 9px;border-radius:20px;white-space:nowrap}
+.sec-h{font-family:"Roboto Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--deep);margin:0 0 11px;
+  display:flex;align-items:center;gap:9px}
+.sec-h::after{content:"";flex:1;height:1px;background:var(--paper-2)}
+.sec{margin-bottom:22px}
+
+/* visitor row */
+.v{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px;margin-bottom:10px}
+.v.wait{border-left:3px solid var(--warn);background:#FCF6E9}
+.v.in{border-left:3px solid var(--ok)}
+.v.no{opacity:.7}
+.vh{display:flex;align-items:flex-start;gap:11px;margin-bottom:8px}
+.vf{width:48px;flex-shrink:0;background:var(--deep);color:var(--paper);border-radius:9px;
+  padding:8px 3px;text-align:center;font-family:Fraunces,serif;font-weight:600;font-size:14px;line-height:1}
+.vm{flex:1;min-width:0}
+.vn{font-size:15px;font-weight:600;line-height:1.3}
+.vp2{font-size:11.5px;color:var(--muted);margin-top:3px}
+.st{font-family:"Roboto Mono",monospace;font-size:8.5px;letter-spacing:.09em;
+  text-transform:uppercase;padding:4px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
 .st.pending{background:#F6EBD8;color:var(--warn)}
 .st.approved{background:#E4F0E9;color:var(--ok)}
 .st.denied{background:#F7E8E5;color:var(--danger)}
 .st.entered{background:var(--deep);color:var(--paper)}
 .st.exited{background:var(--paper-2);color:var(--muted)}
 .st.expired{background:var(--paper-2);color:var(--muted)}
-.meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px}
-.chip{font-size:11px;background:var(--paper-2);color:var(--muted);padding:5px 9px;border-radius:20px}
-.acts{display:flex;gap:9px}
-.acts button{flex:1;padding:12px;border-radius:11px;font-family:inherit;
-  font-size:13.5px;font-weight:600;cursor:pointer;border:0}
-.pri{background:var(--deep);color:var(--paper)}
-.sec2{background:var(--card);color:var(--deep);border:1.5px solid var(--line)}
-.acts button:disabled{opacity:.5}
-.time{font-family:"Roboto Mono",monospace;font-size:9.5px;color:var(--muted);
-  margin-top:10px;padding-top:9px;border-top:1px solid var(--paper-2)}
+.vt{font-family:"Roboto Mono",monospace;font-size:9.5px;color:var(--muted);
+  letter-spacing:.04em;margin-top:9px;padding-top:9px;border-top:1px solid var(--paper-2)}
+.va{display:flex;gap:8px;margin-top:11px}
+.va button{flex:1;padding:11px;border-radius:10px;border:0;font-family:inherit;
+  font-size:13px;font-weight:600;cursor:pointer}
+.bIn{background:var(--deep);color:var(--paper)}
+.bOut{background:var(--card);color:var(--deep);border:1.5px solid var(--line)}
+.va button:disabled{opacity:.5}
 
-.empty{text-align:center;padding:50px 20px;color:var(--muted)}
-.empty svg{opacity:.28;margin-bottom:12px}
+/* waiting card */
+.wcard{background:var(--deep);color:var(--paper);border-radius:var(--radius);
+  padding:20px;text-align:center;margin-bottom:12px}
+.wcard .wn{font-family:Fraunces,serif;font-weight:600;font-size:20px;margin-bottom:5px}
+.wcard .wf{font-family:"Roboto Mono",monospace;font-size:11px;letter-spacing:.1em;
+  color:var(--brass);margin-bottom:14px}
+.wdots{display:flex;gap:6px;justify-content:center;margin-bottom:12px}
+.wdots i{width:7px;height:7px;border-radius:50%;background:var(--brass);
+  animation:pulse 1.3s ease-in-out infinite}
+.wdots i:nth-child(2){animation-delay:.18s}
+.wdots i:nth-child(3){animation-delay:.36s}
+@keyframes pulse{0%,100%{opacity:.25;transform:scale(.85)}50%{opacity:1;transform:scale(1)}}
+.wcard p{margin:0;font-size:13px;color:rgba(242,239,230,.65);line-height:1.5}
+.wcard .res{margin-top:14px;padding-top:14px;border-top:1px solid rgba(242,239,230,.14)}
+.wcard .yes{color:#8FD3AC;font-size:17px;font-weight:600}
+.wcard .no2{color:#E5A79F;font-size:17px;font-weight:600}
+.wcard .why{font-size:12.5px;color:rgba(242,239,230,.6);margin-top:5px}
+.wclose{margin-top:14px;width:100%;padding:12px;background:rgba(242,239,230,.1);
+  border:1px solid rgba(242,239,230,.2);color:var(--paper);border-radius:10px;
+  font-family:inherit;font-size:13.5px;cursor:pointer}
+
+/* new visitor button */
+.fab{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+  width:calc(100% - 36px);max-width:394px;padding:17px;background:var(--deep);
+  color:var(--paper);border:0;border-radius:14px;font-family:inherit;font-size:15.5px;
+  font-weight:600;cursor:pointer;box-shadow:0 6px 22px rgba(12,42,33,.3);z-index:30;
+  display:flex;align-items:center;justify-content:center;gap:9px}
+.fab:active{transform:translateX(-50%) scale(.99)}
+
+.empty{text-align:center;padding:46px 18px;color:var(--muted)}
+.empty svg{opacity:.26;margin-bottom:12px}
 .empty p{margin:0;font-size:13.5px;line-height:1.6}
 .load{padding:60px;text-align:center;color:var(--muted)}
 .sp{width:22px;height:22px;border:2.5px solid var(--paper-2);border-top-color:var(--deep);
@@ -88,34 +117,47 @@ body{background:var(--deep-2);color:var(--ink);
 .err{background:#F7E8E5;border:1px solid #E9CEC9;color:var(--danger);
   padding:14px;border-radius:11px;font-size:13.5px;line-height:1.5}
 
+/* form sheet */
 .veil{position:fixed;inset:0;background:rgba(12,42,33,.55);display:none;
   align-items:flex-end;justify-content:center;z-index:70}
 .veil.show{display:flex}
 .sheet{width:100%;max-width:430px;background:var(--paper);border-radius:20px 20px 0 0;
-  padding:8px 22px 30px;animation:up .22s cubic-bezier(.2,.8,.3,1);max-height:92vh;overflow-y:auto}
+  padding:8px 20px 26px;max-height:92vh;overflow-y:auto;
+  animation:up .22s cubic-bezier(.2,.8,.3,1)}
 @keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.grab{width:36px;height:4px;border-radius:3px;background:var(--line);margin:0 auto 18px}
-.sheet h3{font-family:Fraunces,serif;font-weight:600;font-size:23px;margin:0 0 16px;color:var(--deep)}
+.grab{width:36px;height:4px;border-radius:3px;background:var(--line);margin:0 auto 15px}
+.sheet h3{font-family:Fraunces,serif;font-weight:600;font-size:22px;margin:0 0 16px;color:var(--deep)}
 label{display:block;font-size:13px;font-weight:500;margin:0 0 6px}
-label .opt{font-weight:400;color:var(--muted);font-size:11.5px}
+label .op{font-weight:400;color:var(--muted);font-size:11.5px}
 .f{margin-bottom:14px}
-input,select,textarea{width:100%;font-family:inherit;font-size:16px;padding:13px;
+input[type=text],input[type=tel],input[type=number],select{
+  width:100%;font-family:inherit;font-size:16px;padding:14px;
   border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);
   appearance:none;-webkit-appearance:none}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236C7A72' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+  background-repeat:no-repeat;background-position:right 15px center;padding-right:40px}
 input:focus,select:focus{outline:none;border-color:var(--deep);box-shadow:0 0 0 3.5px rgba(18,59,46,.11)}
-.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px}
-.pgrid button{padding:12px 4px;border:1.5px solid var(--line);border-radius:11px;
-  background:var(--card);font-family:inherit;font-size:12px;font-weight:600;
+input.bad,select.bad{border-color:var(--danger);box-shadow:0 0 0 3.5px rgba(142,43,34,.1)}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chips button{padding:11px 14px;border:1.5px solid var(--line);border-radius:22px;
+  background:var(--card);font-family:inherit;font-size:13px;font-weight:500;
   color:var(--muted);cursor:pointer}
-.pgrid button.on{background:var(--deep);color:var(--paper);border-color:var(--deep)}
-.go{width:100%;padding:15px;background:var(--deep);color:var(--paper);border:0;
-  border-radius:12px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}
-.go[disabled]{opacity:.6}
-.shErr{background:#F7E8E5;border:1px solid #E9CEC9;color:var(--danger);padding:11px;
-  border-radius:10px;font-size:13px;margin-bottom:14px;display:none}
-.shErr.show{display:block}
+.chips button.on{background:var(--deep);color:var(--paper);border-color:var(--deep)}
+.send{width:100%;margin-top:8px;padding:16px;background:var(--deep);color:var(--paper);
+  border:0;border-radius:12px;font-family:inherit;font-size:15.5px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:9px}
+.send:disabled{opacity:.55}
+.send .spin{width:15px;height:15px;border:2px solid rgba(242,239,230,.3);
+  border-top-color:var(--paper);border-radius:50%;animation:s .6s linear infinite;display:none}
+.send.busy .spin{display:block}
+.cancel{width:100%;margin-top:9px;padding:13px;background:none;color:var(--muted);
+  border:1px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;cursor:pointer}
+.alert{display:none;gap:9px;align-items:flex-start;padding:12px;border-radius:11px;
+  font-size:13px;line-height:1.5;margin-bottom:14px;background:#F7E8E5;
+  color:var(--danger);border:1px solid #E9CEC9}
+.alert.show{display:flex}
+.alert svg{flex-shrink:0;margin-top:1px}
+
 .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(90px);
   background:var(--deep);color:var(--paper);padding:13px 20px;border-radius:11px;
   font-size:13.5px;z-index:90;transition:transform .25s;max-width:340px;text-align:center}
@@ -126,27 +168,25 @@ input:focus,select:focus{outline:none;border-color:var(--deep);box-shadow:0 0 0 
 <body>
 <div class="vp">
   <header class="top">
-    <div class="trow">
-      <div><h1>Gate</h1><p class="sub" id="guardName">&nbsp;</p></div>
-      <span id="bell"></span>
-      <button class="exit" id="exit" aria-label="Sign out">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
-      </button>
-    </div>
-    <div class="tabs" id="tabs">
-      <button class="tb on" data-s="pending"><b id="cW">0</b>Waiting</button>
-      <button class="tb" data-s="inside"><b id="cI">0</b>Inside</button>
-      <button class="tb" data-s="today"><b id="cT">0</b>Today</button>
-    </div>
+    <p class="eyebrow">Security Gate</p>
+    <h1>Pavan Midway Residency</h1>
+    <p class="sub" id="sub">Visitor entry</p>
   </header>
+
+  <div class="counts">
+    <div class="cbox"><div class="cn hot" id="cWait">0</div><div class="cl">Waiting</div></div>
+    <div class="cbox"><div class="cn" id="cIn">0</div><div class="cl">Inside</div></div>
+    <div class="cbox"><div class="cn" id="cToday">0</div><div class="cl">Today</div></div>
+  </div>
 
   <div class="scroll">
     <div class="load" id="load"><div class="sp"></div>Loading&hellip;</div>
-    <div id="list"></div>
+    <div id="waitHost"></div>
+    <div id="main" hidden></div>
   </div>
 
-  <button class="fab" id="addBtn">
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+  <button class="fab" id="fab" hidden>
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
     New visitor
   </button>
 </div>
@@ -154,9 +194,50 @@ input:focus,select:focus{outline:none;border-color:var(--deep);box-shadow:0 0 0 
 <div class="veil" id="veil">
   <div class="sheet">
     <div class="grab"></div>
-    <h3 id="shTitle">New visitor</h3>
-    <div class="shErr" id="shErr"></div>
-    <div id="shBody"></div>
+    <h3>New visitor</h3>
+
+    <div class="alert" id="alert">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16.5v.01"/></svg>
+      <span id="alertMsg"></span>
+    </div>
+
+    <div class="f">
+      <label for="flat">Which flat</label>
+      <select id="flat"></select>
+    </div>
+
+    <div class="f">
+      <label for="vname">Visitor name</label>
+      <input type="text" id="vname" autocapitalize="words" placeholder="Full name">
+    </div>
+
+    <div class="f">
+      <label>Purpose</label>
+      <div class="chips" id="chips"></div>
+    </div>
+
+    <div class="f">
+      <label for="vmob">Mobile number <span class="op">(optional)</span></label>
+      <input type="tel" id="vmob" inputmode="numeric" maxlength="10">
+    </div>
+
+    <div class="f">
+      <label for="vveh">Vehicle number <span class="op">(optional)</span></label>
+      <input type="text" id="vveh" autocapitalize="characters" placeholder="TS07AB1234">
+    </div>
+
+    <div class="f">
+      <label for="vcnt">How many people</label>
+      <input type="number" id="vcnt" inputmode="numeric" min="1" max="30" value="1">
+    </div>
+
+    <div class="f">
+      <label for="vpass">Gate pass code <span class="op">(if the visitor has one)</span></label>
+      <input type="text" id="vpass" autocapitalize="characters" maxlength="6" placeholder="ABC123">
+    </div>
+
+    <button class="send" id="send"><span class="spin"></span><span class="lbl">Send to resident</span></button>
+    <button class="cancel" id="cancel">Cancel</button>
   </div>
 </div>
 
@@ -165,245 +246,352 @@ input:focus,select:focus{outline:none;border-color:var(--deep);box-shadow:0 0 0 
 <script>
 (function(){
   "use strict";
-  var API="api/", KEY="pmr_token";
-  var token=null;
-  try{ token=localStorage.getItem(KEY)||sessionStorage.getItem(KEY); }catch(e){}
-  if(!token){ location.replace("index.html"); return; }
 
-  var $=function(i){return document.getElementById(i);};
-  var veil=$("veil"), scope="pending", flats=null, purpose="guest";
+  var API = "api/gate.php";
+  var KEY = null;
+  try {
+    var q = new URLSearchParams(location.search);
+    KEY = q.get("k");
+  } catch(e){}
 
-  function api(path,opts){
-    opts=opts||{}; opts.headers=opts.headers||{};
-    opts.headers["Authorization"]="Bearer "+token;
-    var url=API+path+(path.indexOf("?")===-1?"?":"&")+"token="+encodeURIComponent(token);
-    return fetch(url,opts).then(function(r){
-      if(r.status===401){
-        try{localStorage.removeItem(KEY);sessionStorage.removeItem(KEY);}catch(e){}
-        location.replace("index.html"); throw new Error("unauthorised");
-      }
+  var purposes = {}, chosen = "guest", waitingId = null, waitTimer = null;
+  var $ = function(i){ return document.getElementById(i); };
+
+  function url(extra){
+    var u = API + "?" + (extra || "");
+    if (KEY) u += "&k=" + encodeURIComponent(KEY);
+    return u;
+  }
+
+  function api(path, opts){
+    opts = opts || {};
+    return fetch(url(path), opts).then(function(r){
       return r.text().then(function(t){
-        if(!t||!t.trim()) throw new Error(path+" returned an empty response (HTTP "+r.status+").");
-        try{ return JSON.parse(t); }
-        catch(e){ throw new Error(path+" did not return JSON. Server said: "+
-          t.replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,200)); }
+        if(!t || !t.trim()) throw new Error("Empty response (HTTP " + r.status + ").");
+        try { return JSON.parse(t); }
+        catch(e){
+          throw new Error("Server said: " + t.replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,180));
+        }
       });
     });
   }
 
-  function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){
-    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
-
-  function ago(ts){
-    if(!ts) return "";
-    var d=new Date(String(ts).replace(" ","T"));
-    var s=Math.floor((Date.now()-d.getTime())/1000);
-    if(isNaN(s)) return "";
-    if(s<60) return "now";
-    if(s<3600) return Math.floor(s/60)+"m";
-    if(s<86400) return Math.floor(s/3600)+"h";
-    return Math.floor(s/86400)+"d";
+  function esc(s){
+    return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
   }
-  function clock(ts){
+
+  function tm(ts){
     if(!ts) return "";
-    var d=new Date(String(ts).replace(" ","T"));
+    var d = new Date(String(ts).replace(" ","T"));
     if(isNaN(d)) return "";
     return d.toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit"});
   }
+
   function toast(m){
     var t=$("toast"); t.textContent=m; t.classList.add("show");
-    setTimeout(function(){t.classList.remove("show");},2600);
+    setTimeout(function(){ t.classList.remove("show"); }, 2800);
   }
 
-  api("me.php").then(function(d){
-    if(d.ok&&d.user) $("guardName").textContent=d.user.name;
-  }).catch(function(){});
+  function showErr(m, el){
+    $("alertMsg").textContent = m;
+    $("alert").classList.add("show");
+    if(el){ el.classList.add("bad"); el.focus(); }
+  }
+  function clearErr(){
+    $("alert").classList.remove("show");
+    document.querySelectorAll(".bad").forEach(function(e){ e.classList.remove("bad"); });
+  }
 
-  function load(){
-    api("visitors.php?scope="+scope)
-      .then(function(d){
-        if(!d.ok) throw new Error(d.error||"Could not load.");
-        if(d.counts){
-          $("cW").textContent=d.counts.pending;
-          $("cI").textContent=d.counts.inside;
-          $("cT").textContent=d.counts.today;
-        }
-        $("load").hidden=true;
-        render(d.visitors);
-      })
-      .catch(function(e){
-        if(e.message==="unauthorised") return;
-        $("load").innerHTML='<div class="err">'+esc(e.message)+'</div>';
+  /* ---------- setup ---------- */
+  api("action=flats")
+    .then(function(d){
+      if(!d.ok) throw new Error(d.error || "Could not load.");
+      $("sub").textContent = "Visitor entry";
+      purposes = d.purposes || {};
+      buildFlats(d.blocks || []);
+      buildChips();
+      $("load").hidden = true;
+      $("main").hidden = false;
+      $("fab").hidden = false;
+      loadToday();
+      setInterval(loadToday, 20000);
+    })
+    .catch(function(e){
+      $("load").innerHTML = '<div class="err">' + esc(e.message) +
+        '<br><br><button onclick="location.reload()" style="padding:10px 18px;border:0;border-radius:9px;background:#123B2E;color:#F2EFE6;font-family:inherit;cursor:pointer">Try again</button></div>';
+    });
+
+  function buildFlats(blocks){
+    var s = $("flat");
+    s.innerHTML = '<option value="">Choose the flat</option>';
+    blocks.forEach(function(b){
+      var g = document.createElement("optgroup");
+      g.label = b.block_name;
+      b.flats.forEach(function(f){
+        var o = document.createElement("option");
+        o.value = f.id;
+        o.textContent = f.flat_no + "  \u00B7  " + f.floor_label;
+        g.appendChild(o);
       });
+      s.appendChild(g);
+    });
+  }
+
+  function buildChips(){
+    var h = "";
+    Object.keys(purposes).forEach(function(k){
+      h += '<button type="button" data-p="' + k + '"' + (k==="guest"?' class="on"':'') + '>' +
+           esc(purposes[k]) + '</button>';
+    });
+    $("chips").innerHTML = h;
+    $("chips").addEventListener("click", function(e){
+      var b = e.target.closest("button"); if(!b) return;
+      chosen = b.getAttribute("data-p");
+      this.querySelectorAll("button").forEach(function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+    });
+  }
+
+  /* ---------- today's log ---------- */
+  function loadToday(){
+    api("action=today")
+      .then(function(d){
+        if(!d.ok) return;
+        $("cWait").textContent = d.counts.waiting;
+        $("cIn").textContent = d.counts.inside;
+        $("cToday").textContent = d.counts.today;
+        render(d.visitors || []);
+      })
+      .catch(function(){});
   }
 
   function render(rows){
-    if(!rows.length){
-      var msg = scope==="pending" ? "No one is waiting for approval."
-              : scope==="inside"  ? "Nobody is inside right now."
-              : "No visitors logged today.";
-      $("list").innerHTML='<div class="empty">'+
-        '<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#12211C" stroke-width="1.4" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'+
-        '<p>'+msg+'</p></div>';
-      return;
+    var wait = rows.filter(function(v){ return v.status === "pending"; });
+    var live = rows.filter(function(v){ return v.status === "approved" || v.status === "entered"; });
+    var done = rows.filter(function(v){ return ["exited","denied","expired"].indexOf(v.status) > -1; });
+
+    var h = "";
+
+    if(wait.length){
+      h += '<div class="sec"><p class="sec-h">Waiting for the resident</p>';
+      wait.forEach(function(v){ h += card(v, false); });
+      h += '</div>';
     }
-    var h="";
-    rows.forEach(function(v){
-      var cls = v.status==="pending" ? " wait" : (v.status==="entered" ? " in" : "");
-      h+='<div class="card'+cls+'">';
-      h+= '<div class="ch">';
-      h+=  '<div class="fno"><div class="n">'+esc(v.flat_no)+'</div><div class="b">'+esc(v.block_name.replace("Block ",""))+'</div></div>';
-      h+=  '<div class="cm"><div class="n">'+esc(v.visitor_name)+'</div>'+
-           '<div class="p">'+esc(v.purpose_label)+(v.purpose_note?" \u00B7 "+esc(v.purpose_note):"")+'</div></div>';
-      h+=  '<span class="st '+esc(v.status)+'">'+statusWord(v.status)+'</span>';
-      h+= '</div>';
 
-      h+= '<div class="meta">';
-      if(v.visitor_count>1) h+='<span class="chip">'+v.visitor_count+' people</span>';
-      if(v.visitor_mobile)  h+='<span class="chip">'+esc(v.visitor_mobile)+'</span>';
-      if(v.vehicle_no)      h+='<span class="chip">'+esc(v.vehicle_no)+'</span>';
-      if(v.status==="denied"&&v.deny_reason) h+='<span class="chip">'+esc(v.deny_reason)+'</span>';
-      h+= '</div>';
+    if(live.length){
+      h += '<div class="sec"><p class="sec-h">Allowed</p>';
+      live.forEach(function(v){ h += card(v, true); });
+      h += '</div>';
+    }
 
-      if(v.status==="approved"){
-        h+='<div class="acts"><button class="pri" data-a="entry" data-id="'+v.id+'">Mark entry</button></div>';
-      } else if(v.status==="entered"){
-        h+='<div class="acts"><button class="sec2" data-a="exit" data-id="'+v.id+'">Mark exit</button></div>';
-      } else if(v.status==="pending"){
-        h+='<div class="acts"><button class="sec2" disabled>Waiting for resident</button></div>';
+    if(done.length){
+      h += '<div class="sec"><p class="sec-h">Earlier today</p>';
+      done.forEach(function(v){ h += card(v, false); });
+      h += '</div>';
+    }
+
+    if(!rows.length){
+      h = '<div class="empty">' +
+          '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#12211C" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/></svg>' +
+          '<p>No visitors yet today.<br>Tap New visitor to log one.</p></div>';
+    }
+
+    $("main").innerHTML = h;
+  }
+
+  function card(v, actions){
+    var cls = v.status === "pending" ? " wait" : (v.status === "entered" ? " in" :
+              (["denied","expired"].indexOf(v.status) > -1 ? " no" : ""));
+    var word = v.status === "pending" ? "Waiting" :
+               v.status === "approved" ? "Allowed" :
+               v.status === "denied" ? "Denied" :
+               v.status === "entered" ? "Inside" :
+               v.status === "exited" ? "Left" : "No reply";
+
+    var h = '<div class="v' + cls + '">';
+    h += '<div class="vh"><div class="vf">' + esc(v.flat_no) + '</div>';
+    h += '<div class="vm"><div class="vn">' + esc(v.visitor_name) + '</div>';
+    h += '<div class="vp2">' + esc(v.purpose_label) +
+         (v.visitor_count > 1 ? " \u00B7 " + v.visitor_count + " people" : "") +
+         (v.vehicle_no ? " \u00B7 " + esc(v.vehicle_no) : "") + '</div></div>';
+    h += '<span class="st ' + esc(v.status) + '">' + word + '</span></div>';
+
+    h += '<div class="vt">Logged ' + esc(tm(v.created_at));
+    if(v.entry_at) h += " \u00B7 In " + esc(tm(v.entry_at));
+    if(v.exit_at)  h += " \u00B7 Out " + esc(tm(v.exit_at));
+    if(v.deny_reason) h += " \u00B7 " + esc(v.deny_reason);
+    h += '</div>';
+
+    if(actions){
+      h += '<div class="va">';
+      if(v.status === "approved"){
+        h += '<button class="bIn" data-a="entry" data-id="' + v.id + '">Mark entry</button>';
+      } else {
+        h += '<button class="bOut" data-a="exit" data-id="' + v.id + '">Mark exit</button>';
       }
+      h += '</div>';
+    }
 
-      var t="Logged "+ago(v.created_at)+" ago";
-      if(v.entry_at) t+=" \u00B7 In "+clock(v.entry_at);
-      if(v.exit_at)  t+=" \u00B7 Out "+clock(v.exit_at);
-      h+= '<div class="time">'+t+'</div>';
-      h+='</div>';
-    });
-    $("list").innerHTML=h;
-
-    document.querySelectorAll("[data-a]").forEach(function(b){
-      b.addEventListener("click",function(){
-        var id=parseInt(this.getAttribute("data-id"),10), a=this.getAttribute("data-a");
-        this.disabled=true;
-        api("visitors.php",{method:"POST",headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({action:a,id:id})})
-        .then(function(r){
-          if(!r.ok){ toast(r.error); load(); return; }
-          toast(a==="entry"?"Entry recorded.":"Exit recorded.");
-          load();
-        })
-        .catch(function(e){ if(e.message!=="unauthorised") toast(e.message); });
-      });
-    });
+    h += '</div>';
+    return h;
   }
 
-  function statusWord(s){
-    return s==="pending"?"Waiting":s==="approved"?"Allowed":s==="denied"?"Denied":
-           s==="entered"?"Inside":s==="exited"?"Left":s==="expired"?"No reply":s;
-  }
-
-  $("tabs").addEventListener("click",function(e){
-    var t=e.target.closest(".tb"); if(!t) return;
-    this.querySelectorAll(".tb").forEach(function(x){x.classList.remove("on");});
-    t.classList.add("on");
-    scope=t.getAttribute("data-s");
-    $("list").innerHTML=""; $("load").hidden=false;
-    load();
+  $("main").addEventListener("click", function(e){
+    var b = e.target.closest("button[data-a]"); if(!b) return;
+    var a = b.getAttribute("data-a"), id = parseInt(b.getAttribute("data-id"), 10);
+    b.disabled = true;
+    api("", { method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ action:a, id:id }) })
+      .then(function(d){
+        if(!d.ok){ toast(d.error || "Could not do that."); b.disabled = false; return; }
+        toast(d.message || "Done.");
+        loadToday();
+      })
+      .catch(function(err){ toast(err.message); b.disabled = false; });
   });
 
   /* ---------- new visitor ---------- */
-  $("addBtn").addEventListener("click",function(){
-    $("shErr").className="shErr";
-    purpose="guest";
-    $("shBody").innerHTML=
-      '<div class="f"><label for="gf">Which flat</label><select id="gf"><option value="">Loading flats\u2026</option></select></div>'+
-      '<div class="f"><label>Purpose</label><div class="pgrid" id="pg">'+
-      '<button type="button" data-p="guest" class="on">Guest</button>'+
-      '<button type="button" data-p="delivery">Delivery</button>'+
-      '<button type="button" data-p="cab">Cab</button>'+
-      '<button type="button" data-p="service">Service</button>'+
-      '<button type="button" data-p="staff">Help</button>'+
-      '<button type="button" data-p="other">Other</button></div></div>'+
-      '<div class="f"><label for="gn">Visitor name</label><input type="text" id="gn" autocapitalize="words"></div>'+
-      '<div class="f"><label for="gm">Mobile <span class="opt">(optional)</span></label><input type="tel" id="gm" inputmode="numeric" maxlength="10"></div>'+
-      '<div class="f"><label for="gc">How many people</label><input type="number" id="gc" inputmode="numeric" min="1" max="20" value="1"></div>'+
-      '<div class="f"><label for="gv">Vehicle number <span class="opt">(optional)</span></label><input type="text" id="gv" autocapitalize="characters"></div>'+
-      '<div class="f"><label for="gp">Gate pass <span class="opt">(if the visitor has one)</span></label><input type="text" id="gp" maxlength="6" autocapitalize="characters" placeholder="ABC123"></div>'+
-      '<button class="go" id="gSave">Send to resident</button>';
-    veil.classList.add("show");
+  $("fab").addEventListener("click", function(){
+    clearErr();
+    $("veil").classList.add("show");
+    $("flat").focus();
+  });
+  $("cancel").addEventListener("click", function(){ $("veil").classList.remove("show"); });
+  $("veil").addEventListener("click", function(e){ if(e.target === this) this.classList.remove("show"); });
 
-    $("pg").addEventListener("click",function(e){
-      var b=e.target.closest("button"); if(!b) return;
-      purpose=b.getAttribute("data-p");
-      this.querySelectorAll("button").forEach(function(x){x.classList.remove("on");});
-      b.classList.add("on");
-    });
-
-    $("gm").addEventListener("input",function(){ this.value=this.value.replace(/\D/g,"").slice(0,10); });
-    $("gv").addEventListener("input",function(){ this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12); });
-    $("gp").addEventListener("input",function(){ this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6); });
-
-    if(flats){ fillFlats(); }
-    else {
-      api("flats.php").then(function(d){
-        if(d.ok){ flats=d.blocks; fillFlats(); }
-      }).catch(function(){});
-    }
-
-    $("gSave").addEventListener("click",function(){
-      var fid=$("gf").value, nm=$("gn").value.trim();
-      if(!fid) return sErr("Please choose the flat being visited.");
-      if(nm.length<2) return sErr("Please enter the visitor name.");
-      this.disabled=true;
-      api("visitors.php",{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({action:"create",flat_id:parseInt(fid,10),visitor_name:nm,
-          visitor_mobile:$("gm").value||null, visitor_count:$("gc").value||1,
-          purpose:purpose, vehicle_no:$("gv").value||null, gate_pass:$("gp").value||null})})
-      .then(function(r){
-        if(!r.ok){ sErr(r.error); $("gSave").disabled=false; return; }
-        veil.classList.remove("show");
-        toast(r.message);
-        scope="pending";
-        document.querySelectorAll(".tb").forEach(function(x){x.classList.remove("on");});
-        document.querySelector('.tb[data-s="pending"]').classList.add("on");
-        load();
-      })
-      .catch(function(e){ sErr(e.message); $("gSave").disabled=false; });
-    });
+  $("vmob").addEventListener("input", function(){
+    this.value = this.value.replace(/\D/g,"").slice(0,10);
+  });
+  $("vveh").addEventListener("input", function(){
+    this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,15);
+  });
+  $("vpass").addEventListener("input", function(){
+    this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);
+  });
+  ["flat","vname"].forEach(function(id){
+    $(id).addEventListener("input", clearErr);
+    $(id).addEventListener("change", clearErr);
   });
 
-  function fillFlats(){
-    var sel=$("gf");
-    sel.innerHTML='<option value="">Select flat</option>';
-    flats.forEach(function(b){
-      var g=document.createElement("optgroup");
-      g.label=b.block_name;
-      (b.floors||[]).forEach(function(f){
-        (f.flats||[]).forEach(function(ft){
-          var o=document.createElement("option");
-          o.value=ft.id;
-          o.textContent=ft.flat_no+"  \u00B7  "+f.floor_label;
-          g.appendChild(o);
-        });
+  $("send").addEventListener("click", function(){
+    clearErr();
+    var flat = $("flat").value;
+    var name = $("vname").value.trim();
+
+    if(!flat) return showErr("Choose which flat the visitor is going to.", $("flat"));
+    if(name.length < 2) return showErr("Enter the visitor name.", $("vname"));
+
+    var mob = $("vmob").value.trim();
+    if(mob && !/^[6-9]\d{9}$/.test(mob)) return showErr("That mobile number is not valid.", $("vmob"));
+
+    var btn = this;
+    btn.disabled = true; btn.classList.add("busy");
+
+    api("", { method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        action: "create",
+        flat_id: parseInt(flat, 10),
+        visitor_name: name,
+        visitor_mobile: mob || null,
+        purpose: chosen,
+        vehicle_no: $("vveh").value.trim() || null,
+        visitor_count: parseInt($("vcnt").value, 10) || 1,
+        gate_pass: $("vpass").value.trim() || null
+      })})
+      .then(function(d){
+        btn.disabled = false; btn.classList.remove("busy");
+        if(!d.ok) return showErr(d.error || "Could not send.");
+
+        $("veil").classList.remove("show");
+        resetForm();
+
+        if(d.auto){
+          loadToday();
+          toast("Pre-approved. Allow the visitor in.");
+        } else {
+          startWaiting(d.id, name, d.flat_no);
+          loadToday();
+        }
+      })
+      .catch(function(err){
+        btn.disabled = false; btn.classList.remove("busy");
+        showErr(err.message);
       });
-      sel.appendChild(g);
-    });
+  });
+
+  function resetForm(){
+    $("vname").value = ""; $("vmob").value = ""; $("vveh").value = "";
+    $("vcnt").value = "1"; $("vpass").value = ""; $("flat").value = "";
+    chosen = "guest";
+    var c = $("chips");
+    c.querySelectorAll("button").forEach(function(x){ x.classList.remove("on"); });
+    var g = c.querySelector('[data-p="guest"]'); if(g) g.classList.add("on");
   }
 
-  function sErr(m){ var e=$("shErr"); e.textContent=m; e.className="shErr show"; }
-  veil.addEventListener("click",function(e){ if(e.target===veil) veil.classList.remove("show"); });
+  /* ---------- wait for the resident ---------- */
+  function startWaiting(id, name, flatNo){
+    waitingId = id;
+    var box = document.createElement("div");
+    box.id = "waitBox";
+    box.className = "wcard";
+    box.innerHTML =
+      '<div class="wn">' + esc(name) + '</div>' +
+      '<div class="wf">FLAT ' + esc(flatNo) + '</div>' +
+      '<div class="wdots"><i></i><i></i><i></i></div>' +
+      '<p>Waiting for the resident to reply&hellip;</p>' +
+      '<button class="wclose" id="waitClose">Close</button>';
+    $("waitHost").innerHTML = "";
+    $("waitHost").appendChild(box);
+    document.getElementById("waitClose").addEventListener("click", stopWaiting);
 
-  $("exit").addEventListener("click",function(){
-    api("logout.php",{method:"POST"}).catch(function(){}).then(function(){
-      try{localStorage.removeItem(KEY);sessionStorage.removeItem(KEY);}catch(e){}
-      location.replace("index.html");
-    });
-  });
+    clearInterval(waitTimer);
+    waitTimer = setInterval(pollOne, 4000);
+    pollOne();
+  }
 
-  load();
-  setInterval(function(){ if(!veil.classList.contains("show")) load(); }, 20000);
+  function stopWaiting(){
+    clearInterval(waitTimer);
+    waitingId = null;
+    var b = document.getElementById("waitBox");
+    if(b) b.remove();
+    loadToday();
+  }
+
+  function pollOne(){
+    if(!waitingId) return;
+    api("action=status&id=" + waitingId)
+      .then(function(d){
+        if(!d.ok) return;
+        var box = document.getElementById("waitBox");
+        if(!box) return;
+
+        if(d.status === "pending") return;
+
+        clearInterval(waitTimer);
+        var res = '<div class="res">';
+        if(d.status === "approved" || d.status === "entered"){
+          res += '<div class="yes">Allowed in</div>';
+        } else if(d.status === "denied"){
+          res += '<div class="no2">Denied</div>';
+          if(d.deny_reason) res += '<div class="why">' + esc(d.deny_reason) + '</div>';
+        } else {
+          res += '<div class="why">No reply from the resident.</div>';
+        }
+        res += '</div>';
+
+        box.innerHTML =
+          '<div class="wn">' + esc(d.visitor_name) + '</div>' +
+          '<div class="wf">FLAT ' + esc(d.flat_no) + '</div>' + res +
+          '<button class="wclose" id="waitClose">Close</button>';
+        document.getElementById("waitClose").addEventListener("click", stopWaiting);
+        loadToday();
+      })
+      .catch(function(){});
+  }
+
 })();
 </script>
-<script src="assets/notify.js"></script>
 </body>
 </html>
