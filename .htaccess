@@ -1,0 +1,72 @@
+# ============================================================
+# Pavan Midway Residency - site config
+# ============================================================
+
+# ------------------------------------------------------------
+# Correct types for PWA files. Some hosts serve manifest.json
+# as plain text, which stops Android offering "install".
+# ------------------------------------------------------------
+<IfModule mod_mime.c>
+    AddType application/manifest+json .webmanifest
+    AddType application/json .json
+    AddType image/png .png
+    AddType image/svg+xml .svg
+</IfModule>
+
+# ------------------------------------------------------------
+# The service worker must never be cached, or people get stuck
+# on an old version of the app.
+# ------------------------------------------------------------
+<IfModule mod_headers.c>
+    <FilesMatch "sw\.js$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+
+    <FilesMatch "manifest\.json$">
+        Header set Cache-Control "public, max-age=3600"
+    </FilesMatch>
+
+    # Icons rarely change
+    <FilesMatch "\.(png|jpg|jpeg|svg|ico)$">
+        Header set Cache-Control "public, max-age=604800"
+    </FilesMatch>
+</IfModule>
+
+# ------------------------------------------------------------
+# Allow .well-known so Android can verify the app owns this site.
+# Without this the APK shows a browser address bar at the top.
+# ------------------------------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^\.well-known/ - [L]
+</IfModule>
+
+<IfModule mod_authz_core.c>
+    <Files "assetlinks.json">
+        Require all granted
+    </Files>
+</IfModule>
+
+# ------------------------------------------------------------
+# Never serve SQL files
+# ------------------------------------------------------------
+<FilesMatch "\.sql$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# ------------------------------------------------------------
+# Compression
+# ------------------------------------------------------------
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/plain
+    AddOutputFilterByType DEFLATE application/javascript application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
