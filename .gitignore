@@ -1,4 +1,8 @@
+# Local credentials - NEVER commit
+api/config.local.php
 config.local.php
+
+# Runtime
 *.log
-.DS_Store
 uploads/
+.DS_Store
