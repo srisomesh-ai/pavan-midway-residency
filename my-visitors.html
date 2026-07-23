@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#123B2E">
+<title>Visitors &middot; Pavan Midway Residency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#12211C;--deep:#123B2E;--deep-2:#0C2A21;--brass:#C08A3E;--paper:#F2EFE6;
+--paper-2:#E7E2D4;--card:#FBFAF5;--line:#CFC8B5;--muted:#6C7A72;--danger:#8E2B22;
+--ok:#2F6D4F;--warn:#B07A20;--radius:14px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--deep);color:var(--ink);font-family:Inter,system-ui,Roboto,sans-serif;
+display:flex;justify-content:center}
+.vp{width:100%;max-width:430px;background:var(--paper);min-height:100vh;min-height:100dvh;
+display:flex;flex-direction:column}
+.top{background:var(--deep);color:var(--paper);padding:16px 20px 0;position:sticky;top:0;z-index:40}
+.trow{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.back{background:rgba(242,239,230,.09);border:1px solid rgba(242,239,230,.16);color:var(--paper);
+border-radius:10px;padding:9px;cursor:pointer;display:grid;place-items:center}
+.top h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:19px;margin:0;flex:1}
+.tabs{display:flex}
+.tb{flex:1;background:none;border:0;border-bottom:2.5px solid transparent;color:rgba(242,239,230,.5);
+font-family:"Roboto Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+padding:12px 4px;cursor:pointer}
+.tb.on{color:var(--paper);border-bottom-color:var(--brass)}
+.scroll{flex:1;overflow-y:auto;padding:18px 20px 100px}
+.fab{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);width:calc(100% - 40px);
+max-width:390px;padding:16px;background:var(--deep);color:var(--paper);border:0;border-radius:14px;
+font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;z-index:50;
+box-shadow:0 6px 20px rgba(12,42,33,.3);display:flex;align-items:center;justify-content:center;gap:9px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+padding:14px;margin-bottom:10px}
+.ch{display:flex;align-items:flex-start;gap:11px}
+.dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0}
+.dot.approved,.dot.entered,.dot.exited{background:var(--ok)}
+.dot.denied{background:var(--danger)}
+.dot.pending{background:var(--brass)}
+.dot.expired{background:var(--line)}
+.cm{flex:1;min-width:0}
+.cm .n{font-size:14.5px;font-weight:600}
+.cm .p{font-size:12px;color:var(--muted);margin-top:2px}
+.st{font-family:"Roboto Mono",monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;
+padding:4px 8px;border-radius:20px;white-space:nowrap}
+.st.approved,.st.entered,.st.exited{background:#E4F0E9;color:var(--ok)}
+.st.denied{background:#F7E8E5;color:var(--danger)}
+.st.pending{background:#F6EBD8;color:var(--warn)}
+.st.expired{background:var(--paper-2);color:var(--muted)}
+.time{font-family:"Roboto Mono",monospace;font-size:9.5px;color:var(--muted);
+margin-top:9px;padding-top:9px;border-top:1px solid var(--paper-2)}
+.pre{background:var(--card);border:1px solid var(--brass);border-radius:var(--radius);
+padding:14px;margin-bottom:10px}
+.passcode{font-family:"Roboto Mono",monospace;font-size:17px;letter-spacing:.14em;
+font-weight:500;color:var(--deep);background:var(--paper-2);padding:9px 13px;
+border-radius:9px;display:inline-block;margin-top:9px}
+.pdel{background:none;border:0;color:var(--danger);font-family:inherit;font-size:11.5px;
+cursor:pointer;text-decoration:underline;margin-top:10px;padding:0}
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.empty svg{opacity:.28;margin-bottom:12px}
+.empty p{margin:0;font-size:13.5px;line-height:1.6}
+.load{padding:60px;text-align:center;color:var(--muted)}
+.sp{width:22px;height:22px;border:2.5px solid var(--paper-2);border-top-color:var(--deep);
+border-radius:50%;animation:s .7s linear infinite;margin:0 auto 14px}
+@keyframes s{to{transform:rotate(360deg)}}
+.err{background:#F7E8E5;border:1px solid #E9CEC9;color:var(--danger);padding:14px;
+border-radius:11px;font-size:13.5px}
+.veil{position:fixed;inset:0;background:rgba(12,42,33,.5);display:none;align-items:flex-end;
+justify-content:center;z-index:70}
+.veil.show{display:flex}
+.sheet{width:100%;max-width:430px;background:var(--paper);border-radius:20px 20px 0 0;
+padding:8px 22px 30px;animation:up .22s cubic-bezier(.2,.8,.3,1);max-height:92vh;overflow-y:auto}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.grab{width:36px;height:4px;border-radius:3px;background:var(--line);margin:0 auto 18px}
+.sheet h3{font-family:Fraunces,serif;font-weight:600;font-size:23px;margin:0 0 4px;color:var(--deep)}
+.sheet .sh-sub{font-size:13px;color:var(--muted);margin:0 0 18px;line-height:1.5}
+label{display:block;font-size:13px;font-weight:500;margin:0 0 6px}
+label .opt{font-weight:400;color:var(--muted);font-size:11.5px}
+.f{margin-bottom:14px}
+input,select{width:100%;font-family:inherit;font-size:16px;padding:13px;border:1.5px solid var(--line);
+border-radius:12px;background:var(--card);color:var(--ink);appearance:none;-webkit-appearance:none}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236C7A72' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+input:focus,select:focus{outline:none;border-color:var(--deep);box-shadow:0 0 0 3.5px rgba(18,59,46,.11)}
+.go{width:100%;padding:15px;background:var(--deep);color:var(--paper);border:0;border-radius:12px;
+font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.go[disabled]{opacity:.6}
+.shErr{background:#F7E8E5;border:1px solid #E9CEC9;color:var(--danger);padding:11px;
+border-radius:10px;font-size:13px;margin-bottom:14px;display:none}
+.shErr.show{display:block}
+.passbox{background:var(--deep);color:var(--paper);border-radius:12px;padding:20px;
+text-align:center;margin-bottom:16px}
+.passbox .lab{font-family:"Roboto Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+text-transform:uppercase;color:var(--brass);margin-bottom:9px}
+.passbox .code{font-family:"Roboto Mono",monospace;font-size:28px;letter-spacing:.18em;font-weight:500}
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(90px);
+background:var(--deep);color:var(--paper);padding:13px 20px;border-radius:11px;font-size:13.5px;
+z-index:90;transition:transform .25s;max-width:340px;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+</style>
+</head>
+<body>
+<div class="vp">
+  <header class="top">
+    <div class="trow">
+      <button class="back" id="back" aria-label="Back">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <h1>Visitors</h1>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tb on" data-v="log">Visitor log</button>
+      <button class="tb" data-v="pre">Pre-approved</button>
+    </div>
+  </header>
+  <div class="scroll">
+    <div class="load" id="load"><div class="sp"></div>Loading&hellip;</div>
+    <div id="list"></div>
+  </div>
+  <button class="fab" id="addBtn">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+    Pre-approve a visitor
+  </button>
+</div>
+
+<div class="veil" id="veil">
+  <div class="sheet">
+    <div class="grab"></div>
+    <h3 id="shTitle"></h3>
+    <p class="sh-sub" id="shSub"></p>
+    <div class="shErr" id="shErr"></div>
+    <div id="shBody"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var API="api/", KEY="pmr_token";
+  var token=null;
+  try{ token=localStorage.getItem(KEY)||sessionStorage.getItem(KEY); }catch(e){}
+  if(!token){ location.replace("index.html"); return; }
+
+  var $=function(i){return document.getElementById(i);};
+  var veil=$("veil"), view="log", data=null;
+
+  function api(path,opts){
+    opts=opts||{}; opts.headers=opts.headers||{};
+    opts.headers["Authorization"]="Bearer "+token;
+    var url=API+path+(path.indexOf("?")===-1?"?":"&")+"token="+encodeURIComponent(token);
+    return fetch(url,opts).then(function(r){
+      if(r.status===401){
+        try{localStorage.removeItem(KEY);sessionStorage.removeItem(KEY);}catch(e){}
+        location.replace("index.html"); throw new Error("unauthorised");
+      }
+      return r.text().then(function(t){
+        if(!t||!t.trim()) throw new Error("Empty response (HTTP "+r.status+").");
+        try{ return JSON.parse(t); }
+        catch(e){ throw new Error("Server said: "+t.replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,180)); }
+      });
+    });
+  }
+  function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+  function dstr(d){ if(!d) return ""; var x=new Date(d+"T00:00:00");
+    return isNaN(x)?d:x.toLocaleDateString("en-IN",{day:"numeric",month:"short"}); }
+  function when(ts){ if(!ts) return ""; var d=new Date(String(ts).replace(" ","T"));
+    if(isNaN(d)) return ""; return d.toLocaleDateString("en-IN",{day:"numeric",month:"short"})+" "+
+    d.toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit"}); }
+  function toast(m){ var t=$("toast"); t.textContent=m; t.classList.add("show");
+    setTimeout(function(){t.classList.remove("show");},2600); }
+  function word(s){ return s==="approved"?"Allowed":s==="denied"?"Denied":s==="entered"?"Inside":
+    s==="exited"?"Left":s==="pending"?"Waiting":s==="expired"?"No reply":s; }
+
+  function load(){
+    api("visitors.php?scope=mine").then(function(d){
+      if(!d.ok) throw new Error(d.error||"Could not load.");
+      data=d; $("load").hidden=true; render();
+    }).catch(function(e){
+      if(e.message==="unauthorised") return;
+      $("load").innerHTML='<div class="err">'+esc(e.message)+'</div>';
+    });
+  }
+
+  function render(){
+    if(view==="pre"){
+      var pre=data.preapproved||[];
+      if(!pre.length){
+        $("list").innerHTML='<div class="empty">'+
+          '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#12211C" stroke-width="1.4" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>'+
+          '<p>No pre-approved visitors.<br>Add one so security can let them in without calling you.</p></div>';
+        return;
+      }
+      var h="";
+      pre.forEach(function(p){
+        h+='<div class="pre"><div class="ch"><div class="cm">'+
+           '<div class="n">'+esc(p.visitor_name)+'</div>'+
+           '<div class="p">'+esc(p.purpose_label)+" \u00B7 "+dstr(p.valid_from)+" to "+dstr(p.valid_to)+'</div>'+
+           '</div></div>'+
+           '<div class="passcode">'+esc(p.gate_pass)+'</div><br>'+
+           '<button class="pdel" data-cancel="'+p.id+'">Cancel this pass</button></div>';
+      });
+      $("list").innerHTML=h;
+      document.querySelectorAll("[data-cancel]").forEach(function(b){
+        b.addEventListener("click",function(){
+          if(!confirm("Cancel this gate pass?")) return;
+          api("visitors.php",{method:"POST",headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({action:"cancel_preapprove",id:parseInt(this.getAttribute("data-cancel"),10)})})
+          .then(function(){ toast("Pass cancelled."); load(); }).catch(function(){});
+        });
+      });
+      return;
+    }
+
+    var rows=data.visitors||[];
+    if(!rows.length){
+      $("list").innerHTML='<div class="empty">'+
+        '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#12211C" stroke-width="1.4" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'+
+        '<p>No visitors recorded for your flat yet.</p></div>';
+      return;
+    }
+    var h="";
+    rows.forEach(function(v){
+      h+='<div class="card"><div class="ch">'+
+         '<span class="dot '+esc(v.status)+'"></span>'+
+         '<span class="cm"><span class="n">'+esc(v.visitor_name)+'</span>'+
+         '<span class="p">'+esc(v.purpose_label)+
+         (v.visitor_count>1?" \u00B7 "+v.visitor_count+" people":"")+
+         (v.vehicle_no?" \u00B7 "+esc(v.vehicle_no):"")+'</span></span>'+
+         '<span class="st '+esc(v.status)+'">'+word(v.status)+'</span></div>';
+      var t=when(v.created_at);
+      if(v.entry_at) t+=" \u00B7 In "+when(v.entry_at).split(" ").slice(2).join(" ");
+      if(v.exit_at)  t+=" \u00B7 Out "+when(v.exit_at).split(" ").slice(2).join(" ");
+      if(v.deny_reason) t+=" \u00B7 "+esc(v.deny_reason);
+      h+='<div class="time">'+t+'</div></div>';
+    });
+    $("list").innerHTML=h;
+  }
+
+  $("tabs").addEventListener("click",function(e){
+    var t=e.target.closest(".tb"); if(!t) return;
+    this.querySelectorAll(".tb").forEach(function(x){x.classList.remove("on");});
+    t.classList.add("on"); view=t.getAttribute("data-v"); render();
+  });
+
+  $("addBtn").addEventListener("click",function(){
+    var today=new Date().toISOString().slice(0,10);
+    $("shErr").className="shErr";
+    $("shTitle").textContent="Pre-approve a visitor";
+    $("shSub").textContent="Security can let them in without calling you.";
+    $("shBody").innerHTML=
+      '<div class="f"><label for="pn">Visitor name</label><input type="text" id="pn" autocapitalize="words"></div>'+
+      '<div class="f"><label for="pm">Mobile <span class="opt">(optional)</span></label><input type="tel" id="pm" inputmode="numeric" maxlength="10"></div>'+
+      '<div class="f"><label for="pp">Who are they</label><select id="pp">'+
+      '<option value="guest">Guest</option><option value="staff">Domestic help</option>'+
+      '<option value="service">Service person</option><option value="delivery">Delivery</option>'+
+      '<option value="cab">Cab</option><option value="other">Other</option></select></div>'+
+      '<div class="f"><label for="pf">Valid from</label><input type="date" id="pf" min="'+today+'" value="'+today+'"></div>'+
+      '<div class="f"><label for="pt">Valid until</label><input type="date" id="pt" min="'+today+'" value="'+today+'"></div>'+
+      '<button class="go" id="pSave">Create gate pass</button>';
+    veil.classList.add("show");
+    $("pm").addEventListener("input",function(){ this.value=this.value.replace(/\D/g,"").slice(0,10); });
+
+    $("pSave").addEventListener("click",function(){
+      var n=$("pn").value.trim();
+      if(n.length<2) return sErr("Please enter the visitor name.");
+      if($("pt").value<$("pf").value) return sErr("The end date cannot be before the start date.");
+      this.disabled=true;
+      api("visitors.php",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({action:"preapprove",visitor_name:n,visitor_mobile:$("pm").value||null,
+          purpose:$("pp").value,valid_from:$("pf").value,valid_to:$("pt").value})})
+      .then(function(r){
+        if(!r.ok){ sErr(r.error); $("pSave").disabled=false; return; }
+        $("shTitle").textContent="Gate pass created";
+        $("shSub").textContent="Share this code with your visitor. Security will ask for it.";
+        $("shBody").innerHTML='<div class="passbox"><div class="lab">Gate pass</div>'+
+          '<div class="code">'+esc(r.gate_pass)+'</div></div>'+
+          '<button class="go" id="pDone">Done</button>';
+        $("pDone").addEventListener("click",function(){
+          veil.classList.remove("show");
+          view="pre";
+          document.querySelectorAll(".tb").forEach(function(x){x.classList.remove("on");});
+          document.querySelector('.tb[data-v="pre"]').classList.add("on");
+          load();
+        });
+      })
+      .catch(function(e){ sErr(e.message); $("pSave").disabled=false; });
+    });
+  });
+
+  function sErr(m){ var e=$("shErr"); e.textContent=m; e.className="shErr show"; }
+  veil.addEventListener("click",function(e){ if(e.target===veil) veil.classList.remove("show"); });
+  $("back").addEventListener("click",function(){ location.href="resident.html"; });
+
+  load();
+})();
+</script>
+</body>
+</html>
