@@ -1,0 +1,51 @@
+# ============================================================
+# Pavan Midway Residency - API directory config
+#
+# On many shared hosts (Hostinger included) PHP runs as CGI/FastCGI,
+# which silently drops the Authorization header before PHP sees it.
+# That makes every logged-in API call return 401.
+#
+# These rules pass the header through. Two methods are used because
+# different server setups honour different ones.
+# ============================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Method 1: copy Authorization into a variable PHP can read
+    RewriteCond %{HTTP:Authorization} ^(.*)$
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+
+<IfModule mod_setenvif.c>
+    # Method 2: same thing via SetEnvIf
+    SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+</IfModule>
+
+# ------------------------------------------------------------
+# Protect local credentials from being served over HTTP.
+# Even though config.local.php only defines constants and would
+# output nothing, this blocks it outright.
+# ------------------------------------------------------------
+<FilesMatch "^config\.local\.php$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# ------------------------------------------------------------
+# Never serve .sql files
+# ------------------------------------------------------------
+<FilesMatch "\.sql$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
