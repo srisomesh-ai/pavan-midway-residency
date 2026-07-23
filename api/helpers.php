@@ -87,6 +87,123 @@ function require_resident_app() {
     }
 }
 
+/* ------------------------------------------------------------
+   NOTIFICATIONS
+   Every call is wrapped so a missing table can never break the
+   action that triggered it. A failed notification must not stop
+   a complaint being filed or a visitor being approved.
+   ------------------------------------------------------------ */
+
+/** True once sql/07_notifications.sql has been imported. */
+function notify_ready() {
+    static $ready = null;
+    if ($ready !== null) return $ready;
+    try {
+        $ready = (bool) db()->query("SHOW TABLES LIKE 'notifications'")->fetch();
+    } catch (Exception $e) {
+        $ready = false;
+    }
+    return $ready;
+}
+
+/**
+ * Send one notification to one user.
+ * Returns true if it was stored.
+ */
+function notify($user_id, $kind, $title, $body = null, $opts = []) {
+    if (!$user_id || !notify_ready()) return false;
+    try {
+        $st = db()->prepare(
+            'INSERT INTO notifications
+             (user_id, kind, title, body, link, entity, entity_id, is_urgent, created_by)
+             VALUES (?,?,?,?,?,?,?,?,?)'
+        );
+        $st->execute([
+            (int) $user_id,
+            $kind,
+            str_cut($title, 120),
+            $body !== null ? str_cut($body, 400) : null,
+            $opts['link']      ?? null,
+            $opts['entity']    ?? null,
+            $opts['entity_id'] ?? null,
+            !empty($opts['urgent']) ? 1 : 0,
+            $opts['by']        ?? null,
+        ]);
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+/** Send the same notification to every active committee member. */
+function notify_committee($kind, $title, $body = null, $opts = []) {
+    if (!notify_ready()) return 0;
+    try {
+        $rows = db()->query(
+            'SELECT id FROM users WHERE role IN ("super_admin","admin") AND status = "active"'
+        )->fetchAll();
+        $n = 0;
+        foreach ($rows as $r) {
+            if (notify($r['id'], $kind, $title, $body, $opts)) $n++;
+        }
+        return $n;
+    } catch (Exception $e) {
+        return 0;
+    }
+}
+
+/**
+ * Send to the resident(s) of a flat.
+ * Returns the number of people notified.
+ */
+function notify_flat($flat_id, $kind, $title, $body = null, $opts = []) {
+    if (!$flat_id || !notify_ready()) return 0;
+    try {
+        $st = db()->prepare(
+            'SELECT id FROM users WHERE flat_id = ? AND role = "resident" AND status = "active"'
+        );
+        $st->execute([(int) $flat_id]);
+        $n = 0;
+        foreach ($st->fetchAll() as $r) {
+            if (notify($r['id'], $kind, $title, $body, $opts)) $n++;
+        }
+        return $n;
+    } catch (Exception $e) {
+        return 0;
+    }
+}
+
+/**
+ * Send to every active resident, optionally filtered.
+ * $audience: all | block_a | block_b | owners | tenants
+ */
+function notify_all_residents($audience, $kind, $title, $body = null, $opts = []) {
+    if (!notify_ready()) return 0;
+    try {
+        $sql = 'SELECT u.id
+                FROM users u
+                LEFT JOIN flats f  ON f.id = u.flat_id
+                LEFT JOIN blocks b ON b.id = f.block_id
+                WHERE u.role = "resident" AND u.status = "active"';
+        $args = [];
+
+        if ($audience === 'block_a')      { $sql .= ' AND b.code = ?'; $args[] = 'A'; }
+        elseif ($audience === 'block_b')  { $sql .= ' AND b.code = ?'; $args[] = 'B'; }
+        elseif ($audience === 'owners')   { $sql .= ' AND u.resident_type = "owner"'; }
+        elseif ($audience === 'tenants')  { $sql .= ' AND u.resident_type = "tenant"'; }
+
+        $st = db()->prepare($sql);
+        $st->execute($args);
+        $n = 0;
+        foreach ($st->fetchAll() as $r) {
+            if (notify($r['id'], $kind, $title, $body, $opts)) $n++;
+        }
+        return $n;
+    } catch (Exception $e) {
+        return 0;
+    }
+}
+
 /**
  * Build a vehicle list from a row containing vehicle_1..3 and
  * vehicle_1_type..3_type. Returns [{number, type, label}, ...].
@@ -205,15 +322,17 @@ function current_user() {
     }
 
     $cols = $has_flat
-        ? 'u.flat_id, u.resident_type,'
-        : 'NULL AS flat_id, NULL AS resident_type,';
+        ? 'u.flat_id, u.resident_type, f.flat_no,'
+        : 'NULL AS flat_id, NULL AS resident_type, NULL AS flat_no,';
+
+    $join = $has_flat ? ' LEFT JOIN flats f ON f.id = u.flat_id' : '';
 
     $st = db()->prepare(
         'SELECT u.id, u.name, u.email, u.username, u.mobile, u.role, u.designation,
                 u.status, u.photo_url, u.must_change_pwd, ' . $cols . '
                 s.id AS session_id
          FROM sessions s
-         JOIN users u ON u.id = s.user_id
+         JOIN users u ON u.id = s.user_id' . $join . '
          WHERE s.token_hash = ?
            AND s.revoked_at IS NULL
            AND s.expires_at > NOW()
