@@ -29,6 +29,8 @@ try {
     $need = ['blocks','flats','users','user_flats','sessions','login_attempts','activity_log','settings'];
     $need_form = ['submissions','flat_details','form_submits'];
     $need_app  = ['visitors','preapproved_visitors','away_notices','complaints','complaint_replies'];
+    $need_notify = ['notifications','notices','push_tokens'];
+    $need_gate   = ['gate_submits'];
     $have = [];
     foreach ($d->query('SHOW TABLES')->fetchAll(PDO::FETCH_NUM) as $r) {
         $have[] = $r[0];
@@ -46,6 +48,23 @@ try {
     $checks['resident_app_ready'] = empty($missing_app);
     if (!empty($missing_app)) {
         $checks['resident_app_missing'] = $missing_app;
+    }
+
+    $missing_notify = array_values(array_diff($need_notify, $have));
+    $checks['notifications_ready'] = empty($missing_notify);
+    if (!empty($missing_notify)) {
+        $checks['notifications_missing'] = $missing_notify;
+    }
+
+    $missing_gate = array_values(array_diff($need_gate, $have));
+    $checks['gate_page_ready'] = empty($missing_gate);
+    if (!empty($missing_gate)) {
+        $checks['gate_page_missing'] = $missing_gate;
+    }
+
+    if (empty($missing_notify)) {
+        $checks['notifications_sent'] = (int) $d->query('SELECT COUNT(*) FROM notifications')->fetchColumn();
+        $checks['notices_posted']     = (int) $d->query('SELECT COUNT(*) FROM notices')->fetchColumn();
     }
 
     if (empty($missing_app)) {
@@ -150,6 +169,13 @@ if (isset($checks['resident_form_ready']) && !$checks['resident_form_ready']) {
 if (isset($checks['resident_app_ready']) && !$checks['resident_app_ready']) {
     $problems[] = 'The resident app will not work yet. Import sql/06_resident_app.sql to create the '
                 . implode(', ', $checks['resident_app_missing']) . ' table(s).';
+}
+if (isset($checks['notifications_ready']) && !$checks['notifications_ready']) {
+    $problems[] = 'Notifications will not appear. Import sql/07_notifications.sql to create the '
+                . implode(', ', $checks['notifications_missing']) . ' table(s).';
+}
+if (isset($checks['gate_page_ready']) && !$checks['gate_page_ready']) {
+    $problems[] = 'The visitor QR page will not work. Import sql/08_open_gate.sql.';
 }
 if (isset($checks['flats_has_vehicle_type']) && !$checks['flats_has_vehicle_type']) {
     $problems[] = 'Vehicle types are missing. Import sql/05_vehicle_types.sql.';
