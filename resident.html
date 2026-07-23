@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#123B2E">
+<title>My Flat &middot; Pavan Midway Residency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12211C; --deep:#123B2E; --deep-2:#0C2A21; --brass:#C08A3E;
+  --paper:#F2EFE6; --paper-2:#E7E2D4; --card:#FBFAF5;
+  --line:#CFC8B5; --muted:#6C7A72; --danger:#8E2B22; --ok:#2F6D4F; --warn:#B07A20;
+  --radius:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--deep);color:var(--ink);
+  font-family:Inter,system-ui,-apple-system,Roboto,sans-serif;
+  display:flex;justify-content:center;overscroll-behavior-y:none}
+.vp{width:100%;max-width:430px;background:var(--paper);min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;position:relative}
+
+/* header */
+.top{background:var(--deep);color:var(--paper);padding:18px 20px 20px;position:sticky;top:0;z-index:40}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+  background:linear-gradient(90deg,var(--brass) 0 22%,transparent 22%)}
+.trow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.who .eyebrow{font-family:"Roboto Mono",monospace;font-size:9.5px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--brass);margin:0 0 4px}
+.who h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.15}
+.who .sub{margin:3px 0 0;font-size:11.5px;color:rgba(242,239,230,.55)}
+.exit{background:rgba(242,239,230,.09);border:1px solid rgba(242,239,230,.16);
+  color:var(--paper);border-radius:10px;padding:9px;cursor:pointer;display:grid;place-items:center;flex-shrink:0}
+
+.scroll{flex:1;overflow-y:auto;padding:18px 20px 90px}
+.sec{margin-bottom:24px}
+.sec-h{font-family:"Roboto Mono",monospace;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--deep);margin:0 0 11px;display:flex;
+  align-items:center;justify-content:space-between;gap:9px}
+.sec-h .more{font-family:Inter,sans-serif;font-size:11.5px;letter-spacing:0;
+  text-transform:none;color:var(--muted);cursor:pointer;border-bottom:1px solid var(--line)}
+
+/* waiting visitor cards */
+.vwait{background:var(--card);border:1.5px solid var(--brass);border-radius:var(--radius);
+  padding:16px;margin-bottom:11px;box-shadow:0 2px 10px rgba(192,138,62,.13)}
+.vwait .lead{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.vic{width:42px;height:42px;border-radius:11px;background:var(--paper-2);
+  display:grid;place-items:center;color:var(--deep);flex-shrink:0}
+.vinfo{flex:1;min-width:0}
+.vinfo .n{font-size:16px;font-weight:600;margin-bottom:2px}
+.vinfo .p{font-size:12.5px;color:var(--muted)}
+.vago{font-family:"Roboto Mono",monospace;font-size:9.5px;color:var(--brass);white-space:nowrap}
+.vmeta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:13px}
+.chip{font-size:11px;background:var(--paper-2);color:var(--muted);
+  padding:5px 10px;border-radius:20px}
+.vbtns{display:flex;gap:9px}
+.vbtns button{flex:1;padding:13px;border-radius:11px;font-family:inherit;
+  font-size:14px;font-weight:600;cursor:pointer;border:0}
+.yes{background:var(--deep);color:var(--paper)}
+.nope{background:var(--card);color:var(--danger);border:1.5px solid #E9CEC9}
+.vbtns button:disabled{opacity:.5}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:15px;text-align:left;font-family:inherit;cursor:pointer;transition:transform .08s}
+.tile:active{transform:scale(.97)}
+.tile .ti{width:32px;height:32px;border-radius:9px;background:var(--paper-2);
+  display:grid;place-items:center;color:var(--deep);margin-bottom:11px}
+.tile .tt{font-size:14px;font-weight:600;color:var(--ink)}
+.tile .ts{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+.tile.hot{border-color:var(--brass);background:#FDF8EF}
+.tile .badge{position:absolute;top:12px;right:12px;background:var(--brass);color:var(--deep-2);
+  font-size:10px;font-weight:600;min-width:19px;height:19px;border-radius:10px;
+  display:grid;place-items:center;padding:0 5px}
+.tile{position:relative}
+
+/* flat card */
+.fcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.frow{display:flex;align-items:center;gap:13px}
+.fno{width:54px;height:54px;flex-shrink:0;background:var(--deep);color:var(--paper);
+  border-radius:12px;display:grid;place-items:center;
+  font-family:Fraunces,serif;font-weight:600;font-size:17px}
+.fmain{flex:1;min-width:0}
+.fmain .a{font-size:15px;font-weight:600}
+.fmain .b{font-size:12px;color:var(--muted);margin-top:2px}
+.pill{font-family:"Roboto Mono",monospace;font-size:8.5px;letter-spacing:.1em;
+  text-transform:uppercase;padding:5px 9px;border-radius:20px}
+.pill.owner{background:#E4F0E9;color:var(--ok)}
+.pill.rented{background:#F6EBD8;color:var(--warn)}
+.pill.vacant{background:var(--paper-2);color:var(--muted)}
+.fdet{margin-top:13px;padding-top:13px;border-top:1px solid var(--paper-2)}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:7px 0;font-size:13px}
+.kv .k{color:var(--muted)}
+.kv .v{font-weight:500;text-align:right}
+
+/* away banner */
+.away{background:#EFF3F0;border:1px solid #C9DBD1;border-radius:var(--radius);
+  padding:14px;display:flex;gap:11px;align-items:flex-start}
+.away svg{flex-shrink:0;color:var(--ok);margin-top:1px}
+.away .t{font-size:13.5px;font-weight:600;color:var(--ok)}
+.away .s{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.45}
+.away button{margin-left:auto;background:none;border:0;color:var(--muted);
+  font-family:inherit;font-size:11.5px;cursor:pointer;text-decoration:underline;flex-shrink:0}
+
+/* history rows */
+.hist{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.hrow{display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid var(--paper-2)}
+.hrow:last-child{border-bottom:0}
+.hdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.hdot.approved,.hdot.entered,.hdot.exited{background:var(--ok)}
+.hdot.denied{background:var(--danger)}
+.hdot.expired{background:var(--line)}
+.htxt{flex:1;min-width:0}
+.htxt .a{font-size:13.5px;font-weight:500}
+.htxt .b{font-size:11.5px;color:var(--muted);margin-top:1px}
+.htime{font-family:"Roboto Mono",monospace;font-size:9.5px;color:var(--muted);white-space:nowrap}
+
+.empty{text-align:center;padding:34px 18px;color:var(--muted);
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius)}
+.empty svg{opacity:.28;margin-bottom:11px}
+.empty p{margin:0;font-size:13px;line-height:1.55}
+
+.load{padding:70px;text-align:center;color:var(--muted)}
+.sp{width:22px;height:22px;border:2.5px solid var(--paper-2);border-top-color:var(--deep);
+  border-radius:50%;animation:s .7s linear infinite;margin:0 auto 14px}
+@keyframes s{to{transform:rotate(360deg)}}
+.err{background:#F7E8E5;border:1px solid #E9CEC9;color:var(--danger);
+  padding:14px;border-radius:11px;font-size:13.5px;line-height:1.5}
+
+/* sheet */
+.veil{position:fixed;inset:0;background:rgba(12,42,33,.5);display:none;
+  align-items:flex-end;justify-content:center;z-index:60}
+.veil.show{display:flex}
+.sheet{width:100%;max-width:430px;background:var(--paper);border-radius:20px 20px 0 0;
+  padding:8px 22px 30px;animation:up .22s cubic-bezier(.2,.8,.3,1);
+  max-height:90vh;overflow-y:auto}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.grab{width:36px;height:4px;border-radius:3px;background:var(--line);margin:0 auto 18px}
+.sheet h3{font-family:Fraunces,serif;font-weight:600;font-size:23px;margin:0 0 4px;color:var(--deep)}
+.sheet .sh-sub{font-size:13px;color:var(--muted);margin:0 0 18px;line-height:1.5}
+label{display:block;font-size:13px;font-weight:500;margin:0 0 6px}
+label .opt{font-weight:400;color:var(--muted);font-size:11.5px}
+.f{margin-bottom:15px}
+input,select,textarea{width:100%;font-family:inherit;font-size:16px;padding:13px;
+  border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);
+  appearance:none;-webkit-appearance:none}
+textarea{min-height:90px;resize:vertical}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236C7A72' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--deep);
+  box-shadow:0 0 0 3.5px rgba(18,59,46,.11)}
+.seg{display:flex;gap:7px;margin-bottom:15px}
+.seg button{flex:1;padding:12px 0;border:1.5px solid var(--line);border-radius:11px;
+  background:var(--card);font-family:inherit;font-size:13.5px;font-weight:600;
+  color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--deep);color:var(--paper);border-color:var(--deep)}
+.go{width:100%;padding:15px;background:var(--deep);color:var(--paper);border:0;
+  border-radius:12px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.go[disabled]{opacity:.6}
+.ghost{width:100%;margin-top:9px;padding:14px;background:none;border:1px solid var(--line);
+  color:var(--muted);border-radius:12px;font-family:inherit;font-size:14px;cursor:pointer}
+.shErr{background:#F7E8E5;border:1px solid #E9CEC9;color:var(--danger);padding:11px;
+  border-radius:10px;font-size:13px;margin-bottom:14px;display:none;line-height:1.45}
+.shErr.show{display:block}
+.passbox{background:var(--deep);color:var(--paper);border-radius:12px;padding:18px;text-align:center;margin-bottom:16px}
+.passbox .lab{font-family:"Roboto Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--brass);margin-bottom:8px}
+.passbox .code{font-family:"Roboto Mono",monospace;font-size:27px;letter-spacing:.16em;font-weight:500}
+
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(90px);
+  background:var(--deep);color:var(--paper);padding:13px 20px;border-radius:11px;
+  font-size:13.5px;z-index:90;transition:transform .25s;max-width:340px;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+</style>
+</head>
+<body>
+<div class="vp">
+  <header class="top">
+    <div class="trow">
+      <div class="who">
+        <p class="eyebrow" id="eyebrow">My Flat</p>
+        <h1 id="flatNo">&nbsp;</h1>
+        <p class="sub" id="flatSub">&nbsp;</p>
+      </div>
+      <button class="exit" id="exit" aria-label="Sign out">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="scroll">
+    <div class="load" id="load"><div class="sp"></div>Loading&hellip;</div>
+    <div id="main" hidden></div>
+  </div>
+</div>
+
+<div class="veil" id="veil">
+  <div class="sheet">
+    <div class="grab"></div>
+    <h3 id="shTitle"></h3>
+    <p class="sh-sub" id="shSub"></p>
+    <div class="shErr" id="shErr"></div>
+    <div id="shBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var API="api/", KEY="pmr_token";
+  var token=null;
+  try{ token=localStorage.getItem(KEY)||sessionStorage.getItem(KEY); }catch(e){}
+  if(!token){ location.replace("index.html"); return; }
+
+  var $=function(i){return document.getElementById(i);};
+  var veil=$("veil");
+  var data=null;
+
+  function api(path,opts){
+    opts=opts||{}; opts.headers=opts.headers||{};
+    opts.headers["Authorization"]="Bearer "+token;
+    var url=API+path+(path.indexOf("?")===-1?"?":"&")+"token="+encodeURIComponent(token);
+    return fetch(url,opts).then(function(r){
+      if(r.status===401){
+        try{localStorage.removeItem(KEY);sessionStorage.removeItem(KEY);}catch(e){}
+        location.replace("index.html"); throw new Error("unauthorised");
+      }
+      return r.text().then(function(t){
+        if(!t||!t.trim()) throw new Error(path+" returned an empty response (HTTP "+r.status+").");
+        try{ return JSON.parse(t); }
+        catch(e){ throw new Error(path+" did not return JSON. Server said: "+
+          t.replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,200)); }
+      });
+    });
+  }
+
+  function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+
+  function ago(ts){
+    if(!ts) return "";
+    var d=new Date(String(ts).replace(" ","T"));
+    var s=Math.floor((Date.now()-d.getTime())/1000);
+    if(isNaN(s)) return "";
+    if(s<60) return "now";
+    if(s<3600) return Math.floor(s/60)+"m ago";
+    if(s<86400) return Math.floor(s/3600)+"h ago";
+    return Math.floor(s/86400)+"d ago";
+  }
+
+  function dstr(d){
+    if(!d) return "";
+    var x=new Date(d+"T00:00:00");
+    if(isNaN(x)) return d;
+    return x.toLocaleDateString("en-IN",{day:"numeric",month:"short"});
+  }
+
+  function toast(m){
+    var t=$("toast"); t.textContent=m; t.classList.add("show");
+    setTimeout(function(){t.classList.remove("show");},2600);
+  }
+
+  function icon(p){
+    var m={
+      guest:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>',
+      delivery:'<path d="M16 16h2a2 2 0 0 0 2-2v-3l-3-4h-3"/><path d="M2 6h11v10H2z"/><circle cx="6" cy="18" r="2"/><circle cx="16" cy="18" r="2"/>',
+      cab:'<path d="M5 17h14M6.5 17a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM17.5 17a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM3 14l1.5-5A2 2 0 0 1 6.4 7.5h11.2A2 2 0 0 1 19.5 9L21 14v3H3v-3z"/>',
+      service:'<path d="M14.7 6.3a5 5 0 0 0-6.6 6.6L3 18l3 3 5.1-5.1a5 5 0 0 0 6.6-6.6l-2.8 2.8-2.1-2.1z"/>',
+      staff:'<path d="M20 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/><circle cx="9" cy="7" r="4"/><path d="M15 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/>',
+      other:'<circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16v.01"/>'
+    };
+    return m[p]||m.other;
+  }
+
+  /* ---------------- load ---------------- */
+  function load(){
+    api("resident_home.php")
+      .then(function(d){
+        if(!d.ok) throw new Error(d.error||"Could not load.");
+        data=d; render(d);
+      })
+      .catch(function(e){
+        if(e.message==="unauthorised") return;
+        $("load").innerHTML='<div class="err">'+esc(e.message)+
+          '<br><br><button onclick="location.reload()" style="padding:9px 16px;border:0;border-radius:9px;background:#8E2B22;color:#fff;font-family:inherit;cursor:pointer">Try again</button></div>';
+      });
+  }
+
+  function render(d){
+    $("flatNo").textContent=d.flat.flat_no;
+    $("flatSub").textContent=d.flat.block_name+" \u00B7 "+d.flat.floor_label;
+    $("eyebrow").textContent=d.me.name;
+
+    var h="";
+
+    /* waiting visitors */
+    if(d.waiting.length){
+      h+='<section class="sec"><p class="sec-h">Someone at the gate</p>';
+      d.waiting.forEach(function(v){
+        h+='<div class="vwait" data-vid="'+v.id+'">';
+        h+= '<div class="lead">';
+        h+=  '<span class="vic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+icon(v.purpose)+'</svg></span>';
+        h+=  '<span class="vinfo"><span class="n">'+esc(v.visitor_name)+'</span>'+
+             '<span class="p">'+esc(v.purpose_label)+(v.purpose_note?" \u00B7 "+esc(v.purpose_note):"")+'</span></span>';
+        h+=  '<span class="vago">'+ago(v.created_at)+'</span>';
+        h+= '</div>';
+        h+= '<div class="vmeta">';
+        if(v.visitor_count>1) h+='<span class="chip">'+v.visitor_count+' people</span>';
+        if(v.visitor_mobile)  h+='<span class="chip">'+esc(v.visitor_mobile)+'</span>';
+        if(v.vehicle_no)      h+='<span class="chip">'+esc(v.vehicle_no)+'</span>';
+        h+= '</div>';
+        h+= '<div class="vbtns">'+
+            '<button class="nope" data-act="denied" data-vid="'+v.id+'">Deny</button>'+
+            '<button class="yes"  data-act="approved" data-vid="'+v.id+'">Allow in</button></div>';
+        h+='</div>';
+      });
+      h+='</section>';
+    }
+
+    /* away banner */
+    if(d.away){
+      h+='<section class="sec"><div class="away">'+
+         '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2a.5.5 0 0 0-.5.8l4 5-2 3H4l1.5 3L8 19l3-2 5 4 .8-.5a.5.5 0 0 0 .2-.8z"/></svg>'+
+         '<div><div class="t">'+(d.away.status==="active"?"You are away":"Away notice recorded")+'</div>'+
+         '<div class="s">'+dstr(d.away.from_date)+" \u2013 "+dstr(d.away.to_date)+'</div></div>'+
+         '<button data-cancel-away="'+d.away.id+'">Cancel</button></div></section>';
+    }
+
+    /* actions */
+    h+='<section class="sec"><p class="sec-h">What would you like to do</p><div class="tiles">';
+    h+=tile("visitors","Visitors", (d.preapproved?d.preapproved+" pre-approved":"Log and pre-approve"),
+        '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/>', false, 0);
+    h+=tile("away", d.away?"Away notice":"Going away", d.away?"Manage your notice":"Tell the committee",
+        '<path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.5"/>', false, 0);
+    h+=tile("raise","Raise an issue","Complaint or suggestion",
+        '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>', false, 0);
+    h+=tile("tickets","My tickets", d.complaints.active?d.complaints.active+" being looked at":"Nothing open",
+        '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+        d.complaints.active>0, d.complaints.active);
+    h+='</div></section>';
+
+    /* flat card */
+    h+='<section class="sec"><p class="sec-h">My flat'+
+       (d.pending_review?'<span class="more" style="color:#B07A20;border:0">Update under review</span>':'')+'</p>';
+    h+='<div class="fcard"><div class="frow">';
+    h+= '<div class="fno">'+esc(d.flat.flat_no)+'</div>';
+    h+= '<div class="fmain"><div class="a">'+esc(d.details?(d.details.status==="rented"&&d.details.tenant_name?d.details.tenant_name:d.details.owner_name):d.me.name)+'</div>'+
+        '<div class="b">'+esc(d.flat.block_name)+" \u00B7 "+esc(d.flat.floor_label)+'</div></div>';
+    h+= '<span class="pill '+esc(d.flat.occupancy==="tenant"?"rented":d.flat.occupancy)+'">'+
+        (d.flat.occupancy==="owner"?"Owner":d.flat.occupancy==="tenant"?"Rented":"Vacant")+'</span>';
+    h+='</div>';
+    if(d.details){
+      h+='<div class="fdet">';
+      if(d.details.family_members) h+=kvr("People staying",d.details.family_members);
+      if(d.details.vehicles.length){
+        h+=kvr("Vehicles",d.details.vehicles.map(function(v){return esc(v.number);}).join("<br>"));
+      }
+      h+='</div>';
+    }
+    h+='</div></section>';
+
+    /* recent visitors */
+    h+='<section class="sec"><p class="sec-h">Recent visitors'+
+       (d.recent.length?'<span class="more" id="allVis">See all</span>':'')+'</p>';
+    if(!d.recent.length){
+      h+='<div class="empty"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#12211C" stroke-width="1.4" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'+
+         '<p>No visitors recorded yet.</p></div>';
+    } else {
+      h+='<div class="hist">';
+      d.recent.forEach(function(v){
+        h+='<div class="hrow"><span class="hdot '+esc(v.status)+'"></span>'+
+           '<span class="htxt"><span class="a">'+esc(v.visitor_name)+'</span>'+
+           '<span class="b">'+esc(v.purpose_label)+" \u00B7 "+statusWord(v.status)+'</span></span>'+
+           '<span class="htime">'+ago(v.entry_at||v.created_at)+'</span></div>';
+      });
+      h+='</div>';
+    }
+    h+='</section>';
+
+    $("main").innerHTML=h;
+    $("load").hidden=true;
+    $("main").hidden=false;
+    wire();
+  }
+
+  function tile(id,t,s,path,hot,badge){
+    return '<button class="tile'+(hot?" hot":"")+'" data-go="'+id+'">'+
+      (badge?'<span class="badge">'+badge+'</span>':'')+
+      '<span class="ti"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+path+'</svg></span>'+
+      '<span class="tt">'+t+'</span><span class="ts">'+s+'</span></button>';
+  }
+  function kvr(k,v){ return '<div class="kv"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>'; }
+  function statusWord(s){
+    return s==="approved"?"Allowed":s==="denied"?"Denied":s==="entered"?"Inside":
+           s==="exited"?"Left":s==="expired"?"No response":s;
+  }
+
+  /* ---------------- interactions ---------------- */
+  function wire(){
+    document.querySelectorAll("[data-act]").forEach(function(b){
+      b.addEventListener("click",function(){
+        var id=this.getAttribute("data-vid"), act=this.getAttribute("data-act");
+        var card=this.closest(".vwait");
+        card.querySelectorAll("button").forEach(function(x){x.disabled=true;});
+
+        var reason=null;
+        if(act==="denied"){
+          reason=prompt("Reason (optional)")||null;
+        }
+
+        api("visitors.php",{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({action:"decide",id:parseInt(id,10),decision:act,reason:reason})})
+        .then(function(r){
+          if(!r.ok){ toast(r.error||"Could not save."); card.querySelectorAll("button").forEach(function(x){x.disabled=false;}); return; }
+          toast(act==="approved"?"Visitor allowed in.":"Visitor denied.");
+          load();
+        })
+        .catch(function(e){ if(e.message!=="unauthorised"){ toast(e.message); } });
+      });
+    });
+
+    document.querySelectorAll("[data-go]").forEach(function(b){
+      b.addEventListener("click",function(){ open(this.getAttribute("data-go")); });
+    });
+
+    var av=document.querySelector("[data-cancel-away]");
+    if(av) av.addEventListener("click",function(){
+      if(!confirm("Cancel this away notice?")) return;
+      api("away.php",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({action:"cancel",id:parseInt(this.getAttribute("data-cancel-away"),10)})})
+      .then(function(){ toast("Notice cancelled."); load(); })
+      .catch(function(){});
+    });
+
+    var all=$("allVis");
+    if(all) all.addEventListener("click",function(){ location.href="my-visitors.html"; });
+  }
+
+  /* ---------------- sheets ---------------- */
+  function sheet(title,sub,body){
+    $("shTitle").textContent=title;
+    $("shSub").textContent=sub||"";
+    $("shErr").className="shErr";
+    $("shBody").innerHTML=body;
+    veil.classList.add("show");
+  }
+  function shErr(m){ var e=$("shErr"); e.textContent=m; e.className="shErr show"; }
+  function close(){ veil.classList.remove("show"); }
+  veil.addEventListener("click",function(e){ if(e.target===veil) close(); });
+
+  function open(what){
+    if(what==="visitors"){ location.href="my-visitors.html"; return; }
+
+    if(what==="tickets"){ location.href="my-tickets.html"; return; }
+
+    if(what==="away"){
+      if(data.away){
+        sheet("Away notice", dstr(data.away.from_date)+" to "+dstr(data.away.to_date),
+          '<button class="ghost" id="cancelAway">Cancel this notice</button>');
+        $("cancelAway").addEventListener("click",function(){
+          api("away.php",{method:"POST",headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({action:"cancel",id:data.away.id})})
+          .then(function(){ close(); toast("Notice cancelled."); load(); })
+          .catch(function(){});
+        });
+        return;
+      }
+      var today=new Date().toISOString().slice(0,10);
+      sheet("Going away","The committee and security will know your flat should be empty.",
+        '<div class="f"><label for="af">Leaving on</label><input type="date" id="af" min="'+today+'" value="'+today+'"></div>'+
+        '<div class="f"><label for="at">Returning on</label><input type="date" id="at" min="'+today+'"></div>'+
+        '<div class="f"><label for="am">Contact number while away <span class="opt">(optional)</span></label><input type="tel" id="am" inputmode="numeric" maxlength="10"></div>'+
+        '<div class="f"><label for="ak">Spare key with <span class="opt">(optional)</span></label><input type="text" id="ak" placeholder="Name and flat"></div>'+
+        '<div class="f"><label for="an">Anything else <span class="opt">(optional)</span></label><textarea id="an"></textarea></div>'+
+        '<button class="go" id="awaySave">Notify committee</button>');
+
+      $("awaySave").addEventListener("click",function(){
+        var f=$("af").value, t=$("at").value;
+        if(!f) return shErr("Please choose the date you leave.");
+        if(!t) return shErr("Please choose the date you return.");
+        if(t<f) return shErr("The return date cannot be before you leave.");
+        this.disabled=true;
+        api("away.php",{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({action:"create",from_date:f,to_date:t,
+            contact_mobile:$("am").value||null,key_with:$("ak").value||null,note:$("an").value||null})})
+        .then(function(r){
+          if(!r.ok){ shErr(r.error); $("awaySave").disabled=false; return; }
+          close(); toast("Committee and security notified."); load();
+        })
+        .catch(function(e){ shErr(e.message); $("awaySave").disabled=false; });
+      });
+      return;
+    }
+
+    if(what==="raise"){
+      sheet("Raise an issue","Tell the committee about a problem, or suggest an improvement.",
+        '<div class="seg" id="kindSeg">'+
+        '<button type="button" data-k="complaint" class="on">Complaint</button>'+
+        '<button type="button" data-k="suggestion">Suggestion</button></div>'+
+        '<div class="f"><label for="cc">Category</label><select id="cc">'+
+        '<option value="water">Water</option><option value="electricity">Electricity</option>'+
+        '<option value="lift">Lift</option><option value="security">Security</option>'+
+        '<option value="housekeeping">Housekeeping</option><option value="parking">Parking</option>'+
+        '<option value="common_area">Common area</option><option value="noise">Noise</option>'+
+        '<option value="maintenance">Maintenance</option><option value="other" selected>Other</option>'+
+        '</select></div>'+
+        '<div class="f"><label for="cs">Subject</label><input type="text" id="cs" maxlength="150" placeholder="Short summary"></div>'+
+        '<div class="f"><label for="cb">Details</label><textarea id="cb" maxlength="4000" placeholder="What is happening, and since when?"></textarea></div>'+
+        '<button class="go" id="cSave">Send to committee</button>');
+
+      var kind="complaint";
+      $("kindSeg").addEventListener("click",function(e){
+        var b=e.target.closest("button"); if(!b) return;
+        kind=b.getAttribute("data-k");
+        this.querySelectorAll("button").forEach(function(x){x.classList.remove("on");});
+        b.classList.add("on");
+      });
+
+      $("cSave").addEventListener("click",function(){
+        var s=$("cs").value.trim(), b=$("cb").value.trim();
+        if(s.length<4)  return shErr("Please write a short subject line.");
+        if(b.length<10) return shErr("Please describe it in a little more detail.");
+        this.disabled=true;
+        api("complaints.php",{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({action:"create",kind:kind,category:$("cc").value,subject:s,body:b})})
+        .then(function(r){
+          if(!r.ok){ shErr(r.error); $("cSave").disabled=false; return; }
+          close(); toast(r.message); load();
+        })
+        .catch(function(e){ shErr(e.message); $("cSave").disabled=false; });
+      });
+      return;
+    }
+  }
+
+  $("exit").addEventListener("click",function(){
+    api("logout.php",{method:"POST"}).catch(function(){}).then(function(){
+      try{localStorage.removeItem(KEY);sessionStorage.removeItem(KEY);}catch(e){}
+      location.replace("index.html");
+    });
+  });
+
+  load();
+  /* refresh so a waiting visitor appears without a manual reload */
+  setInterval(function(){ if(!veil.classList.contains("show")) load(); }, 25000);
+})();
+</script>
+</body>
+</html>
