@@ -128,6 +128,7 @@ input:focus,select:focus{outline:none;border-color:var(--deep);box-shadow:0 0 0 
   <header class="top">
     <div class="trow">
       <div><h1>Gate</h1><p class="sub" id="guardName">&nbsp;</p></div>
+      <span id="bell"></span>
       <button class="exit" id="exit" aria-label="Sign out">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
       </button>
@@ -403,5 +404,6 @@ input:focus,select:focus{outline:none;border-color:var(--deep);box-shadow:0 0 0 
   setInterval(function(){ if(!veil.classList.contains("show")) load(); }, 20000);
 })();
 </script>
+<script src="assets/notify.js"></script>
 </body>
 </html>
