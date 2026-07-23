@@ -140,6 +140,12 @@ if ($user['status'] === 'suspended') {
     fail('Your account has been suspended. Please contact the committee.', 403);
 }
 
+/* Gate staff no longer sign in - the gate page is reached by QR code. */
+if ($user['role'] === 'guard') {
+    record_attempt($identifier, $ip, 0);
+    fail('The gate screen is now opened by scanning the QR code at the gate. No login is needed.', 403);
+}
+
 /* -----------------------------------------------------------
    6. Everyone with an active account may log in.
       The client decides which app to show based on role.
@@ -190,8 +196,7 @@ $is_admin = in_array($user['role'], ['super_admin', 'admin'], true);
 ok([
     'token'      => $raw_token,
     'expires_at' => date('c', strtotime('+' . $days . ' days')),
-    'home'       => $is_admin ? 'dashboard.html'
-                  : ($user['role'] === 'guard' ? 'gate.html' : 'resident.html'),
+    'home'       => $is_admin ? 'dashboard.html' : 'resident.html',
     'user'       => [
         'id'              => (int) $user['id'],
         'name'            => $user['name'],
