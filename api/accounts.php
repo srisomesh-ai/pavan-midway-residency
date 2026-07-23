@@ -19,6 +19,7 @@ require_once __DIR__ . '/helpers.php';
 api_init();
 
 $admin = require_admin();
+require_resident_app();
 
 /** Readable temporary password: two short words plus digits. */
 function make_password() {
