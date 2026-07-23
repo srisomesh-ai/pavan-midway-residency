@@ -20,6 +20,7 @@ require_once __DIR__ . '/helpers.php';
 api_init();
 
 $me = require_auth();
+require_resident_app();
 
 function gate_pass() {
     return strtoupper(substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ23456789'), 0, 6));
