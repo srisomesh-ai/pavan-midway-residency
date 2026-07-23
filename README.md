@@ -26,6 +26,8 @@ Mobile-first web app for a 140-flat residential society. Built to run on Android
 | `api/visitors.php` | Visitor entries, approvals, gate passes |
 | `api/away.php` | Away and travel notices |
 | `api/complaints.php` | Complaints, suggestions, replies |
+| `api/notifications.php` | Notification inbox and read state |
+| `api/notices.php` | Committee announcements |
 | `dashboard.html` | Admin dashboard |
 | `resident-form.html` | Public resident form, English and Telugu |
 | `submissions.html` | Committee review screen |
@@ -34,12 +36,15 @@ Mobile-first web app for a 140-flat residential society. Built to run on Android
 | `my-visitors.html` | Resident visitor log and pre-approvals |
 | `my-tickets.html` | Complaints - resident and committee views |
 | `gate.html` | Security gate screen |
+| `notices.html` | Notice board - post and read |
+| `assets/notify.js` | Notification bell, shared by every page |
 | `sql/01_schema.sql` | Tables |
 | `sql/02_seed.sql` | 140 flats + default admin + settings |
 | `sql/03_migrate_flat_structure.sql` | Migration from the old 144-flat seed |
 | `sql/04_resident_form.sql` | Resident form and approval tables |
 | `sql/05_vehicle_types.sql` | Two wheeler / four wheeler per vehicle |
 | `sql/06_resident_app.sql` | Resident logins, visitors, away notices, complaints |
+| `sql/07_notifications.sql` | Notifications and committee notices |
 
 ## Building structure (fixed — not editable from the UI)
 
@@ -148,6 +153,26 @@ The **gate screen** (`gate.html`) is for security staff. The guard records a vis
 
 Guards can only reach the gate screen. Residents only ever see their own flat's data - this is enforced server side, not just hidden in the interface.
 
+## Notifications
+
+A bell sits in the header of every signed-in page with an unread count. Tapping it opens the list; tapping an item marks it read and jumps to the right page. New items also slide in as a banner while the app is open.
+
+What triggers what:
+
+| Event | Who is notified |
+|---|---|
+| Committee posts a notice | Every resident in the chosen audience |
+| Visitor arrives at the gate | The resident of that flat |
+| Resident allows or denies | The guard who logged it |
+| Resident raises a complaint or suggestion | The whole committee |
+| Committee replies or changes status | The resident |
+| Resident posts an away notice | The whole committee |
+| Resident submits their details form | The whole committee |
+
+Notices can be aimed at everyone, one block, owners only, or tenants only, and urgent ones are highlighted.
+
+These are in-app notifications - they appear when the app is open, and the unread count is waiting next time it is opened. Notifications that arrive on a locked phone need Firebase Cloud Messaging; the `push_tokens` table is already in place for that.
+
 ## Troubleshooting
 
 Open `https://your-site.com/api/diag.php` in a browser. It reports PHP version, database connection, table and flat counts, and whether the Authorization header survives your host - then lists any problems it finds. No passwords or tokens are echoed.
@@ -179,6 +204,7 @@ Set `DEBUG` to `false` in `config.php` on production (it already is).
 | 1 | Auth foundation + admin dashboard ← done |
 | 2 | Resident details form ← done |
 | 3 | Resident app, visitors, complaints ← done |
+| 4 | Notifications and notice board ← done |
 | 3 | Notices + push |
 | 4 | Maintenance billing |
 | 5 | Payments (Razorpay) |
