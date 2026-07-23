@@ -58,6 +58,18 @@ $committee = (int) $d->query(
     'SELECT COUNT(*) FROM users WHERE role IN ("super_admin","admin") AND status = "active"'
 )->fetchColumn();
 
+/* ---- Form submissions awaiting review ---- */
+$subs_pending = 0;
+$details_done = 0;
+try {
+    $subs_pending = (int) $d->query(
+        'SELECT COUNT(*) FROM submissions WHERE review_state = "pending"'
+    )->fetchColumn();
+    $details_done = (int) $d->query('SELECT COUNT(*) FROM flat_details')->fetchColumn();
+} catch (Exception $e) {
+    // submissions tables not created yet - run sql/04_resident_form.sql
+}
+
 /* ---- Recent activity ---- */
 $activity = $d->query(
     'SELECT a.action, a.details, a.created_at, u.name AS user_name
@@ -84,6 +96,11 @@ ok([
         'residents' => $residents,
         'pending'   => $pending,
         'committee' => $committee,
+    ],
+    'forms' => [
+        'pending'       => $subs_pending,
+        'details_filled'=> $details_done,
+        'total_flats'   => $flats_total,
     ],
     'blocks'   => $blocks,
     'activity' => $activity,
