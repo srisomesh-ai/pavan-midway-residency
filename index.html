@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#123B2E">
+<title>Committee Sign In &middot; Pavan Midway Residency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12211C;
+  --deep:#123B2E;
+  --deep-2:#0C2A21;
+  --brass:#C08A3E;
+  --paper:#F2EFE6;
+  --paper-2:#E7E2D4;
+  --line:#CFC8B5;
+  --muted:#6C7A72;
+  --danger:#8E2B22;
+  --ok:#2F6D4F;
+  --radius:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  min-height:100vh;min-height:100dvh;
+  background:var(--deep);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color:var(--ink);
+  display:flex;justify-content:center;
+  overscroll-behavior:none;
+}
+.viewport{
+  width:100%;max-width:430px;
+  background:var(--paper);
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+}
+
+/* ---------- Crest header ---------- */
+.crest{
+  background:var(--deep);
+  color:var(--paper);
+  padding:38px 26px 30px;
+  position:relative;
+  flex-shrink:0;
+}
+.crest::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+  background:linear-gradient(90deg,var(--brass) 0%,var(--brass) 22%,transparent 22%,transparent 100%);
+}
+.plaque{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:"Roboto Mono",monospace;
+  font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--brass);
+  border:1px solid rgba(192,138,62,.42);
+  padding:5px 11px;border-radius:3px;
+  margin-bottom:18px;
+}
+.plaque i{width:5px;height:5px;border-radius:50%;background:var(--brass);display:block}
+.crest h1{
+  font-family:Fraunces,Georgia,serif;
+  font-weight:600;font-size:30px;line-height:1.12;
+  margin:0 0 8px;letter-spacing:-.015em;
+}
+.crest .sub{
+  margin:0;font-size:13.5px;color:rgba(242,239,230,.62);line-height:1.5;
+}
+/* Floor-plan motif — the building itself, drawn as a grid of units */
+.units{
+  position:absolute;right:-14px;top:26px;
+  display:grid;grid-template-columns:repeat(4,11px);gap:4px;
+  opacity:.17;
+}
+.units b{display:block;width:11px;height:11px;border:1px solid var(--paper);border-radius:1.5px}
+.units b.on{background:var(--brass);border-color:var(--brass)}
+
+/* ---------- Form body ---------- */
+.body{
+  flex:1;padding:28px 26px 20px;
+  display:flex;flex-direction:column;
+}
+.lede{
+  font-size:14px;color:var(--muted);line-height:1.55;
+  margin:0 0 24px;
+}
+label{
+  display:block;
+  font-family:"Roboto Mono",monospace;
+  font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--deep);margin:0 0 7px;font-weight:500;
+}
+.field{margin-bottom:18px}
+.wrap{position:relative;display:flex;align-items:center}
+input[type=text],input[type=password]{
+  width:100%;
+  font-family:inherit;font-size:16px;   /* 16px stops iOS/Android zoom */
+  padding:15px 15px;
+  border:1.5px solid var(--line);
+  border-radius:var(--radius);
+  background:#FBFAF5;color:var(--ink);
+  transition:border-color .16s,box-shadow .16s;
+}
+input:focus{
+  outline:none;border-color:var(--deep);
+  box-shadow:0 0 0 3.5px rgba(18,59,46,.11);
+}
+input.err{border-color:var(--danger);box-shadow:0 0 0 3.5px rgba(142,43,34,.10)}
+.wrap.pw input{padding-right:62px}
+.peek{
+  position:absolute;right:6px;
+  background:none;border:0;padding:10px 12px;
+  font-family:"Roboto Mono",monospace;font-size:10px;letter-spacing:.1em;
+  color:var(--muted);text-transform:uppercase;cursor:pointer;
+}
+.peek:active{color:var(--deep)}
+
+.row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin:2px 0 24px;
+}
+.check{display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none}
+.check input{position:absolute;opacity:0;width:0;height:0}
+.box{
+  width:19px;height:19px;flex-shrink:0;
+  border:1.5px solid var(--line);border-radius:5px;background:#FBFAF5;
+  display:grid;place-items:center;transition:.15s;
+}
+.check input:checked + .box{background:var(--deep);border-color:var(--deep)}
+.box svg{opacity:0;transition:.15s}
+.check input:checked + .box svg{opacity:1}
+.check input:focus-visible + .box{box-shadow:0 0 0 3px rgba(18,59,46,.18)}
+.check span{font-size:13.5px;color:var(--muted)}
+.help{
+  font-size:13px;color:var(--deep);text-decoration:none;
+  border-bottom:1px solid rgba(18,59,46,.28);padding-bottom:1px;
+}
+
+button.go{
+  width:100%;padding:16px;
+  font-family:inherit;font-size:15.5px;font-weight:600;letter-spacing:.01em;
+  color:var(--paper);background:var(--deep);
+  border:0;border-radius:var(--radius);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:background .16s,transform .08s;
+}
+button.go:active{transform:scale(.988);background:var(--deep-2)}
+button.go[disabled]{opacity:.6;cursor:default;transform:none}
+.spin{
+  width:15px;height:15px;border:2px solid rgba(242,239,230,.32);
+  border-top-color:var(--paper);border-radius:50%;
+  animation:sp .62s linear infinite;display:none;
+}
+button.go.busy .spin{display:block}
+button.go.busy .lbl{opacity:.75}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ---------- Alert ---------- */
+.alert{
+  display:none;gap:11px;align-items:flex-start;
+  padding:13px 14px;border-radius:11px;
+  font-size:13.5px;line-height:1.5;margin-bottom:20px;
+}
+.alert.show{display:flex}
+.alert.bad{background:#F7E8E5;color:var(--danger);border:1px solid #E9CEC9}
+.alert.good{background:#E4F0E9;color:var(--ok);border:1px solid #C7E0D3}
+.alert svg{flex-shrink:0;margin-top:1px}
+
+/* ---------- Footer ---------- */
+.foot{
+  padding:18px 26px 26px;text-align:center;
+  border-top:1px solid var(--paper-2);
+  flex-shrink:0;
+}
+.foot p{
+  margin:0;font-family:"Roboto Mono",monospace;
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+}
+.foot p + p{margin-top:6px;text-transform:none;letter-spacing:0;font-size:11.5px}
+
+/* ---------- Success state ---------- */
+.done{
+  position:absolute;inset:0;background:var(--deep);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:18px;color:var(--paper);padding:30px;text-align:center;
+}
+.done.show{display:flex;animation:fade .3s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.done h2{font-family:Fraunces,serif;font-weight:600;font-size:22px;margin:0}
+.done p{margin:0;font-size:14px;color:rgba(242,239,230,.6)}
+.tick{
+  width:56px;height:56px;border-radius:50%;
+  border:2px solid var(--brass);display:grid;place-items:center;
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+<div class="viewport">
+
+  <header class="crest">
+    <div class="units" aria-hidden="true">
+      <b></b><b class="on"></b><b></b><b></b>
+      <b></b><b></b><b></b><b class="on"></b>
+      <b class="on"></b><b></b><b></b><b></b>
+      <b></b><b></b><b class="on"></b><b></b>
+    </div>
+    <div class="plaque"><i></i> Committee Access</div>
+    <h1>Pavan Midway<br>Residency</h1>
+    <p class="sub">144 flats &middot; Management console</p>
+  </header>
+
+  <main class="body">
+    <p class="lede">Sign in with the credentials issued to you by the society administrator.</p>
+
+    <div class="alert bad" id="alert" role="alert" aria-live="assertive">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16.5v.01"/>
+      </svg>
+      <span id="alertMsg"></span>
+    </div>
+
+    <form id="form" novalidate>
+      <div class="field">
+        <label for="identifier">Email or username</label>
+        <div class="wrap">
+          <input id="identifier" name="identifier" type="text"
+                 autocomplete="username" autocapitalize="none" autocorrect="off"
+                 spellcheck="false" inputmode="email" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="wrap pw">
+          <input id="password" name="password" type="password"
+                 autocomplete="current-password" required>
+          <button type="button" class="peek" id="peek" aria-label="Show password">Show</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <label class="check">
+          <input type="checkbox" id="remember" checked>
+          <span class="box">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F2EFE6" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </span>
+          <span>Keep me signed in</span>
+        </label>
+        <a href="#" class="help" id="forgot">Forgot password</a>
+      </div>
+
+      <button type="submit" class="go" id="btn">
+        <span class="spin"></span>
+        <span class="lbl">Sign in</span>
+      </button>
+    </form>
+  </main>
+
+  <footer class="foot">
+    <p>Pavan Midway Residency</p>
+    <p>Authorised committee members only</p>
+  </footer>
+
+  <div class="done" id="done">
+    <div class="tick">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C08A3E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+    <h2 id="doneName">Welcome back</h2>
+    <p>Opening your dashboard&hellip;</p>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var API = "api/";
+  var KEY = "pmr_token";
+
+  var form   = document.getElementById("form");
+  var btn    = document.getElementById("btn");
+  var ident  = document.getElementById("identifier");
+  var pass   = document.getElementById("password");
+  var remem  = document.getElementById("remember");
+  var peek   = document.getElementById("peek");
+  var alertB = document.getElementById("alert");
+  var alertM = document.getElementById("alertMsg");
+  var done   = document.getElementById("done");
+  var doneN  = document.getElementById("doneName");
+
+  /* ---- token helpers ---- */
+  function saveToken(t, persist){
+    try{
+      (persist ? localStorage : sessionStorage).setItem(KEY, t);
+    }catch(e){}
+  }
+  function readToken(){
+    try{
+      return localStorage.getItem(KEY) || sessionStorage.getItem(KEY);
+    }catch(e){ return null; }
+  }
+  function clearToken(){
+    try{ localStorage.removeItem(KEY); sessionStorage.removeItem(KEY); }catch(e){}
+  }
+
+  /* ---- ui helpers ---- */
+  function showAlert(msg, kind){
+    alertM.textContent = msg;
+    alertB.className = "alert show " + (kind === "good" ? "good" : "bad");
+  }
+  function hideAlert(){ alertB.className = "alert"; }
+
+  function busy(on){
+    btn.disabled = on;
+    btn.classList.toggle("busy", on);
+    btn.querySelector(".lbl").textContent = on ? "Signing in" : "Sign in";
+  }
+
+  /* ---- show / hide password ---- */
+  peek.addEventListener("click", function(){
+    var hidden = pass.type === "password";
+    pass.type = hidden ? "text" : "password";
+    peek.textContent = hidden ? "Hide" : "Show";
+    peek.setAttribute("aria-label", hidden ? "Hide password" : "Show password");
+    pass.focus();
+  });
+
+  /* clear error styling as soon as the user edits */
+  [ident, pass].forEach(function(el){
+    el.addEventListener("input", function(){
+      el.classList.remove("err");
+      hideAlert();
+    });
+  });
+
+  /* ---- already signed in? ---- */
+  (function checkExisting(){
+    var t = readToken();
+    if(!t) return;
+    fetch(API + "me.php", { headers:{ "Authorization":"Bearer " + t } })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if(d && d.ok && d.user){ goDashboard(d.user); }
+        else { clearToken(); }
+      })
+      .catch(function(){});
+  })();
+
+  function goDashboard(user){
+    doneN.textContent = "Welcome, " + (user.name || "").split(" ")[0];
+    done.classList.add("show");
+    setTimeout(function(){
+      window.location.href = user.must_change_pwd ? "change-password.html" : "dashboard.html";
+    }, 900);
+  }
+
+  /* ---- submit ---- */
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    hideAlert();
+
+    var id = ident.value.trim();
+    var pw = pass.value;
+
+    if(!id){
+      ident.classList.add("err"); ident.focus();
+      showAlert("Enter your email or username to continue.");
+      return;
+    }
+    if(!pw){
+      pass.classList.add("err"); pass.focus();
+      showAlert("Enter your password to continue.");
+      return;
+    }
+
+    busy(true);
+
+    fetch(API + "login.php", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ identifier:id, password:pw, remember: remem.checked })
+    })
+    .then(function(r){
+      return r.json().then(function(d){ return { status:r.status, data:d }; });
+    })
+    .then(function(res){
+      var d = res.data || {};
+      if(d.ok && d.token){
+        saveToken(d.token, remem.checked);
+        pass.value = "";
+        goDashboard(d.user || {});
+        return;
+      }
+
+      busy(false);
+      var msg = d.error || "Could not sign you in. Please try again.";
+      if(typeof d.attempts_left === "number" && d.attempts_left > 0){
+        msg += " " + d.attempts_left + " attempt" + (d.attempts_left === 1 ? "" : "s") + " left before lockout.";
+      }
+      showAlert(msg);
+      ident.classList.add("err");
+      pass.classList.add("err");
+      pass.value = "";
+      pass.focus();
+    })
+    .catch(function(){
+      busy(false);
+      showAlert("Cannot reach the server. Check your internet connection and try again.");
+    });
+  });
+
+  /* ---- forgot password ---- */
+  document.getElementById("forgot").addEventListener("click", function(e){
+    e.preventDefault();
+    showAlert("Contact the society administrator to have your password reset.", "good");
+  });
+
+})();
+</script>
+</body>
+</html>
