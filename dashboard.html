@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#123B2E">
+<title>Dashboard &middot; Pavan Midway Residency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12211C;
+  --deep:#123B2E;
+  --deep-2:#0C2A21;
+  --brass:#C08A3E;
+  --paper:#F2EFE6;
+  --paper-2:#E7E2D4;
+  --card:#FBFAF5;
+  --line:#CFC8B5;
+  --muted:#6C7A72;
+  --ok:#2F6D4F;
+  --warn:#B07A20;
+  --radius:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--deep);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color:var(--ink);
+  display:flex;justify-content:center;
+  overscroll-behavior-y:none;
+}
+.viewport{
+  width:100%;max-width:430px;background:var(--paper);
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;position:relative;
+}
+
+/* ---------- Top bar ---------- */
+.top{
+  background:var(--deep);color:var(--paper);
+  padding:18px 20px 20px;
+  position:sticky;top:0;z-index:40;
+  border-bottom:3px solid transparent;
+  border-image:linear-gradient(90deg,var(--brass) 0 22%,transparent 22%) 1;
+}
+.top-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.who .eyebrow{
+  font-family:"Roboto Mono",monospace;font-size:9.5px;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--brass);
+  margin:0 0 4px;
+}
+.who h1{
+  font-family:Fraunces,Georgia,serif;font-weight:600;
+  font-size:19px;margin:0;letter-spacing:-.01em;line-height:1.2;
+}
+.who .role{margin:3px 0 0;font-size:11.5px;color:rgba(242,239,230,.55)}
+.exit{
+  background:rgba(242,239,230,.09);border:1px solid rgba(242,239,230,.16);
+  color:var(--paper);border-radius:10px;padding:9px 11px;
+  cursor:pointer;display:grid;place-items:center;flex-shrink:0;
+}
+.exit:active{background:rgba(242,239,230,.16)}
+
+/* ---------- Scroll body ---------- */
+.scroll{flex:1;overflow-y:auto;padding:20px 20px 90px;-webkit-overflow-scrolling:touch}
+
+.sec{margin-bottom:26px}
+.sec-head{
+  display:flex;align-items:baseline;justify-content:space-between;
+  margin:0 0 12px;
+}
+.sec-head h2{
+  font-family:"Roboto Mono",monospace;font-size:10.5px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--deep);margin:0;
+}
+.sec-head .note{font-size:11px;color:var(--muted)}
+
+/* ---------- Occupancy hero ---------- */
+.hero{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:20px;
+}
+.hero-top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+.big{
+  font-family:Fraunces,Georgia,serif;font-weight:600;
+  font-size:40px;line-height:.95;color:var(--deep);
+}
+.big small{font-size:16px;color:var(--muted);font-weight:500;margin-left:3px}
+.hero-lab{
+  font-family:"Roboto Mono",monospace;font-size:9.5px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--muted);
+  text-align:right;line-height:1.7;
+}
+/* stacked occupancy bar */
+.bar{height:9px;border-radius:5px;overflow:hidden;display:flex;background:var(--paper-2)}
+.bar i{display:block;height:100%}
+.bar i.own{background:var(--deep)}
+.bar i.ten{background:var(--brass)}
+.legend{display:flex;gap:16px;margin-top:13px;flex-wrap:wrap}
+.legend div{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.legend b{width:9px;height:9px;border-radius:2.5px;display:block}
+.legend .own b{background:var(--deep)}
+.legend .ten b{background:var(--brass)}
+.legend .vac b{background:var(--paper-2);border:1px solid var(--line)}
+.legend span{color:var(--ink);font-weight:600}
+
+/* ---------- Stat pair ---------- */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.stat{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:15px;
+}
+.stat .n{
+  font-family:Fraunces,serif;font-weight:600;font-size:26px;
+  color:var(--deep);line-height:1;
+}
+.stat .n.zero{color:var(--muted)}
+.stat .l{
+  font-family:"Roboto Mono",monospace;font-size:9.5px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  margin-top:7px;
+}
+.stat.flag{border-color:var(--warn);background:#FCF6E9}
+.stat.flag .n{color:var(--warn)}
+
+/* ---------- Blocks ---------- */
+.blk{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:15px 16px;margin-bottom:10px;
+}
+.blk-top{display:flex;align-items:center;gap:12px;margin-bottom:11px}
+.badge{
+  width:36px;height:36px;flex-shrink:0;border-radius:9px;
+  background:var(--deep);color:var(--paper);
+  display:grid;place-items:center;
+  font-family:Fraunces,serif;font-weight:600;font-size:17px;
+}
+.blk-name{font-weight:600;font-size:14.5px}
+.blk-meta{
+  font-family:"Roboto Mono",monospace;font-size:10px;
+  color:var(--muted);margin-top:2px;letter-spacing:.04em;
+}
+.blk-fig{margin-left:auto;text-align:right}
+.blk-fig .v{font-family:Fraunces,serif;font-weight:600;font-size:17px;color:var(--deep)}
+.blk-fig .k{font-size:10px;color:var(--muted);margin-top:1px}
+.mini{height:5px;border-radius:3px;background:var(--paper-2);overflow:hidden}
+.mini i{display:block;height:100%;background:var(--deep)}
+
+/* ---------- Flat register ---------- */
+.tabs{display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap}
+.tab{
+  font-family:"Roboto Mono",monospace;font-size:10.5px;letter-spacing:.08em;
+  text-transform:uppercase;padding:8px 13px;border-radius:20px;
+  border:1px solid var(--line);background:var(--card);color:var(--muted);
+  cursor:pointer;
+}
+.tab.on{background:var(--deep);color:var(--paper);border-color:var(--deep)}
+
+.floor{margin-bottom:16px}
+.floor-lab{
+  font-family:"Roboto Mono",monospace;font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 8px;
+  display:flex;align-items:center;gap:9px;
+}
+.floor-lab::after{content:"";flex:1;height:1px;background:var(--paper-2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:7px}
+.cell{
+  aspect-ratio:1;border-radius:9px;border:1px solid var(--line);
+  background:var(--card);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px;cursor:pointer;
+  transition:transform .08s;
+}
+.cell:active{transform:scale(.95)}
+.cell .no{font-size:12.5px;font-weight:600;color:var(--ink)}
+.cell .dot{width:5px;height:5px;border-radius:50%;background:var(--line)}
+.cell.owner{background:var(--deep);border-color:var(--deep)}
+.cell.owner .no{color:var(--paper)}
+.cell.owner .dot{background:var(--brass)}
+.cell.tenant{background:#F6EBD8;border-color:var(--brass)}
+.cell.tenant .dot{background:var(--brass)}
+
+/* ---------- Locked notice ---------- */
+.locked{
+  display:flex;gap:10px;align-items:flex-start;
+  background:var(--paper-2);border-radius:11px;padding:12px 13px;
+  font-size:12.5px;color:var(--muted);line-height:1.5;margin-top:2px;
+}
+.locked svg{flex-shrink:0;margin-top:1px;color:var(--deep)}
+
+/* ---------- Activity ---------- */
+.act{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);overflow:hidden;
+}
+.act-row{display:flex;gap:11px;padding:12px 15px;border-bottom:1px solid var(--paper-2)}
+.act-row:last-child{border-bottom:0}
+.act-dot{width:6px;height:6px;border-radius:50%;background:var(--brass);margin-top:6px;flex-shrink:0}
+.act-txt{flex:1;min-width:0}
+.act-txt .a{font-size:13px;font-weight:500}
+.act-txt .b{font-size:11.5px;color:var(--muted);margin-top:2px}
+.act-time{
+  font-family:"Roboto Mono",monospace;font-size:9.5px;
+  color:var(--muted);white-space:nowrap;margin-top:2px;
+}
+
+/* ---------- Soon list ---------- */
+.soon{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.soon-row{
+  display:flex;align-items:center;gap:12px;padding:14px 15px;
+  border-bottom:1px solid var(--paper-2);color:var(--muted);
+}
+.soon-row:last-child{border-bottom:0}
+.soon-row .ic{
+  width:32px;height:32px;border-radius:8px;background:var(--paper-2);
+  display:grid;place-items:center;flex-shrink:0;color:var(--deep);
+}
+.soon-row .t{flex:1;font-size:13.5px;color:var(--ink);font-weight:500}
+.soon-row .s{
+  font-family:"Roboto Mono",monospace;font-size:8.5px;letter-spacing:.1em;
+  text-transform:uppercase;padding:4px 8px;border-radius:20px;
+  background:var(--paper-2);color:var(--muted);
+}
+
+/* ---------- States ---------- */
+.load{padding:60px 20px;text-align:center;color:var(--muted)}
+.spin{
+  width:22px;height:22px;border:2.5px solid var(--paper-2);
+  border-top-color:var(--deep);border-radius:50%;
+  animation:sp .7s linear infinite;margin:0 auto 14px;
+}
+@keyframes sp{to{transform:rotate(360deg)}}
+.err{
+  background:#F7E8E5;border:1px solid #E9CEC9;color:#8E2B22;
+  padding:14px;border-radius:11px;font-size:13.5px;line-height:1.5;
+}
+.err button{
+  margin-top:10px;background:#8E2B22;color:#fff;border:0;
+  padding:9px 16px;border-radius:9px;font-family:inherit;
+  font-size:13px;font-weight:500;cursor:pointer;
+}
+
+/* ---------- Sheet ---------- */
+.veil{
+  position:fixed;inset:0;background:rgba(12,42,33,.5);
+  display:none;align-items:flex-end;justify-content:center;z-index:60;
+}
+.veil.show{display:flex}
+.sheet{
+  width:100%;max-width:430px;background:var(--paper);
+  border-radius:20px 20px 0 0;padding:8px 22px 30px;
+  animation:up .22s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.grab{width:36px;height:4px;border-radius:3px;background:var(--line);margin:0 auto 18px}
+.sheet h3{
+  font-family:Fraunces,serif;font-weight:600;font-size:24px;
+  margin:0 0 3px;color:var(--deep);
+}
+.sheet .sub{
+  font-family:"Roboto Mono",monospace;font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 18px;
+}
+.kv{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--paper-2);font-size:13.5px}
+.kv:last-of-type{border-bottom:0}
+.kv .k{color:var(--muted)}
+.kv .v{font-weight:600}
+.close{
+  width:100%;margin-top:18px;padding:14px;background:var(--deep);
+  color:var(--paper);border:0;border-radius:12px;
+  font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+<div class="viewport">
+
+  <header class="top">
+    <div class="top-row">
+      <div class="who">
+        <p class="eyebrow">Management Console</p>
+        <h1 id="uName">&nbsp;</h1>
+        <p class="role" id="uRole">&nbsp;</p>
+      </div>
+      <button class="exit" id="exit" aria-label="Sign out">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="scroll" id="scroll">
+    <div class="load" id="load"><div class="spin"></div>Loading&hellip;</div>
+    <div id="main" hidden></div>
+  </div>
+
+</div>
+
+<div class="veil" id="veil">
+  <div class="sheet">
+    <div class="grab"></div>
+    <h3 id="shTitle"></h3>
+    <p class="sub" id="shSub"></p>
+    <div id="shBody"></div>
+    <button class="close" id="shClose">Close</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var API = "api/";
+  var KEY = "pmr_token";
+
+  var token = null;
+  try{ token = localStorage.getItem(KEY) || sessionStorage.getItem(KEY); }catch(e){}
+
+  if(!token){ location.replace("index.html"); return; }
+
+  var elLoad  = document.getElementById("load");
+  var elMain  = document.getElementById("main");
+  var elName  = document.getElementById("uName");
+  var elRole  = document.getElementById("uRole");
+  var veil    = document.getElementById("veil");
+
+  var state = { flats:null, filter:"" };
+
+  function api(path, opts){
+    opts = opts || {};
+    opts.headers = opts.headers || {};
+    opts.headers["Authorization"] = "Bearer " + token;
+    return fetch(API + path, opts).then(function(r){
+      if(r.status === 401){
+        try{ localStorage.removeItem(KEY); sessionStorage.removeItem(KEY); }catch(e){}
+        location.replace("index.html");
+        throw new Error("unauthorised");
+      }
+      return r.json();
+    });
+  }
+
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  function ago(ts){
+    if(!ts) return "";
+    var t = new Date(ts.replace(" ","T"));
+    var s = Math.floor((Date.now() - t.getTime())/1000);
+    if(isNaN(s)) return "";
+    if(s < 60)    return "now";
+    if(s < 3600)  return Math.floor(s/60) + "m";
+    if(s < 86400) return Math.floor(s/3600) + "h";
+    return Math.floor(s/86400) + "d";
+  }
+
+  function roleLabel(r){
+    return r === "super_admin" ? "Super administrator"
+         : r === "admin"       ? "Committee member"
+         : r;
+  }
+
+  function actionLabel(a){
+    var m = {
+      login:"Signed in", logout:"Signed out",
+      password_changed:"Password changed",
+      login_locked:"Account locked",
+      password_change_failed:"Failed password change"
+    };
+    return m[a] || a.replace(/_/g," ");
+  }
+
+  /* ---------------- Load ---------------- */
+  Promise.all([ api("dashboard.php"), api("flats.php") ])
+    .then(function(res){
+      var d = res[0], f = res[1];
+      if(!d.ok){ throw new Error(d.error || "Could not load the dashboard."); }
+      state.flats = f.ok ? f.blocks : [];
+      render(d);
+    })
+    .catch(function(e){
+      if(e.message === "unauthorised") return;
+      elLoad.innerHTML =
+        '<div class="err">' + esc(e.message || "Could not load the dashboard.") +
+        '<br><button onclick="location.reload()">Try again</button></div>';
+    });
+
+  /* ---------------- Render ---------------- */
+  function render(d){
+    api("me.php").then(function(m){
+      if(m.ok && m.user){
+        elName.textContent = m.user.name;
+        elRole.textContent = roleLabel(m.user.role);
+      }
+    }).catch(function(){});
+
+    var fl  = d.flats  || {};
+    var pp  = d.people || {};
+    var tot = fl.total || 0;
+    var occ = fl.occupied || 0;
+    var pct = tot ? Math.round(occ / tot * 100) : 0;
+    var ownPct = tot ? (fl.owner  / tot * 100) : 0;
+    var tenPct = tot ? (fl.tenant / tot * 100) : 0;
+
+    var h = "";
+
+    /* Occupancy */
+    h += '<section class="sec">';
+    h +=   '<div class="sec-head"><h2>Occupancy</h2><span class="note">' + esc(d.society.name) + '</span></div>';
+    h +=   '<div class="hero">';
+    h +=     '<div class="hero-top">';
+    h +=       '<div class="big">' + occ + '<small>/ ' + tot + '</small></div>';
+    h +=       '<div class="hero-lab">' + pct + '% occupied<br>' + (fl.vacant||0) + ' vacant</div>';
+    h +=     '</div>';
+    h +=     '<div class="bar">';
+    h +=       '<i class="own" style="width:' + ownPct + '%"></i>';
+    h +=       '<i class="ten" style="width:' + tenPct + '%"></i>';
+    h +=     '</div>';
+    h +=     '<div class="legend">';
+    h +=       '<div class="own"><b></b>Owner <span>' + (fl.owner||0) + '</span></div>';
+    h +=       '<div class="ten"><b></b>Tenant <span>' + (fl.tenant||0) + '</span></div>';
+    h +=       '<div class="vac"><b></b>Vacant <span>' + (fl.vacant||0) + '</span></div>';
+    h +=     '</div>';
+    h +=   '</div>';
+    h += '</section>';
+
+    /* People */
+    h += '<section class="sec">';
+    h +=   '<div class="sec-head"><h2>People</h2></div>';
+    h +=   '<div class="pair">';
+    h +=     '<div class="stat"><div class="n' + (pp.residents ? '' : ' zero') + '">' + (pp.residents||0) + '</div><div class="l">Residents</div></div>';
+    h +=     '<div class="stat' + (pp.pending ? ' flag' : '') + '"><div class="n' + (pp.pending ? '' : ' zero') + '">' + (pp.pending||0) + '</div><div class="l">Awaiting approval</div></div>';
+    h +=   '</div>';
+    h += '</section>';
+
+    /* Blocks */
+    h += '<section class="sec">';
+    h +=   '<div class="sec-head"><h2>Blocks</h2><span class="note">Fixed structure</span></div>';
+    (d.blocks || []).forEach(function(b){
+      var bp = b.flats ? Math.round(b.occupied / b.flats * 100) : 0;
+      h += '<div class="blk">';
+      h +=   '<div class="blk-top">';
+      h +=     '<div class="badge">' + esc(b.code) + '</div>';
+      h +=     '<div><div class="blk-name">' + esc(b.name) + '</div>';
+      h +=       '<div class="blk-meta">' + b.total_floors + ' floors &middot; ' + b.flats_per_floor + '/floor</div></div>';
+      h +=     '<div class="blk-fig"><div class="v">' + b.flats + '</div><div class="k">flats</div></div>';
+      h +=   '</div>';
+      h +=   '<div class="mini"><i style="width:' + bp + '%"></i></div>';
+      h += '</div>';
+    });
+    h += '</section>';
+
+    /* Flat register */
+    h += '<section class="sec">';
+    h +=   '<div class="sec-head"><h2>Flat register</h2><span class="note">' + tot + ' flats</span></div>';
+    h +=   '<div class="tabs" id="tabs">';
+    h +=     '<button class="tab on" data-b="">All</button>';
+    (d.blocks || []).forEach(function(b){
+      h += '<button class="tab" data-b="' + esc(b.code) + '">Block ' + esc(b.code) + '</button>';
+    });
+    h +=   '</div>';
+    h +=   '<div id="reg"></div>';
+    h +=   '<div class="locked">';
+    h +=     '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+    h +=     '<span>Blocks, floors and flat numbers are fixed and cannot be changed. Residents get linked to these flats in the next step.</span>';
+    h +=   '</div>';
+    h += '</section>';
+
+    /* Activity */
+    if(d.activity && d.activity.length){
+      h += '<section class="sec">';
+      h +=   '<div class="sec-head"><h2>Recent activity</h2></div>';
+      h +=   '<div class="act">';
+      d.activity.forEach(function(a){
+        h += '<div class="act-row"><div class="act-dot"></div><div class="act-txt">';
+        h +=   '<div class="a">' + esc(actionLabel(a.action)) + '</div>';
+        h +=   '<div class="b">' + esc(a.user_name || "System") + '</div>';
+        h += '</div><div class="act-time">' + esc(ago(a.created_at)) + '</div></div>';
+      });
+      h +=   '</div>';
+      h += '</section>';
+    }
+
+    /* Coming next */
+    h += '<section class="sec">';
+    h +=   '<div class="sec-head"><h2>Coming next</h2></div>';
+    h +=   '<div class="soon">';
+    [
+      ["Residents","M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8"],
+      ["Notices","M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9 M13.7 21a2 2 0 0 1-3.4 0"],
+      ["Maintenance","M12 1v22 M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"],
+      ["Expenses","M3 3v18h18 M18 17V9 M13 17V5 M8 17v-3"],
+      ["Visitors","M20 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8 M15 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"]
+    ].forEach(function(it){
+      h += '<div class="soon-row">';
+      h +=   '<div class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="' + it[1] + '"/></svg></div>';
+      h +=   '<div class="t">' + it[0] + '</div><div class="s">Soon</div>';
+      h += '</div>';
+    });
+    h +=   '</div>';
+    h += '</section>';
+
+    elMain.innerHTML = h;
+    elLoad.hidden = true;
+    elMain.hidden = false;
+
+    drawRegister("");
+
+    document.getElementById("tabs").addEventListener("click", function(e){
+      var t = e.target.closest(".tab");
+      if(!t) return;
+      [].forEach.call(this.querySelectorAll(".tab"), function(x){ x.classList.remove("on"); });
+      t.classList.add("on");
+      drawRegister(t.getAttribute("data-b"));
+    });
+  }
+
+  /* ---------------- Flat grid ---------------- */
+  function drawRegister(code){
+    var wrap = document.getElementById("reg");
+    if(!wrap) return;
+    var blocks = state.flats || [];
+    var show = code ? blocks.filter(function(b){ return b.block_code === code; }) : blocks;
+
+    var h = "";
+    show.forEach(function(b){
+      (b.floors || []).forEach(function(f){
+        h += '<div class="floor">';
+        h +=   '<p class="floor-lab">' + esc(b.block_code) + ' &middot; ' + esc(f.floor_label) + '</p>';
+        h +=   '<div class="grid">';
+        (f.flats || []).forEach(function(ft){
+          h += '<div class="cell ' + esc(ft.occupancy) + '" data-code="' + esc(ft.flat_code) + '">';
+          h +=   '<span class="no">' + esc(ft.flat_no) + '</span>';
+          h +=   '<span class="dot"></span>';
+          h += '</div>';
+        });
+        h +=   '</div>';
+        h += '</div>';
+      });
+    });
+
+    wrap.innerHTML = h || '<div class="locked">No flats to show.</div>';
+
+    if(!wrap.dataset.bound){
+      wrap.dataset.bound = "1";
+      wrap.addEventListener("click", function(e){
+        var c = e.target.closest(".cell");
+        if(c) openFlat(c.getAttribute("data-code"));
+      });
+    }
+  }
+
+  /* ---------------- Flat sheet ---------------- */
+  function openFlat(code){
+    var found = null, blk = null, flr = null;
+    (state.flats || []).forEach(function(b){
+      (b.floors || []).forEach(function(f){
+        (f.flats || []).forEach(function(ft){
+          if(ft.flat_code === code){ found = ft; blk = b; flr = f; }
+        });
+      });
+    });
+    if(!found) return;
+
+    document.getElementById("shTitle").textContent = found.flat_no;
+    document.getElementById("shSub").textContent = blk.block_name + " \u00B7 " + flr.floor_label;
+
+    var occLabel = found.occupancy === "vacant" ? "Vacant"
+                 : found.occupancy === "owner"  ? "Owner occupied"
+                 : "Tenant occupied";
+
+    var b = "";
+    b += '<div class="kv"><span class="k">Flat code</span><span class="v">' + esc(found.flat_code) + '</span></div>';
+    b += '<div class="kv"><span class="k">Block</span><span class="v">' + esc(blk.block_name) + '</span></div>';
+    b += '<div class="kv"><span class="k">Floor</span><span class="v">' + esc(flr.floor_label) + '</span></div>';
+    b += '<div class="kv"><span class="k">Status</span><span class="v">' + occLabel + '</span></div>';
+    b += '<div class="kv"><span class="k">Members</span><span class="v">' + found.members + '</span></div>';
+    if(found.flat_type){
+      b += '<div class="kv"><span class="k">Type</span><span class="v">' + esc(found.flat_type) + '</span></div>';
+    }
+    document.getElementById("shBody").innerHTML = b;
+    veil.classList.add("show");
+  }
+
+  document.getElementById("shClose").addEventListener("click", function(){ veil.classList.remove("show"); });
+  veil.addEventListener("click", function(e){ if(e.target === veil) veil.classList.remove("show"); });
+
+  /* ---------------- Sign out ---------------- */
+  document.getElementById("exit").addEventListener("click", function(){
+    api("logout.php", { method:"POST" })
+      .catch(function(){})
+      .then(function(){
+        try{ localStorage.removeItem(KEY); sessionStorage.removeItem(KEY); }catch(e){}
+        location.replace("index.html");
+      });
+  });
+
+})();
+</script>
+</body>
+</html>
