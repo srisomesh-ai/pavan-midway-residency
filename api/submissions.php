@@ -54,18 +54,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         /* Upsert into flat_details */
         $sql = 'INSERT INTO flat_details
                 (flat_id, owner_name, owner_mobile, owner_mobile_alt, owner_email,
-                 vehicle_count, vehicle_1, vehicle_2, vehicle_3,
+                 vehicle_count, vehicle_1, vehicle_1_type, vehicle_2, vehicle_2_type,
+                 vehicle_3, vehicle_3_type,
                  status, family_members,
                  tenant_name, tenant_mobile, tenant_mobile_alt, tenant_family,
                  rent_amount, lease_start, lease_end,
                  vacant_since, looking_to_rent, expected_rent,
                  notes, source_submission, approved_by, approved_at)
-                VALUES (?,?,?,?,?, ?,?,?,?, ?,?, ?,?,?,?, ?,?,?, ?,?,?, ?,?,?, NOW())
+                VALUES (?,?,?,?,?, ?,?,?,?,?, ?,?, ?,?, ?,?,?,?, ?,?,?, ?,?,?, ?,?,?, NOW())
                 ON DUPLICATE KEY UPDATE
                  owner_name=VALUES(owner_name), owner_mobile=VALUES(owner_mobile),
                  owner_mobile_alt=VALUES(owner_mobile_alt), owner_email=VALUES(owner_email),
-                 vehicle_count=VALUES(vehicle_count), vehicle_1=VALUES(vehicle_1),
-                 vehicle_2=VALUES(vehicle_2), vehicle_3=VALUES(vehicle_3),
+                 vehicle_count=VALUES(vehicle_count),
+                 vehicle_1=VALUES(vehicle_1), vehicle_1_type=VALUES(vehicle_1_type),
+                 vehicle_2=VALUES(vehicle_2), vehicle_2_type=VALUES(vehicle_2_type),
+                 vehicle_3=VALUES(vehicle_3), vehicle_3_type=VALUES(vehicle_3_type),
                  status=VALUES(status), family_members=VALUES(family_members),
                  tenant_name=VALUES(tenant_name), tenant_mobile=VALUES(tenant_mobile),
                  tenant_mobile_alt=VALUES(tenant_mobile_alt), tenant_family=VALUES(tenant_family),
@@ -78,7 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $st = db()->prepare($sql);
         $st->execute([
             $s['flat_id'], $s['owner_name'], $s['owner_mobile'], $s['owner_mobile_alt'], $s['owner_email'],
-            $s['vehicle_count'], $s['vehicle_1'], $s['vehicle_2'], $s['vehicle_3'],
+            $s['vehicle_count'], $s['vehicle_1'], $s['vehicle_1_type'], $s['vehicle_2'], $s['vehicle_2_type'],
+            $s['vehicle_3'], $s['vehicle_3_type'],
             $s['status'], $s['family_members'],
             $s['tenant_name'], $s['tenant_mobile'], $s['tenant_mobile_alt'], $s['tenant_family'],
             $s['rent_amount'], $s['lease_start'], $s['lease_end'],
@@ -155,7 +159,7 @@ foreach ($rows as $r) {
         'owner_email'      => $r['owner_email'],
 
         'vehicle_count' => (int) $r['vehicle_count'],
-        'vehicles'      => array_values(array_filter([$r['vehicle_1'], $r['vehicle_2'], $r['vehicle_3']])),
+        'vehicles'      => vehicle_list($r),
 
         'status'         => $r['status'],
         'family_members' => $r['family_members'] !== null ? (int) $r['family_members'] : null,
