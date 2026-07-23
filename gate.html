@@ -4,15 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#123B2E">
-<title>Gate &middot; Pavan Midway Residency</title>
+<title>Visitor Entry &middot; Pavan Midway Residency</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#12211C; --deep:#123B2E; --deep-2:#0C2A21; --brass:#C08A3E;
   --paper:#F2EFE6; --paper-2:#E7E2D4; --card:#FBFAF5;
-  --line:#CFC8B5; --muted:#6C7A72; --danger:#8E2B22; --ok:#2F6D4F; --warn:#B07A20;
+  --line:#CFC8B5; --muted:#6C7A72;
+  --green:#1E7A4C; --red:#A32F22; --amber:#B07A20;
   --radius:14px;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -20,228 +21,235 @@ html,body{margin:0;padding:0}
 body{background:var(--deep);color:var(--ink);
   font-family:Inter,system-ui,-apple-system,Roboto,sans-serif;
   display:flex;justify-content:center}
-.vp{width:100%;max-width:430px;background:var(--paper);min-height:100vh;min-height:100dvh;
-  display:flex;flex-direction:column;position:relative}
+.vp{width:100%;max-width:430px;background:var(--paper);
+  min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;position:relative}
 
-/* header */
-.top{background:var(--deep);color:var(--paper);padding:20px 20px 18px;position:relative;flex-shrink:0}
+/* ---------- header ---------- */
+.top{background:var(--deep);color:var(--paper);padding:26px 22px 22px;position:relative;flex-shrink:0}
 .top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
   background:linear-gradient(90deg,var(--brass) 0 22%,transparent 22%)}
 .eyebrow{font-family:"Roboto Mono",monospace;font-size:9.5px;letter-spacing:.15em;
-  text-transform:uppercase;color:var(--brass);margin:0 0 7px}
-.top h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:23px;margin:0;line-height:1.15}
-.top .sub{margin:5px 0 0;font-size:12.5px;color:rgba(242,239,230,.6)}
+  text-transform:uppercase;color:var(--brass);margin:0 0 9px}
+.top h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:25px;margin:0;line-height:1.15}
+.top .sub{margin:7px 0 0;font-size:13px;color:rgba(242,239,230,.62);line-height:1.5}
 
-/* counters */
-.counts{display:flex;background:var(--deep-2);flex-shrink:0}
-.cbox{flex:1;text-align:center;padding:13px 6px;border-right:1px solid rgba(242,239,230,.09)}
-.cbox:last-child{border-right:0}
-.cn{font-family:Fraunces,serif;font-weight:600;font-size:22px;color:var(--paper);line-height:1}
-.cn.hot{color:var(--brass)}
-.cl{font-family:"Roboto Mono",monospace;font-size:8.5px;letter-spacing:.11em;
-  text-transform:uppercase;color:rgba(242,239,230,.5);margin-top:5px}
+.body{flex:1;padding:24px 22px 30px}
 
-.scroll{flex:1;overflow-y:auto;padding:16px 18px 110px;-webkit-overflow-scrolling:touch}
-
-.sec-h{font-family:"Roboto Mono",monospace;font-size:9.5px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--deep);margin:0 0 11px;
-  display:flex;align-items:center;gap:9px}
-.sec-h::after{content:"";flex:1;height:1px;background:var(--paper-2)}
-.sec{margin-bottom:22px}
-
-/* visitor row */
-.v{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:14px;margin-bottom:10px}
-.v.wait{border-left:3px solid var(--warn);background:#FCF6E9}
-.v.in{border-left:3px solid var(--ok)}
-.v.no{opacity:.7}
-.vh{display:flex;align-items:flex-start;gap:11px;margin-bottom:8px}
-.vf{width:48px;flex-shrink:0;background:var(--deep);color:var(--paper);border-radius:9px;
-  padding:8px 3px;text-align:center;font-family:Fraunces,serif;font-weight:600;font-size:14px;line-height:1}
-.vm{flex:1;min-width:0}
-.vn{font-size:15px;font-weight:600;line-height:1.3}
-.vp2{font-size:11.5px;color:var(--muted);margin-top:3px}
-.st{font-family:"Roboto Mono",monospace;font-size:8.5px;letter-spacing:.09em;
-  text-transform:uppercase;padding:4px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
-.st.pending{background:#F6EBD8;color:var(--warn)}
-.st.approved{background:#E4F0E9;color:var(--ok)}
-.st.denied{background:#F7E8E5;color:var(--danger)}
-.st.entered{background:var(--deep);color:var(--paper)}
-.st.exited{background:var(--paper-2);color:var(--muted)}
-.st.expired{background:var(--paper-2);color:var(--muted)}
-.vt{font-family:"Roboto Mono",monospace;font-size:9.5px;color:var(--muted);
-  letter-spacing:.04em;margin-top:9px;padding-top:9px;border-top:1px solid var(--paper-2)}
-.va{display:flex;gap:8px;margin-top:11px}
-.va button{flex:1;padding:11px;border-radius:10px;border:0;font-family:inherit;
-  font-size:13px;font-weight:600;cursor:pointer}
-.bIn{background:var(--deep);color:var(--paper)}
-.bOut{background:var(--card);color:var(--deep);border:1.5px solid var(--line)}
-.va button:disabled{opacity:.5}
-
-/* waiting card */
-.wcard{background:var(--deep);color:var(--paper);border-radius:var(--radius);
-  padding:20px;text-align:center;margin-bottom:12px}
-.wcard .wn{font-family:Fraunces,serif;font-weight:600;font-size:20px;margin-bottom:5px}
-.wcard .wf{font-family:"Roboto Mono",monospace;font-size:11px;letter-spacing:.1em;
-  color:var(--brass);margin-bottom:14px}
-.wdots{display:flex;gap:6px;justify-content:center;margin-bottom:12px}
-.wdots i{width:7px;height:7px;border-radius:50%;background:var(--brass);
-  animation:pulse 1.3s ease-in-out infinite}
-.wdots i:nth-child(2){animation-delay:.18s}
-.wdots i:nth-child(3){animation-delay:.36s}
-@keyframes pulse{0%,100%{opacity:.25;transform:scale(.85)}50%{opacity:1;transform:scale(1)}}
-.wcard p{margin:0;font-size:13px;color:rgba(242,239,230,.65);line-height:1.5}
-.wcard .res{margin-top:14px;padding-top:14px;border-top:1px solid rgba(242,239,230,.14)}
-.wcard .yes{color:#8FD3AC;font-size:17px;font-weight:600}
-.wcard .no2{color:#E5A79F;font-size:17px;font-weight:600}
-.wcard .why{font-size:12.5px;color:rgba(242,239,230,.6);margin-top:5px}
-.wclose{margin-top:14px;width:100%;padding:12px;background:rgba(242,239,230,.1);
-  border:1px solid rgba(242,239,230,.2);color:var(--paper);border-radius:10px;
-  font-family:inherit;font-size:13.5px;cursor:pointer}
-
-/* new visitor button */
-.fab{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
-  width:calc(100% - 36px);max-width:394px;padding:17px;background:var(--deep);
-  color:var(--paper);border:0;border-radius:14px;font-family:inherit;font-size:15.5px;
-  font-weight:600;cursor:pointer;box-shadow:0 6px 22px rgba(12,42,33,.3);z-index:30;
-  display:flex;align-items:center;justify-content:center;gap:9px}
-.fab:active{transform:translateX(-50%) scale(.99)}
-
-.empty{text-align:center;padding:46px 18px;color:var(--muted)}
-.empty svg{opacity:.26;margin-bottom:12px}
-.empty p{margin:0;font-size:13.5px;line-height:1.6}
-.load{padding:60px;text-align:center;color:var(--muted)}
-.sp{width:22px;height:22px;border:2.5px solid var(--paper-2);border-top-color:var(--deep);
-  border-radius:50%;animation:s .7s linear infinite;margin:0 auto 14px}
-@keyframes s{to{transform:rotate(360deg)}}
-.err{background:#F7E8E5;border:1px solid #E9CEC9;color:var(--danger);
-  padding:14px;border-radius:11px;font-size:13.5px;line-height:1.5}
-
-/* form sheet */
-.veil{position:fixed;inset:0;background:rgba(12,42,33,.55);display:none;
-  align-items:flex-end;justify-content:center;z-index:70}
-.veil.show{display:flex}
-.sheet{width:100%;max-width:430px;background:var(--paper);border-radius:20px 20px 0 0;
-  padding:8px 20px 26px;max-height:92vh;overflow-y:auto;
-  animation:up .22s cubic-bezier(.2,.8,.3,1)}
-@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.grab{width:36px;height:4px;border-radius:3px;background:var(--line);margin:0 auto 15px}
-.sheet h3{font-family:Fraunces,serif;font-weight:600;font-size:22px;margin:0 0 16px;color:var(--deep)}
-label{display:block;font-size:13px;font-weight:500;margin:0 0 6px}
+.f{margin-bottom:17px}
+label{display:block;font-size:13.5px;font-weight:500;margin:0 0 7px}
 label .op{font-weight:400;color:var(--muted);font-size:11.5px}
-.f{margin-bottom:14px}
 input[type=text],input[type=tel],input[type=number],select{
-  width:100%;font-family:inherit;font-size:16px;padding:14px;
-  border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);
-  appearance:none;-webkit-appearance:none}
+  width:100%;font-family:inherit;font-size:16px;padding:15px;
+  border:1.5px solid var(--line);border-radius:var(--radius);
+  background:var(--card);color:var(--ink);
+  appearance:none;-webkit-appearance:none;transition:border-color .15s,box-shadow .15s}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236C7A72' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 15px center;padding-right:40px}
+  background-repeat:no-repeat;background-position:right 16px center;padding-right:42px}
+select:disabled{opacity:.55}
 input:focus,select:focus{outline:none;border-color:var(--deep);box-shadow:0 0 0 3.5px rgba(18,59,46,.11)}
-input.bad,select.bad{border-color:var(--danger);box-shadow:0 0 0 3.5px rgba(142,43,34,.1)}
-.chips{display:flex;flex-wrap:wrap;gap:7px}
-.chips button{padding:11px 14px;border:1.5px solid var(--line);border-radius:22px;
-  background:var(--card);font-family:inherit;font-size:13px;font-weight:500;
-  color:var(--muted);cursor:pointer}
+input.bad,select.bad{border-color:var(--red);box-shadow:0 0 0 3.5px rgba(163,47,34,.1)}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{padding:12px 15px;border:1.5px solid var(--line);border-radius:24px;
+  background:var(--card);font-family:inherit;font-size:13.5px;font-weight:500;
+  color:var(--muted);cursor:pointer;transition:.15s}
 .chips button.on{background:var(--deep);color:var(--paper);border-color:var(--deep)}
-.send{width:100%;margin-top:8px;padding:16px;background:var(--deep);color:var(--paper);
-  border:0;border-radius:12px;font-family:inherit;font-size:15.5px;font-weight:600;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:9px}
-.send:disabled{opacity:.55}
-.send .spin{width:15px;height:15px;border:2px solid rgba(242,239,230,.3);
-  border-top-color:var(--paper);border-radius:50%;animation:s .6s linear infinite;display:none}
-.send.busy .spin{display:block}
-.cancel{width:100%;margin-top:9px;padding:13px;background:none;color:var(--muted);
-  border:1px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;cursor:pointer}
-.alert{display:none;gap:9px;align-items:flex-start;padding:12px;border-radius:11px;
-  font-size:13px;line-height:1.5;margin-bottom:14px;background:#F7E8E5;
-  color:var(--danger);border:1px solid #E9CEC9}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+
+.alert{display:none;gap:10px;align-items:flex-start;padding:13px;border-radius:12px;
+  font-size:13px;line-height:1.5;margin-bottom:17px;background:#F7E8E5;
+  color:var(--red);border:1px solid #E9CEC9}
 .alert.show{display:flex}
 .alert svg{flex-shrink:0;margin-top:1px}
 
-.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(90px);
-  background:var(--deep);color:var(--paper);padding:13px 20px;border-radius:11px;
-  font-size:13.5px;z-index:90;transition:transform .25s;max-width:340px;text-align:center}
-.toast.show{transform:translateX(-50%) translateY(0)}
+.go{width:100%;padding:18px;font-family:inherit;font-size:16px;font-weight:600;
+  color:var(--paper);background:var(--deep);border:0;border-radius:var(--radius);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:background .15s,transform .08s}
+.go:active{transform:scale(.99);background:var(--deep-2)}
+.go[disabled]{opacity:.6}
+.go .spin{width:16px;height:16px;border:2px solid rgba(242,239,230,.3);
+  border-top-color:var(--paper);border-radius:50%;animation:s .6s linear infinite;display:none}
+.go.busy .spin{display:block}
+@keyframes s{to{transform:rotate(360deg)}}
+
+.foot{padding:16px 22px 28px;text-align:center;border-top:1px solid var(--paper-2)}
+.foot p{margin:0;font-size:11.5px;color:var(--muted);line-height:1.55}
+
+.load{padding:70px 22px;text-align:center;color:var(--muted);font-size:13.5px}
+.sp{width:24px;height:24px;border:2.5px solid var(--paper-2);border-top-color:var(--deep);
+  border-radius:50%;animation:s .7s linear infinite;margin:0 auto 15px}
+.err{background:#F7E8E5;border:1px solid #E9CEC9;color:var(--red);
+  padding:15px;border-radius:12px;font-size:13.5px;line-height:1.5}
+
+/* ================= RESULT SCREENS ================= */
+.screen{position:fixed;inset:0;display:none;flex-direction:column;z-index:100;
+  align-items:center;justify-content:center;padding:30px 24px;text-align:center}
+.screen.show{display:flex;animation:fade .25s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* waiting */
+#waitScreen{background:var(--deep);color:var(--paper)}
+.wRing{width:96px;height:96px;border-radius:50%;border:3px solid rgba(192,138,62,.28);
+  border-top-color:var(--brass);animation:spin 1.4s linear infinite;margin-bottom:26px}
+@keyframes spin{to{transform:rotate(360deg)}}
+#waitScreen h2{font-family:Fraunces,serif;font-weight:600;font-size:25px;margin:0 0 10px}
+#waitScreen .who{font-size:15px;color:rgba(242,239,230,.72);margin:0 0 4px}
+#waitScreen .where{font-family:"Roboto Mono",monospace;font-size:12px;letter-spacing:.12em;
+  color:var(--brass);margin:0 0 30px}
+.timer{font-family:"Roboto Mono",monospace;font-size:44px;font-weight:500;
+  letter-spacing:.04em;color:var(--paper);line-height:1;margin-bottom:9px}
+.timerLab{font-family:"Roboto Mono",monospace;font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:rgba(242,239,230,.45)}
+#waitScreen .hint{margin-top:34px;font-size:13px;color:rgba(242,239,230,.55);
+  line-height:1.6;max-width:290px}
+
+/* approved */
+#okScreen{background:var(--green);color:#fff}
+#noScreen{background:var(--red);color:#fff}
+.bigIcon{width:104px;height:104px;border-radius:50%;background:rgba(255,255,255,.16);
+  display:grid;place-items:center;margin-bottom:26px;animation:pop .4s cubic-bezier(.2,1.3,.4,1)}
+@keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+.bigWord{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:48px;
+  letter-spacing:-.02em;line-height:1;margin:0 0 8px}
+.bigSub{font-size:16px;opacity:.85;margin:0 0 30px;line-height:1.5}
+.stampBox{background:rgba(255,255,255,.14);border-radius:16px;padding:20px 22px;
+  width:100%;max-width:330px;margin-bottom:22px}
+.srow{display:flex;justify-content:space-between;gap:14px;padding:9px 0;
+  border-bottom:1px solid rgba(255,255,255,.16);font-size:14px;text-align:left}
+.srow:last-child{border-bottom:0}
+.srow .k{opacity:.75;flex-shrink:0}
+.srow .v{font-weight:600;text-align:right}
+.stampTime{font-family:"Roboto Mono",monospace;font-size:13px;letter-spacing:.06em;
+  opacity:.9;margin-bottom:6px}
+.showGuard{font-size:14px;opacity:.9;line-height:1.6;max-width:300px;margin-bottom:22px}
+.passCode{font-family:"Roboto Mono",monospace;font-size:26px;font-weight:500;
+  letter-spacing:.28em;background:rgba(255,255,255,.16);padding:13px 20px;
+  border-radius:12px;margin-bottom:20px}
+.againBtn{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);
+  color:#fff;padding:14px 26px;border-radius:12px;font-family:inherit;
+  font-size:14.5px;font-weight:500;cursor:pointer}
+.reason{background:rgba(0,0,0,.18);border-radius:12px;padding:14px 16px;
+  font-size:14px;line-height:1.5;max-width:320px;margin-bottom:22px}
+
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+@media (max-height:640px){
+  .bigIcon{width:78px;height:78px;margin-bottom:18px}
+  .bigWord{font-size:38px}
+  .wRing{width:74px;height:74px;margin-bottom:18px}
+  .timer{font-size:36px}
+}
 </style>
 </head>
 <body>
 <div class="vp">
+
   <header class="top">
-    <p class="eyebrow">Security Gate</p>
-    <h1>Pavan Midway Residency</h1>
-    <p class="sub" id="sub">Visitor entry</p>
+    <p class="eyebrow">Visitor Entry</p>
+    <h1 id="socName">Pavan Midway Residency</h1>
+    <p class="sub">Fill in your details to ask the resident for permission to enter.</p>
   </header>
 
-  <div class="counts">
-    <div class="cbox"><div class="cn hot" id="cWait">0</div><div class="cl">Waiting</div></div>
-    <div class="cbox"><div class="cn" id="cIn">0</div><div class="cl">Inside</div></div>
-    <div class="cbox"><div class="cn" id="cToday">0</div><div class="cl">Today</div></div>
-  </div>
-
-  <div class="scroll">
+  <div class="body">
     <div class="load" id="load"><div class="sp"></div>Loading&hellip;</div>
-    <div id="waitHost"></div>
-    <div id="main" hidden></div>
+
+    <form id="form" hidden novalidate>
+
+      <div class="alert" id="alert" role="alert">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16.5v.01"/>
+        </svg>
+        <span id="alertMsg"></span>
+      </div>
+
+      <div class="f">
+        <label for="vname">Your name</label>
+        <input type="text" id="vname" autocapitalize="words" autocomplete="name" placeholder="Full name">
+      </div>
+
+      <div class="f">
+        <label for="vmob">Your mobile number</label>
+        <input type="tel" id="vmob" inputmode="numeric" maxlength="10" autocomplete="tel" placeholder="10 digit number">
+      </div>
+
+      <div class="two">
+        <div class="f">
+          <label for="blk">Block</label>
+          <select id="blk"><option value="">Choose</option></select>
+        </div>
+        <div class="f">
+          <label for="flat">Flat number</label>
+          <select id="flat" disabled><option value="">Choose block first</option></select>
+        </div>
+      </div>
+
+      <div class="f">
+        <label>Purpose of visit</label>
+        <div class="chips" id="chips"></div>
+      </div>
+
+      <div class="f">
+        <label for="vcnt">How many people <span class="op">(including you)</span></label>
+        <input type="number" id="vcnt" inputmode="numeric" min="1" max="30" value="1">
+      </div>
+
+      <div class="f">
+        <label for="vveh">Vehicle number <span class="op">(optional)</span></label>
+        <input type="text" id="vveh" autocapitalize="characters" placeholder="TS07AB1234">
+      </div>
+
+      <div class="f">
+        <label for="vpass">Gate pass code <span class="op">(only if you were given one)</span></label>
+        <input type="text" id="vpass" autocapitalize="characters" maxlength="6" placeholder="ABC123">
+      </div>
+
+      <button type="submit" class="go" id="send">
+        <span class="spin"></span>
+        <span class="lbl">Request permission</span>
+      </button>
+    </form>
   </div>
 
-  <button class="fab" id="fab" hidden>
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-    New visitor
-  </button>
+  <footer class="foot">
+    <p>The resident will be notified straight away.<br>Please show this screen to security.</p>
+  </footer>
 </div>
 
-<div class="veil" id="veil">
-  <div class="sheet">
-    <div class="grab"></div>
-    <h3>New visitor</h3>
+<!-- WAITING -->
+<div class="screen" id="waitScreen">
+  <div class="wRing"></div>
+  <h2>Waiting for approval</h2>
+  <p class="who" id="wWho"></p>
+  <p class="where" id="wWhere"></p>
+  <div class="timer" id="wTimer">0:00</div>
+  <div class="timerLab">Waiting time</div>
+  <p class="hint">The resident has been notified.<br>Please wait here and show this screen to security.</p>
+</div>
 
-    <div class="alert" id="alert">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16.5v.01"/></svg>
-      <span id="alertMsg"></span>
-    </div>
-
-    <div class="f">
-      <label for="flat">Which flat</label>
-      <select id="flat"></select>
-    </div>
-
-    <div class="f">
-      <label for="vname">Visitor name</label>
-      <input type="text" id="vname" autocapitalize="words" placeholder="Full name">
-    </div>
-
-    <div class="f">
-      <label>Purpose</label>
-      <div class="chips" id="chips"></div>
-    </div>
-
-    <div class="f">
-      <label for="vmob">Mobile number <span class="op">(optional)</span></label>
-      <input type="tel" id="vmob" inputmode="numeric" maxlength="10">
-    </div>
-
-    <div class="f">
-      <label for="vveh">Vehicle number <span class="op">(optional)</span></label>
-      <input type="text" id="vveh" autocapitalize="characters" placeholder="TS07AB1234">
-    </div>
-
-    <div class="f">
-      <label for="vcnt">How many people</label>
-      <input type="number" id="vcnt" inputmode="numeric" min="1" max="30" value="1">
-    </div>
-
-    <div class="f">
-      <label for="vpass">Gate pass code <span class="op">(if the visitor has one)</span></label>
-      <input type="text" id="vpass" autocapitalize="characters" maxlength="6" placeholder="ABC123">
-    </div>
-
-    <button class="send" id="send"><span class="spin"></span><span class="lbl">Send to resident</span></button>
-    <button class="cancel" id="cancel">Cancel</button>
+<!-- APPROVED -->
+<div class="screen" id="okScreen">
+  <div class="bigIcon">
+    <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
   </div>
+  <p class="bigWord">APPROVED</p>
+  <p class="bigSub" id="okSub"></p>
+  <div class="stampBox" id="okStamp"></div>
+  <p class="showGuard">Show this screen to security to enter.</p>
+  <button class="againBtn" id="okAgain">New request</button>
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- REJECTED -->
+<div class="screen" id="noScreen">
+  <div class="bigIcon">
+    <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+  </div>
+  <p class="bigWord" id="noWord">REJECTED</p>
+  <p class="bigSub" id="noSub"></p>
+  <div class="reason" id="noReason" hidden></div>
+  <div class="stampBox" id="noStamp"></div>
+  <button class="againBtn" id="noAgain">New request</button>
+</div>
 
 <script>
 (function(){
@@ -249,12 +257,11 @@ input.bad,select.bad{border-color:var(--danger);box-shadow:0 0 0 3.5px rgba(142,
 
   var API = "api/gate.php";
   var KEY = null;
-  try {
-    var q = new URLSearchParams(location.search);
-    KEY = q.get("k");
-  } catch(e){}
+  try { KEY = new URLSearchParams(location.search).get("k"); } catch(e){}
 
-  var purposes = {}, chosen = "guest", waitingId = null, waitTimer = null;
+  var blocks = [], purposes = {}, chosen = "guest";
+  var reqId = null, poll = null, tick = null, startedAt = null, waitedBase = 0;
+
   var $ = function(i){ return document.getElementById(i); };
 
   function url(extra){
@@ -264,13 +271,12 @@ input.bad,select.bad{border-color:var(--danger);box-shadow:0 0 0 3.5px rgba(142,
   }
 
   function api(path, opts){
-    opts = opts || {};
-    return fetch(url(path), opts).then(function(r){
+    return fetch(url(path), opts || {}).then(function(r){
       return r.text().then(function(t){
-        if(!t || !t.trim()) throw new Error("Empty response (HTTP " + r.status + ").");
+        if(!t || !t.trim()) throw new Error("The server did not respond. Please try again.");
         try { return JSON.parse(t); }
         catch(e){
-          throw new Error("Server said: " + t.replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,180));
+          throw new Error("Server said: " + t.replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,160));
         }
       });
     });
@@ -282,60 +288,55 @@ input.bad,select.bad{border-color:var(--danger);box-shadow:0 0 0 3.5px rgba(142,
     });
   }
 
-  function tm(ts){
-    if(!ts) return "";
-    var d = new Date(String(ts).replace(" ","T"));
-    if(isNaN(d)) return "";
-    return d.toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit"});
-  }
-
-  function toast(m){
-    var t=$("toast"); t.textContent=m; t.classList.add("show");
-    setTimeout(function(){ t.classList.remove("show"); }, 2800);
-  }
-
   function showErr(m, el){
     $("alertMsg").textContent = m;
     $("alert").classList.add("show");
-    if(el){ el.classList.add("bad"); el.focus(); }
+    if(el){ el.classList.add("bad"); el.focus(); el.scrollIntoView({behavior:"smooth",block:"center"}); }
+    else { $("alert").scrollIntoView({behavior:"smooth",block:"center"}); }
   }
   function clearErr(){
     $("alert").classList.remove("show");
     document.querySelectorAll(".bad").forEach(function(e){ e.classList.remove("bad"); });
   }
 
-  /* ---------- setup ---------- */
+  /* ---------- load ---------- */
   api("action=flats")
     .then(function(d){
       if(!d.ok) throw new Error(d.error || "Could not load.");
-      $("sub").textContent = "Visitor entry";
+      if(d.society) $("socName").textContent = d.society;
+      blocks = d.blocks || [];
       purposes = d.purposes || {};
-      buildFlats(d.blocks || []);
+      buildBlocks();
       buildChips();
       $("load").hidden = true;
-      $("main").hidden = false;
-      $("fab").hidden = false;
-      loadToday();
-      setInterval(loadToday, 20000);
+      $("form").hidden = false;
     })
     .catch(function(e){
       $("load").innerHTML = '<div class="err">' + esc(e.message) +
-        '<br><br><button onclick="location.reload()" style="padding:10px 18px;border:0;border-radius:9px;background:#123B2E;color:#F2EFE6;font-family:inherit;cursor:pointer">Try again</button></div>';
+        '<br><br><button onclick="location.reload()" style="padding:11px 20px;border:0;border-radius:10px;background:#123B2E;color:#F2EFE6;font-family:inherit;font-size:14px;cursor:pointer">Try again</button></div>';
     });
 
-  function buildFlats(blocks){
-    var s = $("flat");
-    s.innerHTML = '<option value="">Choose the flat</option>';
-    blocks.forEach(function(b){
-      var g = document.createElement("optgroup");
-      g.label = b.block_name;
-      b.flats.forEach(function(f){
+  function buildBlocks(){
+    var s = $("blk");
+    s.innerHTML = '<option value="">Choose</option>';
+    blocks.forEach(function(b, i){
+      var o = document.createElement("option");
+      o.value = i;
+      o.textContent = b.block_name;
+      s.appendChild(o);
+    });
+    s.addEventListener("change", function(){
+      clearErr();
+      var f = $("flat");
+      f.innerHTML = '<option value="">Choose</option>';
+      if(this.value === ""){ f.disabled = true; return; }
+      f.disabled = false;
+      blocks[parseInt(this.value,10)].flats.forEach(function(x){
         var o = document.createElement("option");
-        o.value = f.id;
-        o.textContent = f.flat_no + "  \u00B7  " + f.floor_label;
-        g.appendChild(o);
+        o.value = x.id;
+        o.textContent = x.flat_no + "  \u00B7  " + x.floor_label;
+        f.appendChild(o);
       });
-      s.appendChild(g);
     });
   }
 
@@ -354,115 +355,9 @@ input.bad,select.bad{border-color:var(--danger);box-shadow:0 0 0 3.5px rgba(142,
     });
   }
 
-  /* ---------- today's log ---------- */
-  function loadToday(){
-    api("action=today")
-      .then(function(d){
-        if(!d.ok) return;
-        $("cWait").textContent = d.counts.waiting;
-        $("cIn").textContent = d.counts.inside;
-        $("cToday").textContent = d.counts.today;
-        render(d.visitors || []);
-      })
-      .catch(function(){});
-  }
-
-  function render(rows){
-    var wait = rows.filter(function(v){ return v.status === "pending"; });
-    var live = rows.filter(function(v){ return v.status === "approved" || v.status === "entered"; });
-    var done = rows.filter(function(v){ return ["exited","denied","expired"].indexOf(v.status) > -1; });
-
-    var h = "";
-
-    if(wait.length){
-      h += '<div class="sec"><p class="sec-h">Waiting for the resident</p>';
-      wait.forEach(function(v){ h += card(v, false); });
-      h += '</div>';
-    }
-
-    if(live.length){
-      h += '<div class="sec"><p class="sec-h">Allowed</p>';
-      live.forEach(function(v){ h += card(v, true); });
-      h += '</div>';
-    }
-
-    if(done.length){
-      h += '<div class="sec"><p class="sec-h">Earlier today</p>';
-      done.forEach(function(v){ h += card(v, false); });
-      h += '</div>';
-    }
-
-    if(!rows.length){
-      h = '<div class="empty">' +
-          '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#12211C" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/></svg>' +
-          '<p>No visitors yet today.<br>Tap New visitor to log one.</p></div>';
-    }
-
-    $("main").innerHTML = h;
-  }
-
-  function card(v, actions){
-    var cls = v.status === "pending" ? " wait" : (v.status === "entered" ? " in" :
-              (["denied","expired"].indexOf(v.status) > -1 ? " no" : ""));
-    var word = v.status === "pending" ? "Waiting" :
-               v.status === "approved" ? "Allowed" :
-               v.status === "denied" ? "Denied" :
-               v.status === "entered" ? "Inside" :
-               v.status === "exited" ? "Left" : "No reply";
-
-    var h = '<div class="v' + cls + '">';
-    h += '<div class="vh"><div class="vf">' + esc(v.flat_no) + '</div>';
-    h += '<div class="vm"><div class="vn">' + esc(v.visitor_name) + '</div>';
-    h += '<div class="vp2">' + esc(v.purpose_label) +
-         (v.visitor_count > 1 ? " \u00B7 " + v.visitor_count + " people" : "") +
-         (v.vehicle_no ? " \u00B7 " + esc(v.vehicle_no) : "") + '</div></div>';
-    h += '<span class="st ' + esc(v.status) + '">' + word + '</span></div>';
-
-    h += '<div class="vt">Logged ' + esc(tm(v.created_at));
-    if(v.entry_at) h += " \u00B7 In " + esc(tm(v.entry_at));
-    if(v.exit_at)  h += " \u00B7 Out " + esc(tm(v.exit_at));
-    if(v.deny_reason) h += " \u00B7 " + esc(v.deny_reason);
-    h += '</div>';
-
-    if(actions){
-      h += '<div class="va">';
-      if(v.status === "approved"){
-        h += '<button class="bIn" data-a="entry" data-id="' + v.id + '">Mark entry</button>';
-      } else {
-        h += '<button class="bOut" data-a="exit" data-id="' + v.id + '">Mark exit</button>';
-      }
-      h += '</div>';
-    }
-
-    h += '</div>';
-    return h;
-  }
-
-  $("main").addEventListener("click", function(e){
-    var b = e.target.closest("button[data-a]"); if(!b) return;
-    var a = b.getAttribute("data-a"), id = parseInt(b.getAttribute("data-id"), 10);
-    b.disabled = true;
-    api("", { method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ action:a, id:id }) })
-      .then(function(d){
-        if(!d.ok){ toast(d.error || "Could not do that."); b.disabled = false; return; }
-        toast(d.message || "Done.");
-        loadToday();
-      })
-      .catch(function(err){ toast(err.message); b.disabled = false; });
-  });
-
-  /* ---------- new visitor ---------- */
-  $("fab").addEventListener("click", function(){
-    clearErr();
-    $("veil").classList.add("show");
-    $("flat").focus();
-  });
-  $("cancel").addEventListener("click", function(){ $("veil").classList.remove("show"); });
-  $("veil").addEventListener("click", function(e){ if(e.target === this) this.classList.remove("show"); });
-
+  /* keep inputs tidy */
   $("vmob").addEventListener("input", function(){
-    this.value = this.value.replace(/\D/g,"").slice(0,10);
+    this.value = this.value.replace(/\D/g,"").slice(0,10); clearErr();
   });
   $("vveh").addEventListener("input", function(){
     this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,15);
@@ -470,23 +365,26 @@ input.bad,select.bad{border-color:var(--danger);box-shadow:0 0 0 3.5px rgba(142,
   $("vpass").addEventListener("input", function(){
     this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);
   });
-  ["flat","vname"].forEach(function(id){
+  ["vname","flat"].forEach(function(id){
     $(id).addEventListener("input", clearErr);
     $(id).addEventListener("change", clearErr);
   });
 
-  $("send").addEventListener("click", function(){
+  /* ---------- submit ---------- */
+  $("form").addEventListener("submit", function(e){
+    e.preventDefault();
     clearErr();
-    var flat = $("flat").value;
+
     var name = $("vname").value.trim();
+    var mob  = $("vmob").value.trim();
+    var flat = $("flat").value;
 
-    if(!flat) return showErr("Choose which flat the visitor is going to.", $("flat"));
-    if(name.length < 2) return showErr("Enter the visitor name.", $("vname"));
+    if(name.length < 2)  return showErr("Please enter your name.", $("vname"));
+    if(!/^[6-9]\d{9}$/.test(mob)) return showErr("Please enter a valid 10 digit mobile number.", $("vmob"));
+    if(!$("blk").value)  return showErr("Please choose the block.", $("blk"));
+    if(!flat)            return showErr("Please choose the flat number.", $("flat"));
 
-    var mob = $("vmob").value.trim();
-    if(mob && !/^[6-9]\d{9}$/.test(mob)) return showErr("That mobile number is not valid.", $("vmob"));
-
-    var btn = this;
+    var btn = $("send");
     btn.disabled = true; btn.classList.add("busy");
 
     api("", { method:"POST", headers:{"Content-Type":"application/json"},
@@ -494,25 +392,24 @@ input.bad,select.bad{border-color:var(--danger);box-shadow:0 0 0 3.5px rgba(142,
         action: "create",
         flat_id: parseInt(flat, 10),
         visitor_name: name,
-        visitor_mobile: mob || null,
+        visitor_mobile: mob,
         purpose: chosen,
-        vehicle_no: $("vveh").value.trim() || null,
         visitor_count: parseInt($("vcnt").value, 10) || 1,
+        vehicle_no: $("vveh").value.trim() || null,
         gate_pass: $("vpass").value.trim() || null
       })})
       .then(function(d){
         btn.disabled = false; btn.classList.remove("busy");
-        if(!d.ok) return showErr(d.error || "Could not send.");
+        if(!d.ok) return showErr(d.error || "Could not send your request.");
 
-        $("veil").classList.remove("show");
-        resetForm();
+        reqId = d.id;
+        var flatTxt = $("flat").options[$("flat").selectedIndex].textContent.split("\u00B7")[0].trim();
+        var blkTxt  = $("blk").options[$("blk").selectedIndex].textContent;
 
         if(d.auto){
-          loadToday();
-          toast("Pre-approved. Allow the visitor in.");
+          checkNow();
         } else {
-          startWaiting(d.id, name, d.flat_no);
-          loadToday();
+          startWaiting(name, blkTxt, flatTxt);
         }
       })
       .catch(function(err){
@@ -521,75 +418,118 @@ input.bad,select.bad{border-color:var(--danger);box-shadow:0 0 0 3.5px rgba(142,
       });
   });
 
-  function resetForm(){
+  /* ---------- waiting ---------- */
+  function startWaiting(name, blk, flat){
+    $("wWho").textContent = name;
+    $("wWhere").textContent = blk.toUpperCase() + " \u00B7 FLAT " + flat;
+    $("waitScreen").classList.add("show");
+
+    startedAt = Date.now();
+    waitedBase = 0;
+    $("wTimer").textContent = "0:00";
+    clearInterval(tick);
+    tick = setInterval(function(){
+      var s = waitedBase + Math.floor((Date.now() - startedAt) / 1000);
+      var m = Math.floor(s / 60);
+      $("wTimer").textContent = m + ":" + String(s % 60).padStart(2, "0");
+    }, 1000);
+
+    clearInterval(poll);
+    poll = setInterval(checkNow, 3000);
+    checkNow();
+  }
+
+  function stopAll(){
+    clearInterval(poll); clearInterval(tick);
+  }
+
+  function checkNow(){
+    if(!reqId) return;
+    api("action=status&id=" + reqId)
+      .then(function(d){
+        if(!d.ok) return;
+        if(d.status === "pending"){
+          /* Keep the timer honest even if the phone clock is wrong */
+          if(typeof d.waited_secs === "number"){
+            waitedBase = d.waited_secs;
+            startedAt = Date.now();
+          }
+          return;
+        }
+        stopAll();
+        $("waitScreen").classList.remove("show");
+        if(d.status === "approved" || d.status === "entered"){
+          showApproved(d);
+        } else {
+          showRejected(d);
+        }
+      })
+      .catch(function(){});
+  }
+
+  /* ---------- results ---------- */
+  function stampRows(d){
+    /* Date and time are formatted by the server in the society's timezone. */
+    var dateTxt = d.stamp_date || "";
+    var timeTxt = d.stamp_time || "";
+
+    var h = "";
+    h += '<div class="srow"><span class="k">Visitor</span><span class="v">' + esc(d.visitor_name) + '</span></div>';
+    h += '<div class="srow"><span class="k">Flat</span><span class="v">' + esc(d.flat_no) + ' \u00B7 ' + esc(d.block_name) + '</span></div>';
+    h += '<div class="srow"><span class="k">Purpose</span><span class="v">' + esc(d.purpose_label) + '</span></div>';
+    if(d.visitor_count > 1){
+      h += '<div class="srow"><span class="k">People</span><span class="v">' + d.visitor_count + '</span></div>';
+    }
+    h += '<div class="srow"><span class="k">Date</span><span class="v">' + esc(dateTxt) + '</span></div>';
+    h += '<div class="srow"><span class="k">Time</span><span class="v">' + esc(timeTxt) + '</span></div>';
+    return h;
+  }
+
+  function showApproved(d){
+    $("okSub").textContent = "Flat " + d.flat_no + " \u00B7 " + d.block_name;
+    $("okStamp").innerHTML = stampRows(d);
+    $("okScreen").classList.add("show");
+  }
+
+  function showRejected(d){
+    var expired = d.status === "expired";
+    $("noWord").textContent = expired ? "NO REPLY" : "REJECTED";
+    $("noSub").textContent = expired
+      ? "The resident did not answer"
+      : "Flat " + d.flat_no + " \u00B7 " + d.block_name;
+    if(d.deny_reason){
+      $("noReason").textContent = d.deny_reason;
+      $("noReason").hidden = false;
+    } else {
+      $("noReason").hidden = true;
+    }
+    $("noStamp").innerHTML = stampRows(d);
+    $("noScreen").classList.add("show");
+  }
+
+  function reset(){
+    stopAll();
+    reqId = null;
+    $("okScreen").classList.remove("show");
+    $("noScreen").classList.remove("show");
     $("vname").value = ""; $("vmob").value = ""; $("vveh").value = "";
-    $("vcnt").value = "1"; $("vpass").value = ""; $("flat").value = "";
+    $("vcnt").value = "1"; $("vpass").value = "";
+    $("blk").value = ""; $("flat").innerHTML = '<option value="">Choose block first</option>';
+    $("flat").disabled = true;
     chosen = "guest";
     var c = $("chips");
     c.querySelectorAll("button").forEach(function(x){ x.classList.remove("on"); });
     var g = c.querySelector('[data-p="guest"]'); if(g) g.classList.add("on");
+    window.scrollTo(0, 0);
   }
 
-  /* ---------- wait for the resident ---------- */
-  function startWaiting(id, name, flatNo){
-    waitingId = id;
-    var box = document.createElement("div");
-    box.id = "waitBox";
-    box.className = "wcard";
-    box.innerHTML =
-      '<div class="wn">' + esc(name) + '</div>' +
-      '<div class="wf">FLAT ' + esc(flatNo) + '</div>' +
-      '<div class="wdots"><i></i><i></i><i></i></div>' +
-      '<p>Waiting for the resident to reply&hellip;</p>' +
-      '<button class="wclose" id="waitClose">Close</button>';
-    $("waitHost").innerHTML = "";
-    $("waitHost").appendChild(box);
-    document.getElementById("waitClose").addEventListener("click", stopWaiting);
+  $("okAgain").addEventListener("click", reset);
+  $("noAgain").addEventListener("click", reset);
 
-    clearInterval(waitTimer);
-    waitTimer = setInterval(pollOne, 4000);
-    pollOne();
-  }
-
-  function stopWaiting(){
-    clearInterval(waitTimer);
-    waitingId = null;
-    var b = document.getElementById("waitBox");
-    if(b) b.remove();
-    loadToday();
-  }
-
-  function pollOne(){
-    if(!waitingId) return;
-    api("action=status&id=" + waitingId)
-      .then(function(d){
-        if(!d.ok) return;
-        var box = document.getElementById("waitBox");
-        if(!box) return;
-
-        if(d.status === "pending") return;
-
-        clearInterval(waitTimer);
-        var res = '<div class="res">';
-        if(d.status === "approved" || d.status === "entered"){
-          res += '<div class="yes">Allowed in</div>';
-        } else if(d.status === "denied"){
-          res += '<div class="no2">Denied</div>';
-          if(d.deny_reason) res += '<div class="why">' + esc(d.deny_reason) + '</div>';
-        } else {
-          res += '<div class="why">No reply from the resident.</div>';
-        }
-        res += '</div>';
-
-        box.innerHTML =
-          '<div class="wn">' + esc(d.visitor_name) + '</div>' +
-          '<div class="wf">FLAT ' + esc(d.flat_no) + '</div>' + res +
-          '<button class="wclose" id="waitClose">Close</button>';
-        document.getElementById("waitClose").addEventListener("click", stopWaiting);
-        loadToday();
-      })
-      .catch(function(){});
-  }
+  /* Check immediately when the visitor brings the phone back up */
+  document.addEventListener("visibilitychange", function(){
+    if(!document.hidden && reqId) checkNow();
+  });
 
 })();
 </script>
