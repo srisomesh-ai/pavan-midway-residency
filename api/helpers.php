@@ -47,6 +47,24 @@ function str_len($s) {
 }
 
 /**
+ * Trim, collapse to null when empty, and cut to a character limit.
+ */
+function clean_txt($v, $len = 150) {
+    if ($v === null) return null;
+    $v = trim((string) $v);
+    if ($v === '') return null;
+    return str_cut($v, $len);
+}
+
+/** Validate an Indian mobile number and return it normalised, or null. */
+function clean_mobile($m) {
+    if ($m === null) return null;
+    $d = preg_replace('/\D/', '', (string) $m);
+    if (strlen($d) === 12 && substr($d, 0, 2) === '91') $d = substr($d, 2);
+    return preg_match('/^[6-9]\d{9}$/', $d) ? $d : null;
+}
+
+/**
  * Build a vehicle list from a row containing vehicle_1..3 and
  * vehicle_1_type..3_type. Returns [{number, type, label}, ...].
  */
@@ -151,9 +169,26 @@ function current_user() {
     if (!$tok) return null;
 
     $hash = hash('sha256', $tok);
+
+    /* The flat columns only exist after sql/06_resident_app.sql.
+       Detect once so sessions still work on an un-migrated database. */
+    static $has_flat = null;
+    if ($has_flat === null) {
+        try {
+            $has_flat = (bool) db()->query("SHOW COLUMNS FROM users LIKE 'flat_id'")->fetch();
+        } catch (Exception $e) {
+            $has_flat = false;
+        }
+    }
+
+    $cols = $has_flat
+        ? 'u.flat_id, u.resident_type,'
+        : 'NULL AS flat_id, NULL AS resident_type,';
+
     $st = db()->prepare(
         'SELECT u.id, u.name, u.email, u.username, u.mobile, u.role, u.designation,
-                u.status, u.photo_url, u.must_change_pwd, s.id AS session_id
+                u.status, u.photo_url, u.must_change_pwd, ' . $cols . '
+                s.id AS session_id
          FROM sessions s
          JOIN users u ON u.id = s.user_id
          WHERE s.token_hash = ?
@@ -185,6 +220,25 @@ function require_auth($roles = null) {
 /** Admin-level shortcut. */
 function require_admin() {
     return require_auth(['super_admin', 'admin']);
+}
+
+/** Resident shortcut. Guarantees the user has a flat linked. */
+function require_resident() {
+    $u = require_auth(['resident']);
+    if (empty($u['flat_id'])) {
+        fail('Your account is not linked to a flat. Please contact the committee.', 403);
+    }
+    return $u;
+}
+
+/** Guard (gate) shortcut. Admins may also use gate screens. */
+function require_guard() {
+    return require_auth(['guard', 'super_admin', 'admin']);
+}
+
+/** True if the user is a committee member. */
+function is_admin($u) {
+    return $u && in_array($u['role'], ['super_admin', 'admin'], true);
 }
 
 /** Read a settings value. */
