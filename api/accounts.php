@@ -7,7 +7,6 @@
  *      { action: "reset", user_id }         issue a new temporary password
  *      { action: "disable", user_id }       suspend an account
  *      { action: "enable",  user_id }       re-activate
- *      { action: "create_guard", name }     create a gate login
  *
  * Admin only. Passwords are generated here and shown once so the
  * committee can hand them over.
@@ -214,30 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     /* ---------------- create a gate login ---------------- */
-    if ($action === 'create_guard') {
-        $name = clean_txt(param('name'), 120);
-        if ($name === null || str_len($name) < 2) fail('Please enter a name for the gate account.');
-
-        $username = 'gate' . random_int(10, 99);
-        $n = 0;
-        while (true) {
-            $st = db()->prepare('SELECT id FROM users WHERE username = ? LIMIT 1');
-            $st->execute([$username]);
-            if (!$st->fetch()) break;
-            $username = 'gate' . random_int(100, 999);
-            if (++$n > 20) break;
-        }
-
-        $pw = make_password();
-        $st = db()->prepare(
-            'INSERT INTO users (name, username, password_hash, role, status, temp_password, must_change_pwd, created_by)
-             VALUES (?,?,?, "guard", "active", ?, 1, ?)'
-        );
-        $st->execute([$name, $username, password_hash($pw, PASSWORD_BCRYPT), $pw, $admin['id']]);
-
-        log_activity($admin['id'], 'guard_created', 'user', db()->lastInsertId(), $name);
-        ok(['name' => $name, 'username' => $username, 'password' => $pw]);
-    }
+    /* Gate logins removed - the gate page is open by QR code. */
 
     fail('Unknown action.');
 }
