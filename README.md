@@ -154,11 +154,18 @@ Residents can then:
 
 ### The gate
 
-Security staff do not log in. The committee opens **Logins - Gate** to get a QR code, prints it, and puts it at the gate. Scanning it opens `gate.html` directly.
+Security staff do not use the app at all. The **visitor** scans a QR code at the gate on their own phone.
 
-The guard picks the flat, enters the visitor's name and purpose, and taps send. A card appears showing "waiting for the resident", and updates by itself the moment they answer - allowed or denied, with the reason. Entry and exit are then one tap each. A valid gate pass code skips the wait entirely.
+1. The visitor fills in their name, mobile number, block, flat and purpose
+2. They tap **Request permission**
+3. A waiting screen appears with a timer counting up
+4. The resident gets a notification and taps allow or deny
+5. The visitor's screen turns green with **APPROVED** in large letters, or red with **REJECTED**, stamped with the date and time
+6. The visitor shows that screen to security, who simply look at it and let them in
 
-The gate page never shows resident names, phone numbers or flat details - only flat numbers, so it is safe to leave open at a gate.
+Security tap nothing. If the resident does not answer within 30 minutes the screen shows **NO REPLY**.
+
+The committee gets the QR from **Logins - Gate**: a code to print, the link, and a copy button. The page never shows resident names, phone numbers or flat details - only flat numbers - so it is safe to leave open at a gate.
 
 Three controls sit behind it, all in `settings`:
 
@@ -166,7 +173,7 @@ Three controls sit behind it, all in `settings`:
 |---|---|
 | `gate_open` | Set to `0` to switch the page off completely |
 | `gate_key` | Leave empty for an open link. Put a value here and the page needs `?k=<value>`, so the link can be locked down later without reprinting the QR |
-| `gate_max_per_hour` | Entries allowed from one device per hour, default 20 |
+| `gate_max_per_hour` | Requests allowed from one device per hour, default 20 |
 
 Residents only ever see their own flat's data - enforced server side, not just hidden in the interface.
 
@@ -222,7 +229,7 @@ Set `DEBUG` to `false` in `config.php` on production (it already is).
 | 2 | Resident details form ← done |
 | 3 | Resident app, visitors, complaints ← done |
 | 4 | Notifications and notice board ← done |
-| 5 | Open gate page by QR ← done |
+| 5 | Visitor self-service by QR ← done |
 | 3 | Notices + push |
 | 4 | Maintenance billing |
 | 5 | Payments (Razorpay) |
