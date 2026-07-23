@@ -106,6 +106,11 @@ input.bad,select.bad{border-color:var(--danger);box-shadow:0 0 0 3.5px rgba(142,
   color:var(--muted);cursor:pointer;transition:.15s;
 }
 .seg button.on{background:var(--deep);color:var(--paper);border-color:var(--deep)}
+.seg.vt button{font-size:13px;padding:12px 4px}
+.vbox{
+  background:var(--paper-2);border-radius:12px;padding:13px 13px 1px;margin-bottom:11px;
+}
+.vbox .f:last-child{margin-bottom:13px}
 
 /* Conditional reveal */
 .cond{display:none}
@@ -234,17 +239,44 @@ body.te .done h2{font-family:"Noto Sans Telugu",serif;font-size:21px}
           </div>
         </div>
         <div class="cond" id="vwrap">
-          <div class="f" id="vf1">
-            <label for="v1" data-t="l_v1">Vehicle 1 number</label>
-            <input type="text" id="v1" placeholder="TS07AB1234" autocapitalize="characters">
+          <div class="vbox" id="vf1">
+            <div class="f">
+              <label for="v1" data-t="l_v1">Vehicle 1 number</label>
+              <input type="text" id="v1" placeholder="TS07AB1234" autocapitalize="characters">
+            </div>
+            <div class="f">
+              <label data-t="l_vtype">Type</label>
+              <div class="seg vt" data-for="1">
+                <button type="button" data-vt="two_wheeler" data-t="two">Two wheeler</button>
+                <button type="button" data-vt="four_wheeler" data-t="four">Four wheeler</button>
+              </div>
+            </div>
           </div>
-          <div class="f" id="vf2">
-            <label for="v2" data-t="l_v2">Vehicle 2 number</label>
-            <input type="text" id="v2" placeholder="TS07CD5678" autocapitalize="characters">
+          <div class="vbox" id="vf2">
+            <div class="f">
+              <label for="v2" data-t="l_v2">Vehicle 2 number</label>
+              <input type="text" id="v2" placeholder="TS07CD5678" autocapitalize="characters">
+            </div>
+            <div class="f">
+              <label data-t="l_vtype">Type</label>
+              <div class="seg vt" data-for="2">
+                <button type="button" data-vt="two_wheeler" data-t="two">Two wheeler</button>
+                <button type="button" data-vt="four_wheeler" data-t="four">Four wheeler</button>
+              </div>
+            </div>
           </div>
-          <div class="f" id="vf3">
-            <label for="v3" data-t="l_v3">Vehicle 3 number</label>
-            <input type="text" id="v3" placeholder="TS07EF9012" autocapitalize="characters">
+          <div class="vbox" id="vf3">
+            <div class="f">
+              <label for="v3" data-t="l_v3">Vehicle 3 number</label>
+              <input type="text" id="v3" placeholder="TS07EF9012" autocapitalize="characters">
+            </div>
+            <div class="f">
+              <label data-t="l_vtype">Type</label>
+              <div class="seg vt" data-for="3">
+                <button type="button" data-vt="two_wheeler" data-t="two">Two wheeler</button>
+                <button type="button" data-vt="four_wheeler" data-t="four">Four wheeler</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -415,6 +447,7 @@ body.te .done h2{font-family:"Noto Sans Telugu",serif;font-size:21px}
       l_omob2:"Second mobile number", l_email:"Email",
       g_veh:"Vehicles", l_vcount:"How many vehicles?",
       l_v1:"Vehicle 1 number", l_v2:"Vehicle 2 number", l_v3:"Vehicle 3 number",
+      l_vtype:"Type", two:"Two wheeler", four:"Four wheeler",
       g_status:"Flat status",
       s_owner:"Owner is staying", s_owner_d:"I live in this flat myself",
       s_rent:"Given on rent", s_rent_d:"A tenant is staying here",
@@ -439,6 +472,7 @@ body.te .done h2{font-family:"Noto Sans Telugu",serif;font-size:21px}
       e_mob2:"The second mobile number is not valid.",
       e_mail:"Please enter a valid email address, or leave it blank.",
       e_veh:"Please enter vehicle number ",
+      e_vtype:"Please choose two wheeler or four wheeler for vehicle ",
       e_status:"Please choose whether the flat is owner occupied, rented, or vacant.",
       e_tname:"Please enter the tenant name.",
       e_tmob:"Please enter a valid tenant mobile number.",
@@ -456,6 +490,7 @@ body.te .done h2{font-family:"Noto Sans Telugu",serif;font-size:21px}
       l_omob2:"\u0C30\u0C46\u0C02\u0C21\u0C35 \u0C2E\u0C4A\u0C2C\u0C48\u0C32\u0C4D \u0C28\u0C02\u0C2C\u0C30\u0C4D", l_email:"\u0C08\u0C2E\u0C46\u0C2F\u0C3F\u0C32\u0C4D",
       g_veh:"\u0C35\u0C3E\u0C39\u0C28\u0C3E\u0C32\u0C41", l_vcount:"\u0C0E\u0C28\u0C4D\u0C28\u0C3F \u0C35\u0C3E\u0C39\u0C28\u0C3E\u0C32\u0C41 \u0C09\u0C28\u0C4D\u0C28\u0C3E\u0C2F\u0C3F?",
       l_v1:"\u0C35\u0C3E\u0C39\u0C28\u0C02 1 \u0C28\u0C02\u0C2C\u0C30\u0C4D", l_v2:"\u0C35\u0C3E\u0C39\u0C28\u0C02 2 \u0C28\u0C02\u0C2C\u0C30\u0C4D", l_v3:"\u0C35\u0C3E\u0C39\u0C28\u0C02 3 \u0C28\u0C02\u0C2C\u0C30\u0C4D",
+      l_vtype:"\u0C30\u0C15\u0C02", two:"\u0C1F\u0C42 \u0C35\u0C40\u0C32\u0C30\u0C4D", four:"\u0C2B\u0C4B\u0C30\u0C4D \u0C35\u0C40\u0C32\u0C30\u0C4D",
       g_status:"\u0C2B\u0C4D\u0C32\u0C3E\u0C1F\u0C4D \u0C38\u0C4D\u0C25\u0C3F\u0C24\u0C3F",
       s_owner:"\u0C2F\u0C1C\u0C2E\u0C3E\u0C28\u0C3F \u0C09\u0C02\u0C1F\u0C41\u0C28\u0C4D\u0C28\u0C3E\u0C30\u0C41", s_owner_d:"\u0C28\u0C47\u0C28\u0C47 \u0C08 \u0C2B\u0C4D\u0C32\u0C3E\u0C1F\u0C4D\u0C32\u0C4B \u0C09\u0C02\u0C1F\u0C41\u0C28\u0C4D\u0C28\u0C3E\u0C28\u0C41",
       s_rent:"\u0C05\u0C26\u0C4D\u0C26\u0C46\u0C15\u0C3F \u0C07\u0C1A\u0C4D\u0C1A\u0C3E\u0C30\u0C41", s_rent_d:"\u0C05\u0C26\u0C4D\u0C26\u0C46\u0C26\u0C3E\u0C30\u0C41 \u0C09\u0C02\u0C1F\u0C41\u0C28\u0C4D\u0C28\u0C3E\u0C30\u0C41",
@@ -482,6 +517,7 @@ body.te .done h2{font-family:"Noto Sans Telugu",serif;font-size:21px}
       e_mob2:"\u0C30\u0C46\u0C02\u0C21\u0C35 \u0C2E\u0C4A\u0C2C\u0C48\u0C32\u0C4D \u0C28\u0C02\u0C2C\u0C30\u0C4D \u0C38\u0C30\u0C3F\u0C17\u0C4D\u0C17\u0C3E \u0C32\u0C47\u0C26\u0C41.",
       e_mail:"\u0C38\u0C30\u0C48\u0C28 \u0C08\u0C2E\u0C46\u0C2F\u0C3F\u0C32\u0C4D \u0C07\u0C35\u0C4D\u0C35\u0C02\u0C21\u0C3F, \u0C32\u0C47\u0C26\u0C3E \u0C16\u0C3E\u0C33\u0C40\u0C17\u0C3E \u0C35\u0C26\u0C3F\u0C32\u0C46\u0C2F\u0C4D\u0C2F\u0C02\u0C21\u0C3F.",
       e_veh:"\u0C26\u0C2F\u0C1A\u0C47\u0C38\u0C3F \u0C35\u0C3E\u0C39\u0C28 \u0C28\u0C02\u0C2C\u0C30\u0C4D \u0C07\u0C35\u0C4D\u0C35\u0C02\u0C21\u0C3F ",
+      e_vtype:"\u0C35\u0C3E\u0C39\u0C28\u0C02 \u0C30\u0C15\u0C02 \u0C0E\u0C02\u0C1A\u0C41\u0C15\u0C4B\u0C02\u0C21\u0C3F ",
       e_status:"\u0C2B\u0C4D\u0C32\u0C3E\u0C1F\u0C4D \u0C38\u0C4D\u0C25\u0C3F\u0C24\u0C3F \u0C0E\u0C02\u0C1A\u0C41\u0C15\u0C4B\u0C02\u0C21\u0C3F.",
       e_tname:"\u0C26\u0C2F\u0C1A\u0C47\u0C38\u0C3F \u0C05\u0C26\u0C4D\u0C26\u0C46\u0C26\u0C3E\u0C30\u0C41 \u0C2A\u0C47\u0C30\u0C41 \u0C07\u0C35\u0C4D\u0C35\u0C02\u0C21\u0C3F.",
       e_tmob:"\u0C26\u0C2F\u0C1A\u0C47\u0C38\u0C3F \u0C38\u0C30\u0C48\u0C28 \u0C05\u0C26\u0C4D\u0C26\u0C46\u0C26\u0C3E\u0C30\u0C41 \u0C2E\u0C4A\u0C2C\u0C48\u0C32\u0C4D \u0C28\u0C02\u0C2C\u0C30\u0C4D \u0C07\u0C35\u0C4D\u0C35\u0C02\u0C21\u0C3F.",
@@ -573,6 +609,8 @@ body.te .done h2{font-family:"Noto Sans Telugu",serif;font-size:21px}
 
   /* ---------- vehicles ---------- */
   var vcount = 0;
+  var vtype = {1:null, 2:null, 3:null};
+
   $("vseg").addEventListener("click", function(e){
     var b = e.target.closest("button");
     if(!b) return;
@@ -585,6 +623,18 @@ body.te .done h2{font-family:"Noto Sans Telugu",serif;font-size:21px}
     });
     clearErr();
     progress();
+  });
+
+  document.querySelectorAll(".seg.vt").forEach(function(seg){
+    seg.addEventListener("click", function(e){
+      var b = e.target.closest("button");
+      if(!b) return;
+      var n = parseInt(this.getAttribute("data-for"), 10);
+      vtype[n] = b.getAttribute("data-vt");
+      [].forEach.call(this.querySelectorAll("button"), function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+      clearErr();
+    });
   });
 
   /* ---------- status branch ---------- */
@@ -656,6 +706,11 @@ body.te .done h2{font-family:"Noto Sans Telugu",serif;font-size:21px}
     for(var i = 1; i <= vcount; i++){
       var vv = $("v" + i).value.trim();
       if(vv.length < 6) return showErr(t.e_veh + i + ".", $("v" + i));
+      if(!vtype[i]){
+        var seg = document.querySelector('.seg.vt[data-for="' + i + '"]');
+        if(seg) seg.scrollIntoView({behavior:"smooth", block:"center"});
+        return showErr(t.e_vtype + i + ".");
+      }
     }
 
     var st = document.querySelector('input[name="st"]:checked');
@@ -669,8 +724,11 @@ body.te .done h2{font-family:"Noto Sans Telugu",serif;font-size:21px}
       owner_email: em || null,
       vehicle_count: vcount,
       vehicle_1: vcount >= 1 ? $("v1").value.trim() : null,
+      vehicle_1_type: vcount >= 1 ? vtype[1] : null,
       vehicle_2: vcount >= 2 ? $("v2").value.trim() : null,
+      vehicle_2_type: vcount >= 2 ? vtype[2] : null,
       vehicle_3: vcount >= 3 ? $("v3").value.trim() : null,
+      vehicle_3_type: vcount >= 3 ? vtype[3] : null,
       status: st.value,
       notes: $("notes").value.trim() || null,
       lang: lang
