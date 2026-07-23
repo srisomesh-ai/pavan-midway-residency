@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#123B2E">
+<title>Resident Information &middot; Pavan Midway Residency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&family=Noto+Sans+Telugu:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12211C; --deep:#123B2E; --deep-2:#0C2A21; --brass:#C08A3E;
+  --paper:#F2EFE6; --paper-2:#E7E2D4; --card:#FBFAF5;
+  --line:#CFC8B5; --muted:#6C7A72; --danger:#8E2B22; --ok:#2F6D4F;
+  --radius:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--deep);color:var(--ink);
+  font-family:Inter,"Noto Sans Telugu",system-ui,-apple-system,Roboto,sans-serif;
+  display:flex;justify-content:center;
+}
+body.te{font-family:"Noto Sans Telugu",Inter,system-ui,sans-serif}
+.vp{width:100%;max-width:430px;background:var(--paper);min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;position:relative}
+
+/* Header */
+.hd{background:var(--deep);color:var(--paper);padding:26px 22px 22px;position:relative}
+.hd::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+  background:linear-gradient(90deg,var(--brass) 0 22%,transparent 22%)}
+.lang{position:absolute;top:20px;right:20px;display:flex;gap:0;border:1px solid rgba(192,138,62,.45);border-radius:20px;overflow:hidden}
+.lang button{
+  background:none;border:0;padding:6px 12px;cursor:pointer;
+  font-family:"Roboto Mono",monospace;font-size:10px;letter-spacing:.1em;
+  color:rgba(242,239,230,.62);
+}
+.lang button.on{background:var(--brass);color:var(--deep-2);font-weight:500}
+.hd .eyebrow{font-family:"Roboto Mono",monospace;font-size:9.5px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--brass);margin:0 0 9px}
+.hd h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:25px;margin:0 0 7px;line-height:1.15}
+body.te .hd h1{font-family:"Noto Sans Telugu",serif;font-size:22px}
+.hd p{margin:0;font-size:13px;color:rgba(242,239,230,.62);line-height:1.5}
+
+/* Progress */
+.prog{height:3px;background:var(--paper-2)}
+.prog i{display:block;height:100%;background:var(--brass);width:0;transition:width .3s}
+
+/* Body */
+.bd{flex:1;padding:22px 22px 34px}
+.grp{margin-bottom:26px}
+.grp-h{
+  font-family:"Roboto Mono",monospace;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--deep);margin:0 0 14px;
+  display:flex;align-items:center;gap:9px;
+}
+body.te .grp-h{font-family:"Noto Sans Telugu",monospace;letter-spacing:.04em;font-size:11px}
+.grp-h::after{content:"";flex:1;height:1px;background:var(--paper-2)}
+
+.f{margin-bottom:16px}
+label{display:block;font-size:13px;font-weight:500;color:var(--ink);margin:0 0 6px}
+label .opt{font-weight:400;color:var(--muted);font-size:11.5px}
+.hint{font-size:11.5px;color:var(--muted);margin:5px 0 0;line-height:1.45}
+
+input[type=text],input[type=tel],input[type=email],input[type=number],input[type=date],select,textarea{
+  width:100%;font-family:inherit;font-size:16px;
+  padding:14px;border:1.5px solid var(--line);border-radius:var(--radius);
+  background:var(--card);color:var(--ink);
+  transition:border-color .15s,box-shadow .15s;
+  appearance:none;-webkit-appearance:none;
+}
+textarea{min-height:80px;resize:vertical}
+select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236C7A72' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 15px center;padding-right:40px;
+}
+input:focus,select:focus,textarea:focus{
+  outline:none;border-color:var(--deep);box-shadow:0 0 0 3.5px rgba(18,59,46,.11);
+}
+input.bad,select.bad{border-color:var(--danger);box-shadow:0 0 0 3.5px rgba(142,43,34,.10)}
+
+/* Choice cards */
+.choices{display:flex;flex-direction:column;gap:9px}
+.ch{
+  display:flex;align-items:flex-start;gap:12px;padding:14px;
+  border:1.5px solid var(--line);border-radius:var(--radius);
+  background:var(--card);cursor:pointer;transition:.15s;
+}
+.ch input{position:absolute;opacity:0;width:0;height:0}
+.ch .rad{
+  width:20px;height:20px;flex-shrink:0;border:2px solid var(--line);
+  border-radius:50%;margin-top:1px;display:grid;place-items:center;transition:.15s;
+}
+.ch .rad::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--paper);transform:scale(0);transition:.15s}
+.ch input:checked ~ .rad{border-color:var(--deep);background:var(--deep)}
+.ch input:checked ~ .rad::after{transform:scale(1)}
+.ch.sel{border-color:var(--deep);background:#EFF3F0}
+.ch .txt strong{display:block;font-size:14px;font-weight:600;margin-bottom:2px}
+.ch .txt span{font-size:12px;color:var(--muted);line-height:1.45}
+
+/* Segmented count */
+.seg{display:flex;gap:7px}
+.seg button{
+  flex:1;padding:13px 0;border:1.5px solid var(--line);border-radius:11px;
+  background:var(--card);font-family:inherit;font-size:14.5px;font-weight:600;
+  color:var(--muted);cursor:pointer;transition:.15s;
+}
+.seg button.on{background:var(--deep);color:var(--paper);border-color:var(--deep)}
+
+/* Conditional reveal */
+.cond{display:none}
+.cond.show{display:block;animation:drop .22s ease}
+@keyframes drop{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+
+/* Alert */
+.alert{display:none;gap:10px;align-items:flex-start;padding:13px;border-radius:11px;
+  font-size:13px;line-height:1.5;margin-bottom:18px}
+.alert.show{display:flex}
+.alert.bad{background:#F7E8E5;color:var(--danger);border:1px solid #E9CEC9}
+.alert svg{flex-shrink:0;margin-top:1px}
+
+/* Submit */
+.go{
+  width:100%;padding:17px;font-family:inherit;font-size:15.5px;font-weight:600;
+  color:var(--paper);background:var(--deep);border:0;border-radius:var(--radius);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:.15s;
+}
+.go:active{transform:scale(.99);background:var(--deep-2)}
+.go[disabled]{opacity:.6}
+.sp{width:15px;height:15px;border:2px solid rgba(242,239,230,.32);border-top-color:var(--paper);
+  border-radius:50%;animation:spin .6s linear infinite;display:none}
+.go.busy .sp{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.foot{padding:16px 22px 26px;text-align:center;border-top:1px solid var(--paper-2)}
+.foot p{margin:0;font-size:11.5px;color:var(--muted);line-height:1.5}
+
+/* Done */
+.done{position:fixed;inset:0;background:var(--deep);display:none;
+  flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  color:var(--paper);padding:34px;text-align:center;z-index:80}
+.done.show{display:flex}
+.tick{width:62px;height:62px;border-radius:50%;border:2px solid var(--brass);display:grid;place-items:center}
+.done h2{font-family:Fraunces,serif;font-weight:600;font-size:24px;margin:0}
+body.te .done h2{font-family:"Noto Sans Telugu",serif;font-size:21px}
+.done p{margin:0;font-size:14px;color:rgba(242,239,230,.62);line-height:1.6;max-width:300px}
+.done .flat{
+  font-family:"Roboto Mono",monospace;font-size:11px;letter-spacing:.12em;
+  color:var(--brass);border:1px solid rgba(192,138,62,.4);
+  padding:7px 15px;border-radius:20px;margin-top:6px;
+}
+.again{margin-top:12px;background:none;border:1px solid rgba(242,239,230,.28);
+  color:var(--paper);padding:12px 22px;border-radius:11px;font-family:inherit;
+  font-size:13.5px;cursor:pointer}
+
+.load{padding:70px 22px;text-align:center;color:var(--muted);font-size:13.5px}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+</style>
+</head>
+<body>
+<div class="vp">
+
+  <header class="hd">
+    <div class="lang">
+      <button id="btnEn" class="on">EN</button>
+      <button id="btnTe">తె</button>
+    </div>
+    <p class="eyebrow" data-t="eyebrow">Resident Information</p>
+    <h1 data-t="title">Pavan Midway Residency</h1>
+    <p data-t="intro">Please fill in your flat details. This helps the committee keep records up to date.</p>
+  </header>
+
+  <div class="prog"><i id="prog"></i></div>
+
+  <div class="bd">
+    <div class="load" id="load" data-t="loading">Loading flat list&hellip;</div>
+
+    <form id="form" hidden novalidate>
+
+      <div class="alert bad" id="alert" role="alert">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16.5v.01"/>
+        </svg>
+        <span id="alertMsg"></span>
+      </div>
+
+      <!-- FLAT -->
+      <div class="grp">
+        <p class="grp-h" data-t="g_flat">Your flat</p>
+        <div class="f">
+          <label for="flat" data-t="l_flat">Flat number</label>
+          <select id="flat" required></select>
+        </div>
+      </div>
+
+      <!-- OWNER -->
+      <div class="grp">
+        <p class="grp-h" data-t="g_owner">Owner details</p>
+        <div class="f">
+          <label for="oname" data-t="l_oname">Owner name</label>
+          <input type="text" id="oname" autocomplete="name" required>
+        </div>
+        <div class="f">
+          <label for="omob" data-t="l_omob">Mobile number</label>
+          <input type="tel" id="omob" inputmode="numeric" maxlength="10" autocomplete="tel" required>
+        </div>
+        <div class="f">
+          <label for="omob2">
+            <span data-t="l_omob2">Second mobile number</span>
+            <span class="opt" data-t="optional">(optional)</span>
+          </label>
+          <input type="tel" id="omob2" inputmode="numeric" maxlength="10">
+        </div>
+        <div class="f">
+          <label for="omail">
+            <span data-t="l_email">Email</span>
+            <span class="opt" data-t="optional">(optional)</span>
+          </label>
+          <input type="email" id="omail" inputmode="email" autocapitalize="none" autocorrect="off">
+        </div>
+      </div>
+
+      <!-- VEHICLES -->
+      <div class="grp">
+        <p class="grp-h" data-t="g_veh">Vehicles</p>
+        <div class="f">
+          <label data-t="l_vcount">How many vehicles?</label>
+          <div class="seg" id="vseg">
+            <button type="button" data-v="0" class="on">0</button>
+            <button type="button" data-v="1">1</button>
+            <button type="button" data-v="2">2</button>
+            <button type="button" data-v="3">3</button>
+          </div>
+        </div>
+        <div class="cond" id="vwrap">
+          <div class="f" id="vf1">
+            <label for="v1" data-t="l_v1">Vehicle 1 number</label>
+            <input type="text" id="v1" placeholder="TS07AB1234" autocapitalize="characters">
+          </div>
+          <div class="f" id="vf2">
+            <label for="v2" data-t="l_v2">Vehicle 2 number</label>
+            <input type="text" id="v2" placeholder="TS07CD5678" autocapitalize="characters">
+          </div>
+          <div class="f" id="vf3">
+            <label for="v3" data-t="l_v3">Vehicle 3 number</label>
+            <input type="text" id="v3" placeholder="TS07EF9012" autocapitalize="characters">
+          </div>
+        </div>
+      </div>
+
+      <!-- STATUS -->
+      <div class="grp">
+        <p class="grp-h" data-t="g_status">Flat status</p>
+        <div class="choices" id="statusWrap">
+          <label class="ch">
+            <input type="radio" name="st" value="owner">
+            <span class="rad"></span>
+            <span class="txt"><strong data-t="s_owner">Owner is staying</strong><span data-t="s_owner_d">I live in this flat myself</span></span>
+          </label>
+          <label class="ch">
+            <input type="radio" name="st" value="rented">
+            <span class="rad"></span>
+            <span class="txt"><strong data-t="s_rent">Given on rent</strong><span data-t="s_rent_d">A tenant is staying here</span></span>
+          </label>
+          <label class="ch">
+            <input type="radio" name="st" value="vacant">
+            <span class="rad"></span>
+            <span class="txt"><strong data-t="s_vac">Vacant</strong><span data-t="s_vac_d">Nobody is staying at present</span></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- OWNER OCCUPIED -->
+      <div class="grp cond" id="cOwner">
+        <p class="grp-h" data-t="g_family">Family</p>
+        <div class="f">
+          <label for="fam">
+            <span data-t="l_fam">How many people stay in the flat</span>
+            <span class="opt" data-t="optional">(optional)</span>
+          </label>
+          <input type="number" id="fam" inputmode="numeric" min="1" max="30">
+        </div>
+      </div>
+
+      <!-- RENTED -->
+      <div class="grp cond" id="cRent">
+        <p class="grp-h" data-t="g_tenant">Tenant details</p>
+        <div class="f">
+          <label for="tname" data-t="l_tname">Tenant name</label>
+          <input type="text" id="tname">
+        </div>
+        <div class="f">
+          <label for="tmob" data-t="l_tmob">Tenant mobile number</label>
+          <input type="tel" id="tmob" inputmode="numeric" maxlength="10">
+        </div>
+        <div class="f">
+          <label for="tmob2">
+            <span data-t="l_tmob2">Second tenant mobile</span>
+            <span class="opt" data-t="optional">(optional)</span>
+          </label>
+          <input type="tel" id="tmob2" inputmode="numeric" maxlength="10">
+        </div>
+        <div class="f">
+          <label for="tfam">
+            <span data-t="l_tfam">How many people stay</span>
+            <span class="opt" data-t="optional">(optional)</span>
+          </label>
+          <input type="number" id="tfam" inputmode="numeric" min="1" max="30">
+        </div>
+        <div class="f">
+          <label for="rent">
+            <span data-t="l_rent">Monthly rent</span>
+            <span class="opt" data-t="optional">(optional)</span>
+          </label>
+          <input type="number" id="rent" inputmode="numeric" min="0">
+        </div>
+        <div class="f">
+          <label for="ls">
+            <span data-t="l_ls">Lease start date</span>
+            <span class="opt" data-t="optional">(optional)</span>
+          </label>
+          <input type="date" id="ls">
+        </div>
+        <div class="f">
+          <label for="le">
+            <span data-t="l_le">Lease end date</span>
+            <span class="opt" data-t="optional">(optional)</span>
+          </label>
+          <input type="date" id="le">
+        </div>
+      </div>
+
+      <!-- VACANT -->
+      <div class="grp cond" id="cVac">
+        <p class="grp-h" data-t="g_vacant">Vacant details</p>
+        <div class="f">
+          <label for="vsince" data-t="l_vsince">Vacant since when</label>
+          <input type="text" id="vsince" data-ph="ph_vsince" placeholder="e.g. 3 months, or January 2026">
+        </div>
+        <div class="f">
+          <label data-t="l_ltr">Are you looking to give it on rent?</label>
+          <div class="choices">
+            <label class="ch">
+              <input type="radio" name="ltr" value="1">
+              <span class="rad"></span>
+              <span class="txt"><strong data-t="yes">Yes</strong></span>
+            </label>
+            <label class="ch">
+              <input type="radio" name="ltr" value="0">
+              <span class="rad"></span>
+              <span class="txt"><strong data-t="no">No</strong></span>
+            </label>
+          </div>
+        </div>
+        <div class="cond" id="cRentAmt">
+          <div class="f">
+            <label for="erent">
+              <span data-t="l_erent">Expected monthly rent</span>
+              <span class="opt" data-t="optional">(optional)</span>
+            </label>
+            <input type="number" id="erent" inputmode="numeric" min="0">
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTES -->
+      <div class="grp">
+        <p class="grp-h" data-t="g_notes">Anything else</p>
+        <div class="f">
+          <label for="notes">
+            <span data-t="l_notes">Notes for the committee</span>
+            <span class="opt" data-t="optional">(optional)</span>
+          </label>
+          <textarea id="notes" maxlength="1000"></textarea>
+        </div>
+      </div>
+
+      <button type="submit" class="go" id="btn">
+        <span class="sp"></span>
+        <span class="lbl" data-t="submit">Submit details</span>
+      </button>
+    </form>
+  </div>
+
+  <footer class="foot">
+    <p data-t="foot">Your details go to the society committee for review. They will not appear in the app until approved.</p>
+  </footer>
+</div>
+
+<div class="done" id="done">
+  <div class="tick">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C08A3E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+  </div>
+  <h2 data-t="d_title">Details received</h2>
+  <div class="flat" id="doneFlat"></div>
+  <p data-t="d_body">Thank you. The committee will review your details and add them to the society records.</p>
+  <button class="again" id="again" data-t="d_again">Submit another flat</button>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var API = "api/";
+
+  var T = {
+    en:{
+      eyebrow:"Resident Information",
+      title:"Pavan Midway Residency",
+      intro:"Please fill in your flat details. This helps the committee keep records up to date.",
+      loading:"Loading flat list\u2026",
+      g_flat:"Your flat", l_flat:"Flat number",
+      g_owner:"Owner details", l_oname:"Owner name", l_omob:"Mobile number",
+      l_omob2:"Second mobile number", l_email:"Email",
+      g_veh:"Vehicles", l_vcount:"How many vehicles?",
+      l_v1:"Vehicle 1 number", l_v2:"Vehicle 2 number", l_v3:"Vehicle 3 number",
+      g_status:"Flat status",
+      s_owner:"Owner is staying", s_owner_d:"I live in this flat myself",
+      s_rent:"Given on rent", s_rent_d:"A tenant is staying here",
+      s_vac:"Vacant", s_vac_d:"Nobody is staying at present",
+      g_family:"Family", l_fam:"How many people stay in the flat",
+      g_tenant:"Tenant details", l_tname:"Tenant name", l_tmob:"Tenant mobile number",
+      l_tmob2:"Second tenant mobile", l_tfam:"How many people stay",
+      l_rent:"Monthly rent", l_ls:"Lease start date", l_le:"Lease end date",
+      g_vacant:"Vacant details", l_vsince:"Vacant since when",
+      ph_vsince:"e.g. 3 months, or January 2026",
+      l_ltr:"Are you looking to give it on rent?", yes:"Yes", no:"No",
+      l_erent:"Expected monthly rent",
+      g_notes:"Anything else", l_notes:"Notes for the committee",
+      optional:"(optional)", submit:"Submit details",
+      foot:"Your details go to the society committee for review. They will not appear in the app until approved.",
+      d_title:"Details received", d_body:"Thank you. The committee will review your details and add them to the society records.",
+      d_again:"Submit another flat",
+      selectFlat:"Select your flat",
+      e_flat:"Please select your flat number.",
+      e_name:"Please enter the owner name.",
+      e_mob:"Please enter a valid 10 digit mobile number.",
+      e_mob2:"The second mobile number is not valid.",
+      e_mail:"Please enter a valid email address, or leave it blank.",
+      e_veh:"Please enter vehicle number ",
+      e_status:"Please choose whether the flat is owner occupied, rented, or vacant.",
+      e_tname:"Please enter the tenant name.",
+      e_tmob:"Please enter a valid tenant mobile number.",
+      e_ltr:"Please choose yes or no.",
+      e_net:"Cannot reach the server. Check your internet connection and try again."
+    },
+    te:{
+      eyebrow:"\u0C28\u0C3F\u0C35\u0C3E\u0C38\u0C3F\u0C24\u0C41\u0C32 \u0C35\u0C3F\u0C35\u0C30\u0C3E\u0C32\u0C41",
+      title:"\u0C2A\u0C35\u0C28\u0C4D \u0C2E\u0C3F\u0C21\u0C4D\u200C\u0C35\u0C47 \u0C30\u0C46\u0C38\u0C3F\u0C21\u0C46\u0C28\u0C4D\u0C38\u0C40",
+      intro:"\u0C26\u0C2F\u0C1A\u0C47\u0C38\u0C3F \u0C2E\u0C40 \u0C2B\u0C4D\u0C32\u0C3E\u0C1F\u0C4D \u0C35\u0C3F\u0C35\u0C30\u0C3E\u0C32\u0C41 \u0C28\u0C2E\u0C4B\u0C26\u0C41 \u0C1A\u0C47\u0C2F\u0C02\u0C21\u0C3F. \u0C07\u0C26\u0C3F \u0C15\u0C2E\u0C3F\u0C1F\u0C40\u0C15\u0C3F \u0C30\u0C3F\u0C15\u0C3E\u0C30\u0C4D\u0C21\u0C41\u0C32\u0C41 \u0C28\u0C35\u0C40\u0C15\u0C30\u0C3F\u0C02\u0C1A\u0C21\u0C02\u0C32\u0C4B \u0C38\u0C39\u0C3E\u0C2F\u0C2A\u0C21\u0C41\u0C24\u0C41\u0C02\u0C26\u0C3F.",
+      loading:"\u0C2B\u0C4D\u0C32\u0C3E\u0C1F\u0C4D \u0C1C\u0C3E\u0C2C\u0C3F\u0C24\u0C3E \u0C32\u0C4B\u0C21\u0C4D \u0C05\u0C35\u0C41\u0C24\u0C4B\u0C02\u0C26\u0C3F\u2026",
+      g_flat:"\u0C2E\u0C40 \u0C2B\u0C4D\u0C32\u0C3E\u0C1F\u0C4D", l_flat:"\u0C2B\u0C4D\u0C32\u0C3E\u0C1F\u0C4D \u0C28\u0C02\u0C2C\u0C30\u0C4D",
+      g_owner:"\u0C2F\u0C1C\u0C2E\u0C3E\u0C28\u0C3F \u0C35\u0C3F\u0C35\u0C30\u0C3E\u0C32\u0C41",
+      l_oname:"\u0C2F\u0C1C\u0C2E\u0C3E\u0C28\u0C3F \u0C2A\u0C47\u0C30\u0C41", l_omob:"\u0C2E\u0C4A\u0C2C\u0C48\u0C32\u0C4D \u0C28\u0C02\u0C2C\u0C30\u0C4D",
+      l_omob2:"\u0C30\u0C46\u0C02\u0C21\u0C35 \u0C2E\u0C4A\u0C2C\u0C48\u0C32\u0C4D \u0C28\u0C02\u0C2C\u0C30\u0C4D", l_email:"\u0C08\u0C2E\u0C46\u0C2F\u0C3F\u0C32\u0C4D",
+      g_veh:"\u0C35\u0C3E\u0C39\u0C28\u0C3E\u0C32\u0C41", l_vcount:"\u0C0E\u0C28\u0C4D\u0C28\u0C3F \u0C35\u0C3E\u0C39\u0C28\u0C3E\u0C32\u0C41 \u0C09\u0C28\u0C4D\u0C28\u0C3E\u0C2F\u0C3F?",
+      l_v1:"\u0C35\u0C3E\u0C39\u0C28\u0C02 1 \u0C28\u0C02\u0C2C\u0C30\u0C4D", l_v2:"\u0C35\u0C3E\u0C39\u0C28\u0C02 2 \u0C28\u0C02\u0C2C\u0C30\u0C4D", l_v3:"\u0C35\u0C3E\u0C39\u0C28\u0C02 3 \u0C28\u0C02\u0C2C\u0C30\u0C4D",
+      g_status:"\u0C2B\u0C4D\u0C32\u0C3E\u0C1F\u0C4D \u0C38\u0C4D\u0C25\u0C3F\u0C24\u0C3F",
+      s_owner:"\u0C2F\u0C1C\u0C2E\u0C3E\u0C28\u0C3F \u0C09\u0C02\u0C1F\u0C41\u0C28\u0C4D\u0C28\u0C3E\u0C30\u0C41", s_owner_d:"\u0C28\u0C47\u0C28\u0C47 \u0C08 \u0C2B\u0C4D\u0C32\u0C3E\u0C1F\u0C4D\u0C32\u0C4B \u0C09\u0C02\u0C1F\u0C41\u0C28\u0C4D\u0C28\u0C3E\u0C28\u0C41",
+      s_rent:"\u0C05\u0C26\u0C4D\u0C26\u0C46\u0C15\u0C3F \u0C07\u0C1A\u0C4D\u0C1A\u0C3E\u0C30\u0C41", s_rent_d:"\u0C05\u0C26\u0C4D\u0C26\u0C46\u0C26\u0C3E\u0C30\u0C41 \u0C09\u0C02\u0C1F\u0C41\u0C28\u0C4D\u0C28\u0C3E\u0C30\u0C41",
+      s_vac:"\u0C16\u0C3E\u0C33\u0C40\u0C17\u0C3E \u0C09\u0C02\u0C26\u0C3F", s_vac_d:"\u0C2A\u0C4D\u0C30\u0C38\u0C4D\u0C24\u0C41\u0C24\u0C02 \u0C0E\u0C35\u0C30\u0C42 \u0C09\u0C02\u0C21\u0C1F\u0C02 \u0C32\u0C47\u0C26\u0C41",
+      g_family:"\u0C15\u0C41\u0C1F\u0C41\u0C02\u0C2C\u0C02", l_fam:"\u0C2B\u0C4D\u0C32\u0C3E\u0C1F\u0C4D\u0C32\u0C4B \u0C0E\u0C02\u0C24\u0C2E\u0C02\u0C26\u0C3F \u0C09\u0C02\u0C1F\u0C3E\u0C30\u0C41",
+      g_tenant:"\u0C05\u0C26\u0C4D\u0C26\u0C46\u0C26\u0C3E\u0C30\u0C41 \u0C35\u0C3F\u0C35\u0C30\u0C3E\u0C32\u0C41",
+      l_tname:"\u0C05\u0C26\u0C4D\u0C26\u0C46\u0C26\u0C3E\u0C30\u0C41 \u0C2A\u0C47\u0C30\u0C41", l_tmob:"\u0C05\u0C26\u0C4D\u0C26\u0C46\u0C26\u0C3E\u0C30\u0C41 \u0C2E\u0C4A\u0C2C\u0C48\u0C32\u0C4D \u0C28\u0C02\u0C2C\u0C30\u0C4D",
+      l_tmob2:"\u0C30\u0C46\u0C02\u0C21\u0C35 \u0C2E\u0C4A\u0C2C\u0C48\u0C32\u0C4D \u0C28\u0C02\u0C2C\u0C30\u0C4D", l_tfam:"\u0C0E\u0C02\u0C24\u0C2E\u0C02\u0C26\u0C3F \u0C09\u0C02\u0C1F\u0C3E\u0C30\u0C41",
+      l_rent:"\u0C28\u0C46\u0C32\u0C35\u0C3E\u0C30\u0C40 \u0C05\u0C26\u0C4D\u0C26\u0C46", l_ls:"\u0C32\u0C40\u0C1C\u0C41 \u0C2A\u0C4D\u0C30\u0C3E\u0C30\u0C02\u0C2D \u0C24\u0C47\u0C26\u0C40", l_le:"\u0C32\u0C40\u0C1C\u0C41 \u0C2E\u0C41\u0C17\u0C3F\u0C02\u0C2A\u0C41 \u0C24\u0C47\u0C26\u0C40",
+      g_vacant:"\u0C16\u0C3E\u0C33\u0C40 \u0C35\u0C3F\u0C35\u0C30\u0C3E\u0C32\u0C41", l_vsince:"\u0C0E\u0C2A\u0C4D\u0C2A\u0C1F\u0C3F \u0C28\u0C41\u0C02\u0C1A\u0C3F \u0C16\u0C3E\u0C33\u0C40\u0C17\u0C3E \u0C09\u0C02\u0C26\u0C3F",
+      ph_vsince:"\u0C09\u0C26\u0C3E: 3 \u0C28\u0C46\u0C32\u0C32\u0C41, \u0C32\u0C47\u0C26\u0C3E \u0C1C\u0C28\u0C35\u0C30\u0C3F 2026",
+      l_ltr:"\u0C05\u0C26\u0C4D\u0C26\u0C46\u0C15\u0C3F \u0C07\u0C35\u0C4D\u0C35\u0C3E\u0C32\u0C28\u0C41\u0C15\u0C41\u0C02\u0C1F\u0C41\u0C28\u0C4D\u0C28\u0C3E\u0C30\u0C3E?", yes:"\u0C05\u0C35\u0C41\u0C28\u0C41", no:"\u0C15\u0C3E\u0C26\u0C41",
+      l_erent:"\u0C06\u0C36\u0C3F\u0C38\u0C4D\u0C24\u0C41\u0C28\u0C4D\u0C28 \u0C28\u0C46\u0C32\u0C35\u0C3E\u0C30\u0C40 \u0C05\u0C26\u0C4D\u0C26\u0C46",
+      g_notes:"\u0C07\u0C24\u0C30 \u0C35\u0C3F\u0C35\u0C30\u0C3E\u0C32\u0C41", l_notes:"\u0C15\u0C2E\u0C3F\u0C1F\u0C40\u0C15\u0C3F \u0C38\u0C02\u0C26\u0C47\u0C36\u0C02",
+      optional:"(\u0C10\u0C1A\u0C4D\u0C1B\u0C3F\u0C15\u0C02)", submit:"\u0C35\u0C3F\u0C35\u0C30\u0C3E\u0C32\u0C41 \u0C38\u0C2E\u0C30\u0C4D\u0C2A\u0C3F\u0C02\u0C1A\u0C02\u0C21\u0C3F",
+      foot:"\u0C2E\u0C40 \u0C35\u0C3F\u0C35\u0C30\u0C3E\u0C32\u0C41 \u0C38\u0C4A\u0C38\u0C48\u0C1F\u0C40 \u0C15\u0C2E\u0C3F\u0C1F\u0C40 \u0C2A\u0C30\u0C3F\u0C36\u0C40\u0C32\u0C28\u0C15\u0C41 \u0C35\u0C46\u0C33\u0C4D\u0C24\u0C3E\u0C2F\u0C3F. \u0C06\u0C2E\u0C4B\u0C26\u0C02 \u0C24\u0C30\u0C4D\u0C35\u0C3E\u0C24 \u0C2E\u0C3E\u0C24\u0C4D\u0C30\u0C2E\u0C47 \u0C2F\u0C3E\u0C2A\u0C4D\u200C\u0C32\u0C4B \u0C15\u0C28\u0C3F\u0C2A\u0C3F\u0C38\u0C4D\u0C24\u0C3E\u0C2F\u0C3F.",
+      d_title:"\u0C35\u0C3F\u0C35\u0C30\u0C3E\u0C32\u0C41 \u0C05\u0C02\u0C26\u0C3E\u0C2F\u0C3F",
+      d_body:"\u0C27\u0C28\u0C4D\u0C2F\u0C35\u0C3E\u0C26\u0C3E\u0C32\u0C41. \u0C15\u0C2E\u0C3F\u0C1F\u0C40 \u0C2E\u0C40 \u0C35\u0C3F\u0C35\u0C30\u0C3E\u0C32\u0C28\u0C41 \u0C2A\u0C30\u0C3F\u0C36\u0C40\u0C32\u0C3F\u0C02\u0C1A\u0C3F \u0C38\u0C4A\u0C38\u0C48\u0C1F\u0C40 \u0C30\u0C3F\u0C15\u0C3E\u0C30\u0C4D\u0C21\u0C41\u0C32\u0C32\u0C4B \u0C1A\u0C47\u0C30\u0C4D\u0C1A\u0C41\u0C24\u0C41\u0C02\u0C26\u0C3F.",
+      d_again:"\u0C2E\u0C30\u0C4A\u0C15 \u0C2B\u0C4D\u0C32\u0C3E\u0C1F\u0C4D \u0C35\u0C3F\u0C35\u0C30\u0C3E\u0C32\u0C41",
+      selectFlat:"\u0C2E\u0C40 \u0C2B\u0C4D\u0C32\u0C3E\u0C1F\u0C4D \u0C0E\u0C02\u0C1A\u0C41\u0C15\u0C4B\u0C02\u0C21\u0C3F",
+      e_flat:"\u0C26\u0C2F\u0C1A\u0C47\u0C38\u0C3F \u0C2E\u0C40 \u0C2B\u0C4D\u0C32\u0C3E\u0C1F\u0C4D \u0C28\u0C02\u0C2C\u0C30\u0C4D \u0C0E\u0C02\u0C1A\u0C41\u0C15\u0C4B\u0C02\u0C21\u0C3F.",
+      e_name:"\u0C26\u0C2F\u0C1A\u0C47\u0C38\u0C3F \u0C2F\u0C1C\u0C2E\u0C3E\u0C28\u0C3F \u0C2A\u0C47\u0C30\u0C41 \u0C28\u0C2E\u0C4B\u0C26\u0C41 \u0C1A\u0C47\u0C2F\u0C02\u0C21\u0C3F.",
+      e_mob:"\u0C26\u0C2F\u0C1A\u0C47\u0C38\u0C3F \u0C38\u0C30\u0C48\u0C28 10 \u0C05\u0C02\u0C15\u0C46\u0C32 \u0C2E\u0C4A\u0C2C\u0C48\u0C32\u0C4D \u0C28\u0C02\u0C2C\u0C30\u0C4D \u0C07\u0C35\u0C4D\u0C35\u0C02\u0C21\u0C3F.",
+      e_mob2:"\u0C30\u0C46\u0C02\u0C21\u0C35 \u0C2E\u0C4A\u0C2C\u0C48\u0C32\u0C4D \u0C28\u0C02\u0C2C\u0C30\u0C4D \u0C38\u0C30\u0C3F\u0C17\u0C4D\u0C17\u0C3E \u0C32\u0C47\u0C26\u0C41.",
+      e_mail:"\u0C38\u0C30\u0C48\u0C28 \u0C08\u0C2E\u0C46\u0C2F\u0C3F\u0C32\u0C4D \u0C07\u0C35\u0C4D\u0C35\u0C02\u0C21\u0C3F, \u0C32\u0C47\u0C26\u0C3E \u0C16\u0C3E\u0C33\u0C40\u0C17\u0C3E \u0C35\u0C26\u0C3F\u0C32\u0C46\u0C2F\u0C4D\u0C2F\u0C02\u0C21\u0C3F.",
+      e_veh:"\u0C26\u0C2F\u0C1A\u0C47\u0C38\u0C3F \u0C35\u0C3E\u0C39\u0C28 \u0C28\u0C02\u0C2C\u0C30\u0C4D \u0C07\u0C35\u0C4D\u0C35\u0C02\u0C21\u0C3F ",
+      e_status:"\u0C2B\u0C4D\u0C32\u0C3E\u0C1F\u0C4D \u0C38\u0C4D\u0C25\u0C3F\u0C24\u0C3F \u0C0E\u0C02\u0C1A\u0C41\u0C15\u0C4B\u0C02\u0C21\u0C3F.",
+      e_tname:"\u0C26\u0C2F\u0C1A\u0C47\u0C38\u0C3F \u0C05\u0C26\u0C4D\u0C26\u0C46\u0C26\u0C3E\u0C30\u0C41 \u0C2A\u0C47\u0C30\u0C41 \u0C07\u0C35\u0C4D\u0C35\u0C02\u0C21\u0C3F.",
+      e_tmob:"\u0C26\u0C2F\u0C1A\u0C47\u0C38\u0C3F \u0C38\u0C30\u0C48\u0C28 \u0C05\u0C26\u0C4D\u0C26\u0C46\u0C26\u0C3E\u0C30\u0C41 \u0C2E\u0C4A\u0C2C\u0C48\u0C32\u0C4D \u0C28\u0C02\u0C2C\u0C30\u0C4D \u0C07\u0C35\u0C4D\u0C35\u0C02\u0C21\u0C3F.",
+      e_ltr:"\u0C05\u0C35\u0C41\u0C28\u0C41 \u0C32\u0C47\u0C26\u0C3E \u0C15\u0C3E\u0C26\u0C41 \u0C0E\u0C02\u0C1A\u0C41\u0C15\u0C4B\u0C02\u0C21\u0C3F.",
+      e_net:"\u0C38\u0C30\u0C4D\u0C35\u0C30\u0C4D\u200C\u0C15\u0C41 \u0C15\u0C28\u0C46\u0C15\u0C4D\u0C1F\u0C4D \u0C15\u0C3E\u0C35\u0C21\u0C02 \u0C32\u0C47\u0C26\u0C41. \u0C07\u0C02\u0C1F\u0C30\u0C4D\u0C28\u0C46\u0C1F\u0C4D \u0C1A\u0C42\u0C38\u0C3F \u0C2E\u0C33\u0C4D\u0C32\u0C40 \u0C2A\u0C4D\u0C30\u0C2F\u0C24\u0C4D\u0C28\u0C3F\u0C02\u0C1A\u0C02\u0C21\u0C3F."
+    }
+  };
+
+  var lang = "en";
+  var flatData = null;
+
+  var $ = function(id){ return document.getElementById(id); };
+  var form = $("form"), alertB = $("alert"), alertM = $("alertMsg");
+
+  /* ---------- language ---------- */
+  function applyLang(){
+    var t = T[lang];
+    document.documentElement.lang = lang;
+    document.body.classList.toggle("te", lang === "te");
+    document.querySelectorAll("[data-t]").forEach(function(el){
+      var k = el.getAttribute("data-t");
+      if(t[k]) el.textContent = t[k];
+    });
+    document.querySelectorAll("[data-ph]").forEach(function(el){
+      var k = el.getAttribute("data-ph");
+      if(t[k]) el.placeholder = t[k];
+    });
+    $("btnEn").classList.toggle("on", lang === "en");
+    $("btnTe").classList.toggle("on", lang === "te");
+    if(flatData) buildFlats();
+  }
+
+  $("btnEn").addEventListener("click", function(){ lang = "en"; applyLang(); });
+  $("btnTe").addEventListener("click", function(){ lang = "te"; applyLang(); });
+
+  /* ---------- alerts ---------- */
+  function showErr(msg, focusEl){
+    alertM.textContent = msg;
+    alertB.classList.add("show");
+    if(focusEl){
+      focusEl.classList.add("bad");
+      focusEl.focus();
+      focusEl.scrollIntoView({behavior:"smooth", block:"center"});
+    } else {
+      alertB.scrollIntoView({behavior:"smooth", block:"center"});
+    }
+  }
+  function clearErr(){
+    alertB.classList.remove("show");
+    document.querySelectorAll(".bad").forEach(function(e){ e.classList.remove("bad"); });
+  }
+
+  /* ---------- load flats ---------- */
+  fetch(API + "public_flats.php")
+    .then(function(r){ return r.text(); })
+    .then(function(txt){
+      var d;
+      try{ d = JSON.parse(txt); }
+      catch(e){ throw new Error("Server did not return valid data."); }
+      if(!d.ok) throw new Error(d.error || "Could not load the flat list.");
+      flatData = d.blocks;
+      buildFlats();
+      $("load").hidden = true;
+      form.hidden = false;
+    })
+    .catch(function(e){
+      $("load").innerHTML = '<div style="color:#8E2B22">' + (e.message || "Could not load.") +
+        '<br><br><button onclick="location.reload()" style="padding:10px 18px;border:0;border-radius:9px;background:#123B2E;color:#F2EFE6;font-family:inherit;cursor:pointer">Try again</button></div>';
+    });
+
+  function buildFlats(){
+    var sel = $("flat");
+    var cur = sel.value;
+    sel.innerHTML = '<option value="">' + T[lang].selectFlat + '</option>';
+    flatData.forEach(function(b){
+      var g = document.createElement("optgroup");
+      g.label = b.block_name;
+      b.flats.forEach(function(f){
+        var o = document.createElement("option");
+        o.value = f.id;
+        o.textContent = f.flat_no + "  \u00B7  " + f.floor_label;
+        o.setAttribute("data-code", f.flat_code);
+        g.appendChild(o);
+      });
+      sel.appendChild(g);
+    });
+    if(cur) sel.value = cur;
+  }
+
+  /* ---------- vehicles ---------- */
+  var vcount = 0;
+  $("vseg").addEventListener("click", function(e){
+    var b = e.target.closest("button");
+    if(!b) return;
+    vcount = parseInt(b.getAttribute("data-v"), 10);
+    [].forEach.call(this.querySelectorAll("button"), function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+    $("vwrap").classList.toggle("show", vcount > 0);
+    ["vf1","vf2","vf3"].forEach(function(id, i){
+      $(id).style.display = (i < vcount) ? "" : "none";
+    });
+    clearErr();
+    progress();
+  });
+
+  /* ---------- status branch ---------- */
+  document.querySelectorAll('input[name="st"]').forEach(function(r){
+    r.addEventListener("change", function(){
+      document.querySelectorAll('#statusWrap .ch').forEach(function(c){ c.classList.remove("sel"); });
+      this.closest(".ch").classList.add("sel");
+      $("cOwner").classList.toggle("show", this.value === "owner");
+      $("cRent").classList.toggle("show",  this.value === "rented");
+      $("cVac").classList.toggle("show",   this.value === "vacant");
+      clearErr();
+      progress();
+    });
+  });
+
+  document.querySelectorAll('input[name="ltr"]').forEach(function(r){
+    r.addEventListener("change", function(){
+      this.closest(".choices").querySelectorAll(".ch").forEach(function(c){ c.classList.remove("sel"); });
+      this.closest(".ch").classList.add("sel");
+      $("cRentAmt").classList.toggle("show", this.value === "1");
+      clearErr();
+    });
+  });
+
+  /* ---------- progress bar ---------- */
+  function progress(){
+    var done = 0, total = 4;
+    if($("flat").value) done++;
+    if($("oname").value.trim()) done++;
+    if($("omob").value.trim().length === 10) done++;
+    if(document.querySelector('input[name="st"]:checked')) done++;
+    $("prog").style.width = Math.round(done / total * 100) + "%";
+  }
+  ["flat","oname","omob"].forEach(function(id){
+    $(id).addEventListener("input", function(){ clearErr(); progress(); });
+    $(id).addEventListener("change", progress);
+  });
+
+  /* digits only on phone fields */
+  ["omob","omob2","tmob","tmob2"].forEach(function(id){
+    $(id).addEventListener("input", function(){
+      this.value = this.value.replace(/\D/g, "").slice(0, 10);
+    });
+  });
+  ["v1","v2","v3"].forEach(function(id){
+    $(id).addEventListener("input", function(){
+      this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 15);
+    });
+  });
+
+  function validMobile(v){ return /^[6-9]\d{9}$/.test(v); }
+
+  /* ---------- submit ---------- */
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    clearErr();
+    var t = T[lang];
+
+    if(!$("flat").value)                       return showErr(t.e_flat, $("flat"));
+    if($("oname").value.trim().length < 2)     return showErr(t.e_name, $("oname"));
+    if(!validMobile($("omob").value.trim()))   return showErr(t.e_mob, $("omob"));
+
+    var m2 = $("omob2").value.trim();
+    if(m2 && !validMobile(m2))                 return showErr(t.e_mob2, $("omob2"));
+
+    var em = $("omail").value.trim();
+    if(em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return showErr(t.e_mail, $("omail"));
+
+    for(var i = 1; i <= vcount; i++){
+      var vv = $("v" + i).value.trim();
+      if(vv.length < 6) return showErr(t.e_veh + i + ".", $("v" + i));
+    }
+
+    var st = document.querySelector('input[name="st"]:checked');
+    if(!st) return showErr(t.e_status);
+
+    var body = {
+      flat_id: parseInt($("flat").value, 10),
+      owner_name: $("oname").value.trim(),
+      owner_mobile: $("omob").value.trim(),
+      owner_mobile_alt: m2 || null,
+      owner_email: em || null,
+      vehicle_count: vcount,
+      vehicle_1: vcount >= 1 ? $("v1").value.trim() : null,
+      vehicle_2: vcount >= 2 ? $("v2").value.trim() : null,
+      vehicle_3: vcount >= 3 ? $("v3").value.trim() : null,
+      status: st.value,
+      notes: $("notes").value.trim() || null,
+      lang: lang
+    };
+
+    if(st.value === "owner"){
+      body.family_members = $("fam").value || null;
+
+    } else if(st.value === "rented"){
+      if($("tname").value.trim().length < 2)      return showErr(t.e_tname, $("tname"));
+      if(!validMobile($("tmob").value.trim()))    return showErr(t.e_tmob, $("tmob"));
+      var tm2 = $("tmob2").value.trim();
+      if(tm2 && !validMobile(tm2))                return showErr(t.e_mob2, $("tmob2"));
+      body.tenant_name = $("tname").value.trim();
+      body.tenant_mobile = $("tmob").value.trim();
+      body.tenant_mobile_alt = tm2 || null;
+      body.tenant_family = $("tfam").value || null;
+      body.rent_amount = $("rent").value || null;
+      body.lease_start = $("ls").value || null;
+      body.lease_end = $("le").value || null;
+
+    } else {
+      var ltr = document.querySelector('input[name="ltr"]:checked');
+      if(!ltr) return showErr(t.e_ltr);
+      body.vacant_since = $("vsince").value.trim() || null;
+      body.looking_to_rent = ltr.value;
+      if(ltr.value === "1") body.expected_rent = $("erent").value || null;
+    }
+
+    var btn = $("btn");
+    btn.disabled = true; btn.classList.add("busy");
+
+    fetch(API + "submit_details.php", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify(body)
+    })
+    .then(function(r){ return r.text().then(function(x){ return {status:r.status, text:x}; }); })
+    .then(function(res){
+      var d;
+      try{ d = JSON.parse(res.text); }
+      catch(err){ throw new Error("Server error. Please try again."); }
+
+      btn.disabled = false; btn.classList.remove("busy");
+
+      if(!d.ok) return showErr(d.error || "Could not submit. Please try again.");
+
+      $("doneFlat").textContent = d.flat_no;
+      $("done").classList.add("show");
+    })
+    .catch(function(err){
+      btn.disabled = false; btn.classList.remove("busy");
+      showErr(err.message === "Server error. Please try again." ? err.message : t.e_net);
+    });
+  });
+
+  $("again").addEventListener("click", function(){ location.reload(); });
+
+  applyLang();
+  progress();
+})();
+</script>
+</body>
+</html>
