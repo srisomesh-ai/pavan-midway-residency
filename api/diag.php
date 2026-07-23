@@ -28,6 +28,7 @@ try {
 
     $need = ['blocks','flats','users','user_flats','sessions','login_attempts','activity_log','settings'];
     $need_form = ['submissions','flat_details','form_submits'];
+    $need_app  = ['visitors','preapproved_visitors','away_notices','complaints','complaint_replies'];
     $have = [];
     foreach ($d->query('SHOW TABLES')->fetchAll(PDO::FETCH_NUM) as $r) {
         $have[] = $r[0];
@@ -41,11 +42,35 @@ try {
         $checks['resident_form_missing'] = $missing_form;
     }
 
+    $missing_app = array_values(array_diff($need_app, $have));
+    $checks['resident_app_ready'] = empty($missing_app);
+    if (!empty($missing_app)) {
+        $checks['resident_app_missing'] = $missing_app;
+    }
+
+    if (empty($missing_app)) {
+        $checks['resident_logins'] = (int) $d->query(
+            'SELECT COUNT(*) FROM users WHERE role = "resident" AND status = "active"'
+        )->fetchColumn();
+        $checks['guard_logins'] = (int) $d->query(
+            'SELECT COUNT(*) FROM users WHERE role = "guard" AND status = "active"'
+        )->fetchColumn();
+        $checks['open_tickets'] = (int) $d->query(
+            'SELECT COUNT(*) FROM complaints WHERE status IN ("open","in_progress")'
+        )->fetchColumn();
+    }
+
     if (empty($missing_form)) {
         $checks['submissions_pending'] = (int) $d->query(
             'SELECT COUNT(*) FROM submissions WHERE review_state = "pending"'
         )->fetchColumn();
         $checks['details_collected'] = (int) $d->query('SELECT COUNT(*) FROM flat_details')->fetchColumn();
+
+        $fdcols = [];
+        foreach ($d->query('SHOW COLUMNS FROM flat_details')->fetchAll() as $c) {
+            $fdcols[] = $c['Field'];
+        }
+        $checks['flats_has_vehicle_type'] = in_array('vehicle_1_type', $fdcols, true);
     }
 
     if (in_array('flats', $have, true)) {
@@ -121,6 +146,13 @@ if (empty($checks['admin_exists']))                  $problems[] = 'No admin use
 if (isset($checks['resident_form_ready']) && !$checks['resident_form_ready']) {
     $problems[] = 'The resident form will not work yet. Import sql/04_resident_form.sql to create the '
                 . implode(', ', $checks['resident_form_missing']) . ' table(s).';
+}
+if (isset($checks['resident_app_ready']) && !$checks['resident_app_ready']) {
+    $problems[] = 'The resident app will not work yet. Import sql/06_resident_app.sql to create the '
+                . implode(', ', $checks['resident_app_missing']) . ' table(s).';
+}
+if (isset($checks['flats_has_vehicle_type']) && !$checks['flats_has_vehicle_type']) {
+    $problems[] = 'Vehicle types are missing. Import sql/05_vehicle_types.sql.';
 }
 
 ok([
