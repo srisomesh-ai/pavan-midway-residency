@@ -355,11 +355,14 @@ button.go.busy .lbl{opacity:.75}
       .catch(function(){});
   })();
 
-  function goDashboard(user){
+  function goDashboard(user, home){
     doneN.textContent = "Welcome, " + (user.name || "").split(" ")[0];
     done.classList.add("show");
     setTimeout(function(){
-      window.location.href = "dashboard.html";
+      window.location.href = home
+        || (user.role === "resident" ? "resident.html"
+          : user.role === "guard"    ? "gate.html"
+          : "dashboard.html");
     }, 900);
   }
 
@@ -397,7 +400,7 @@ button.go.busy .lbl{opacity:.75}
       if(d.ok && d.token){
         saveToken(d.token, remem.checked);
         pass.value = "";
-        goDashboard(d.user || {});
+        goDashboard(d.user || {}, d.home);
         return;
       }
 
