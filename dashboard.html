@@ -337,13 +337,32 @@ body{
     opts = opts || {};
     opts.headers = opts.headers || {};
     opts.headers["Authorization"] = "Bearer " + token;
-    return fetch(API + path, opts).then(function(r){
+
+    /* Some shared hosts strip the Authorization header before PHP sees it,
+       so the token is also appended to the URL as a fallback. */
+    var url = API + path + (path.indexOf("?") === -1 ? "?" : "&")
+            + "token=" + encodeURIComponent(token);
+
+    return fetch(url, opts).then(function(r){
       if(r.status === 401){
         try{ localStorage.removeItem(KEY); sessionStorage.removeItem(KEY); }catch(e){}
         location.replace("index.html");
         throw new Error("unauthorised");
       }
-      return r.json();
+      /* Read as text first so a PHP error or HTML page gives a useful message
+         instead of "Unexpected end of JSON input". */
+      return r.text().then(function(txt){
+        if(!txt || !txt.trim()){
+          throw new Error(path + " returned an empty response (HTTP " + r.status + "). "
+            + "Set DEBUG to true in api/config.local.php to see the PHP error.");
+        }
+        try{
+          return JSON.parse(txt);
+        }catch(e){
+          throw new Error(path + " did not return JSON (HTTP " + r.status + "). Server said: "
+            + txt.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 240));
+        }
+      });
     });
   }
 
