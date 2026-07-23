@@ -10,6 +10,7 @@ require_once __DIR__ . '/helpers.php';
 
 api_init();
 
+require_resident_app();
 $u = require_resident();
 $fid = (int) $u['flat_id'];
 
