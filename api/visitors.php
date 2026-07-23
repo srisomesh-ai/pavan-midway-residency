@@ -22,6 +22,16 @@ api_init();
 $me = require_auth();
 require_resident_app();
 
+$LABELS = [
+    'guest'    => 'Guest',
+    'delivery' => 'Delivery',
+    'cab'      => 'Cab',
+    'service'  => 'Service',
+    'staff'    => 'Domestic help',
+    'other'    => 'Other',
+];
+
+
 function gate_pass() {
     return strtoupper(substr(str_shuffle('ABCDEFGHJKLMNPQRSTUVWXYZ23456789'), 0, 6));
 }
@@ -103,6 +113,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $vid = (int) db()->lastInsertId();
         log_activity($me['id'], 'visitor_logged', 'visitor', $vid, $flat['flat_code'] . ' - ' . $name);
 
+        /* Tell the resident someone is at the gate */
+        if (!$auto) {
+            notify_flat(
+                $flat_id,
+                'visitor',
+                $name . ' is at the gate',
+                trim(($LABELS[$purpose] ?? 'Visitor')
+                    . ($count > 1 ? ' - ' . $count . ' people' : '')
+                    . '. Tap to allow or deny.'),
+                [
+                    'link'      => 'my-visitors.html',
+                    'entity'    => 'visitor',
+                    'entity_id' => $vid,
+                    'urgent'    => 1,
+                    'by'        => $me['id'],
+                ]
+            );
+        } else {
+            notify_flat(
+                $flat_id,
+                'visitor',
+                $name . ' was let in',
+                'Pre-approved gate pass used.',
+                [
+                    'link'      => 'my-visitors.html',
+                    'entity'    => 'visitor',
+                    'entity_id' => $vid,
+                    'by'        => $me['id'],
+                ]
+            );
+        }
+
         ok([
             'id'      => $vid,
             'status'  => $status,
@@ -148,6 +190,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $st->execute([$decision, $me['id'], $reason, $id]);
 
         log_activity($me['id'], 'visitor_' . $decision, 'visitor', $id, $v['visitor_name']);
+
+        /* Tell the guard who logged them, so the gate screen knows */
+        if (!empty($v['created_by'])) {
+            $fno = '';
+            try {
+                $fs = db()->prepare('SELECT flat_no FROM flats WHERE id = ? LIMIT 1');
+                $fs->execute([$v['flat_id']]);
+                $fno = (string) $fs->fetchColumn();
+            } catch (Exception $e) { $fno = ''; }
+
+            notify(
+                $v['created_by'],
+                'visitor',
+                $v['visitor_name'] . ' - ' . ($decision === 'approved' ? 'allowed' : 'denied'),
+                trim('Flat ' . $fno . ($decision === 'denied' && !empty($reason) ? '. ' . $reason : '')),
+                [
+                    'link'      => 'gate.html',
+                    'entity'    => 'visitor',
+                    'entity_id' => $id,
+                    'urgent'    => 1,
+                    'by'        => $me['id'],
+                ]
+            );
+        }
+
         ok(['message' => $decision === 'approved' ? 'Visitor approved.' : 'Visitor denied.']);
     }
 
@@ -260,15 +327,6 @@ if ($scope === 'mine') {
 $st = db()->prepare($sql);
 $st->execute($args);
 $rows = $st->fetchAll();
-
-$LABELS = [
-    'guest'    => 'Guest',
-    'delivery' => 'Delivery',
-    'cab'      => 'Cab',
-    'service'  => 'Service',
-    'staff'    => 'Domestic help',
-    'other'    => 'Other',
-];
 
 $out = [];
 foreach ($rows as $r) {
