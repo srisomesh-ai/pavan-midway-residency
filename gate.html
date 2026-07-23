@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0C2A21">
+<title>Gate &middot; Pavan Midway Residency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12211C; --deep:#123B2E; --deep-2:#0C2A21; --brass:#C08A3E;
+  --paper:#F2EFE6; --paper-2:#E7E2D4; --card:#FBFAF5;
+  --line:#CFC8B5; --muted:#6C7A72; --danger:#8E2B22; --ok:#2F6D4F; --warn:#B07A20;
+  --radius:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--deep-2);color:var(--ink);
+  font-family:Inter,system-ui,-apple-system,Roboto,sans-serif;
+  display:flex;justify-content:center}
+.vp{width:100%;max-width:430px;background:var(--paper);min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;position:relative}
+
+.top{background:var(--deep-2);color:var(--paper);padding:16px 20px 0;position:sticky;top:0;z-index:40}
+.trow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.top h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:20px;margin:0}
+.top .sub{font-family:"Roboto Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--brass);margin:3px 0 0}
+.exit{background:rgba(242,239,230,.09);border:1px solid rgba(242,239,230,.16);
+  color:var(--paper);border-radius:10px;padding:9px;cursor:pointer;display:grid;place-items:center}
+.tabs{display:flex}
+.tb{flex:1;background:none;border:0;border-bottom:2.5px solid transparent;
+  color:rgba(242,239,230,.5);font-family:"Roboto Mono",monospace;font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;padding:11px 4px;cursor:pointer}
+.tb.on{color:var(--paper);border-bottom-color:var(--brass)}
+.tb b{display:block;font-family:Fraunces,serif;font-size:16px;margin-bottom:3px}
+
+.scroll{flex:1;overflow-y:auto;padding:18px 20px 100px}
+
+.fab{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+  width:calc(100% - 40px);max-width:390px;padding:17px;background:var(--deep);
+  color:var(--paper);border:0;border-radius:14px;font-family:inherit;
+  font-size:15.5px;font-weight:600;cursor:pointer;z-index:50;
+  box-shadow:0 6px 20px rgba(12,42,33,.3);display:flex;align-items:center;
+  justify-content:center;gap:9px}
+.fab:active{transform:translateX(-50%) scale(.99)}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:15px;margin-bottom:11px}
+.card.wait{border-color:var(--brass);background:#FDF8EF}
+.card.in{border-left:3px solid var(--ok)}
+.ch{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.fno{width:50px;flex-shrink:0;background:var(--deep);color:var(--paper);
+  border-radius:10px;padding:8px 4px;text-align:center}
+.fno .n{font-family:Fraunces,serif;font-weight:600;font-size:14px;line-height:1}
+.fno .b{font-family:"Roboto Mono",monospace;font-size:8px;color:var(--brass);margin-top:3px}
+.cm{flex:1;min-width:0}
+.cm .n{font-size:15px;font-weight:600;margin-bottom:2px}
+.cm .p{font-size:12px;color:var(--muted)}
+.st{font-family:"Roboto Mono",monospace;font-size:8.5px;letter-spacing:.1em;
+  text-transform:uppercase;padding:5px 9px;border-radius:20px;white-space:nowrap}
+.st.pending{background:#F6EBD8;color:var(--warn)}
+.st.approved{background:#E4F0E9;color:var(--ok)}
+.st.denied{background:#F7E8E5;color:var(--danger)}
+.st.entered{background:var(--deep);color:var(--paper)}
+.st.exited{background:var(--paper-2);color:var(--muted)}
+.st.expired{background:var(--paper-2);color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px}
+.chip{font-size:11px;background:var(--paper-2);color:var(--muted);padding:5px 9px;border-radius:20px}
+.acts{display:flex;gap:9px}
+.acts button{flex:1;padding:12px;border-radius:11px;font-family:inherit;
+  font-size:13.5px;font-weight:600;cursor:pointer;border:0}
+.pri{background:var(--deep);color:var(--paper)}
+.sec2{background:var(--card);color:var(--deep);border:1.5px solid var(--line)}
+.acts button:disabled{opacity:.5}
+.time{font-family:"Roboto Mono",monospace;font-size:9.5px;color:var(--muted);
+  margin-top:10px;padding-top:9px;border-top:1px solid var(--paper-2)}
+
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.empty svg{opacity:.28;margin-bottom:12px}
+.empty p{margin:0;font-size:13.5px;line-height:1.6}
+.load{padding:60px;text-align:center;color:var(--muted)}
+.sp{width:22px;height:22px;border:2.5px solid var(--paper-2);border-top-color:var(--deep);
+  border-radius:50%;animation:s .7s linear infinite;margin:0 auto 14px}
+@keyframes s{to{transform:rotate(360deg)}}
+.err{background:#F7E8E5;border:1px solid #E9CEC9;color:var(--danger);
+  padding:14px;border-radius:11px;font-size:13.5px;line-height:1.5}
+
+.veil{position:fixed;inset:0;background:rgba(12,42,33,.55);display:none;
+  align-items:flex-end;justify-content:center;z-index:70}
+.veil.show{display:flex}
+.sheet{width:100%;max-width:430px;background:var(--paper);border-radius:20px 20px 0 0;
+  padding:8px 22px 30px;animation:up .22s cubic-bezier(.2,.8,.3,1);max-height:92vh;overflow-y:auto}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.grab{width:36px;height:4px;border-radius:3px;background:var(--line);margin:0 auto 18px}
+.sheet h3{font-family:Fraunces,serif;font-weight:600;font-size:23px;margin:0 0 16px;color:var(--deep)}
+label{display:block;font-size:13px;font-weight:500;margin:0 0 6px}
+label .opt{font-weight:400;color:var(--muted);font-size:11.5px}
+.f{margin-bottom:14px}
+input,select,textarea{width:100%;font-family:inherit;font-size:16px;padding:13px;
+  border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);
+  appearance:none;-webkit-appearance:none}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236C7A72' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+input:focus,select:focus{outline:none;border-color:var(--deep);box-shadow:0 0 0 3.5px rgba(18,59,46,.11)}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px}
+.pgrid button{padding:12px 4px;border:1.5px solid var(--line);border-radius:11px;
+  background:var(--card);font-family:inherit;font-size:12px;font-weight:600;
+  color:var(--muted);cursor:pointer}
+.pgrid button.on{background:var(--deep);color:var(--paper);border-color:var(--deep)}
+.go{width:100%;padding:15px;background:var(--deep);color:var(--paper);border:0;
+  border-radius:12px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.go[disabled]{opacity:.6}
+.shErr{background:#F7E8E5;border:1px solid #E9CEC9;color:var(--danger);padding:11px;
+  border-radius:10px;font-size:13px;margin-bottom:14px;display:none}
+.shErr.show{display:block}
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(90px);
+  background:var(--deep);color:var(--paper);padding:13px 20px;border-radius:11px;
+  font-size:13.5px;z-index:90;transition:transform .25s;max-width:340px;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+</style>
+</head>
+<body>
+<div class="vp">
+  <header class="top">
+    <div class="trow">
+      <div><h1>Gate</h1><p class="sub" id="guardName">&nbsp;</p></div>
+      <button class="exit" id="exit" aria-label="Sign out">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+      </button>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tb on" data-s="pending"><b id="cW">0</b>Waiting</button>
+      <button class="tb" data-s="inside"><b id="cI">0</b>Inside</button>
+      <button class="tb" data-s="today"><b id="cT">0</b>Today</button>
+    </div>
+  </header>
+
+  <div class="scroll">
+    <div class="load" id="load"><div class="sp"></div>Loading&hellip;</div>
+    <div id="list"></div>
+  </div>
+
+  <button class="fab" id="addBtn">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+    New visitor
+  </button>
+</div>
+
+<div class="veil" id="veil">
+  <div class="sheet">
+    <div class="grab"></div>
+    <h3 id="shTitle">New visitor</h3>
+    <div class="shErr" id="shErr"></div>
+    <div id="shBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var API="api/", KEY="pmr_token";
+  var token=null;
+  try{ token=localStorage.getItem(KEY)||sessionStorage.getItem(KEY); }catch(e){}
+  if(!token){ location.replace("index.html"); return; }
+
+  var $=function(i){return document.getElementById(i);};
+  var veil=$("veil"), scope="pending", flats=null, purpose="guest";
+
+  function api(path,opts){
+    opts=opts||{}; opts.headers=opts.headers||{};
+    opts.headers["Authorization"]="Bearer "+token;
+    var url=API+path+(path.indexOf("?")===-1?"?":"&")+"token="+encodeURIComponent(token);
+    return fetch(url,opts).then(function(r){
+      if(r.status===401){
+        try{localStorage.removeItem(KEY);sessionStorage.removeItem(KEY);}catch(e){}
+        location.replace("index.html"); throw new Error("unauthorised");
+      }
+      return r.text().then(function(t){
+        if(!t||!t.trim()) throw new Error(path+" returned an empty response (HTTP "+r.status+").");
+        try{ return JSON.parse(t); }
+        catch(e){ throw new Error(path+" did not return JSON. Server said: "+
+          t.replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,200)); }
+      });
+    });
+  }
+
+  function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+
+  function ago(ts){
+    if(!ts) return "";
+    var d=new Date(String(ts).replace(" ","T"));
+    var s=Math.floor((Date.now()-d.getTime())/1000);
+    if(isNaN(s)) return "";
+    if(s<60) return "now";
+    if(s<3600) return Math.floor(s/60)+"m";
+    if(s<86400) return Math.floor(s/3600)+"h";
+    return Math.floor(s/86400)+"d";
+  }
+  function clock(ts){
+    if(!ts) return "";
+    var d=new Date(String(ts).replace(" ","T"));
+    if(isNaN(d)) return "";
+    return d.toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit"});
+  }
+  function toast(m){
+    var t=$("toast"); t.textContent=m; t.classList.add("show");
+    setTimeout(function(){t.classList.remove("show");},2600);
+  }
+
+  api("me.php").then(function(d){
+    if(d.ok&&d.user) $("guardName").textContent=d.user.name;
+  }).catch(function(){});
+
+  function load(){
+    api("visitors.php?scope="+scope)
+      .then(function(d){
+        if(!d.ok) throw new Error(d.error||"Could not load.");
+        if(d.counts){
+          $("cW").textContent=d.counts.pending;
+          $("cI").textContent=d.counts.inside;
+          $("cT").textContent=d.counts.today;
+        }
+        $("load").hidden=true;
+        render(d.visitors);
+      })
+      .catch(function(e){
+        if(e.message==="unauthorised") return;
+        $("load").innerHTML='<div class="err">'+esc(e.message)+'</div>';
+      });
+  }
+
+  function render(rows){
+    if(!rows.length){
+      var msg = scope==="pending" ? "No one is waiting for approval."
+              : scope==="inside"  ? "Nobody is inside right now."
+              : "No visitors logged today.";
+      $("list").innerHTML='<div class="empty">'+
+        '<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#12211C" stroke-width="1.4" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'+
+        '<p>'+msg+'</p></div>';
+      return;
+    }
+    var h="";
+    rows.forEach(function(v){
+      var cls = v.status==="pending" ? " wait" : (v.status==="entered" ? " in" : "");
+      h+='<div class="card'+cls+'">';
+      h+= '<div class="ch">';
+      h+=  '<div class="fno"><div class="n">'+esc(v.flat_no)+'</div><div class="b">'+esc(v.block_name.replace("Block ",""))+'</div></div>';
+      h+=  '<div class="cm"><div class="n">'+esc(v.visitor_name)+'</div>'+
+           '<div class="p">'+esc(v.purpose_label)+(v.purpose_note?" \u00B7 "+esc(v.purpose_note):"")+'</div></div>';
+      h+=  '<span class="st '+esc(v.status)+'">'+statusWord(v.status)+'</span>';
+      h+= '</div>';
+
+      h+= '<div class="meta">';
+      if(v.visitor_count>1) h+='<span class="chip">'+v.visitor_count+' people</span>';
+      if(v.visitor_mobile)  h+='<span class="chip">'+esc(v.visitor_mobile)+'</span>';
+      if(v.vehicle_no)      h+='<span class="chip">'+esc(v.vehicle_no)+'</span>';
+      if(v.status==="denied"&&v.deny_reason) h+='<span class="chip">'+esc(v.deny_reason)+'</span>';
+      h+= '</div>';
+
+      if(v.status==="approved"){
+        h+='<div class="acts"><button class="pri" data-a="entry" data-id="'+v.id+'">Mark entry</button></div>';
+      } else if(v.status==="entered"){
+        h+='<div class="acts"><button class="sec2" data-a="exit" data-id="'+v.id+'">Mark exit</button></div>';
+      } else if(v.status==="pending"){
+        h+='<div class="acts"><button class="sec2" disabled>Waiting for resident</button></div>';
+      }
+
+      var t="Logged "+ago(v.created_at)+" ago";
+      if(v.entry_at) t+=" \u00B7 In "+clock(v.entry_at);
+      if(v.exit_at)  t+=" \u00B7 Out "+clock(v.exit_at);
+      h+= '<div class="time">'+t+'</div>';
+      h+='</div>';
+    });
+    $("list").innerHTML=h;
+
+    document.querySelectorAll("[data-a]").forEach(function(b){
+      b.addEventListener("click",function(){
+        var id=parseInt(this.getAttribute("data-id"),10), a=this.getAttribute("data-a");
+        this.disabled=true;
+        api("visitors.php",{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({action:a,id:id})})
+        .then(function(r){
+          if(!r.ok){ toast(r.error); load(); return; }
+          toast(a==="entry"?"Entry recorded.":"Exit recorded.");
+          load();
+        })
+        .catch(function(e){ if(e.message!=="unauthorised") toast(e.message); });
+      });
+    });
+  }
+
+  function statusWord(s){
+    return s==="pending"?"Waiting":s==="approved"?"Allowed":s==="denied"?"Denied":
+           s==="entered"?"Inside":s==="exited"?"Left":s==="expired"?"No reply":s;
+  }
+
+  $("tabs").addEventListener("click",function(e){
+    var t=e.target.closest(".tb"); if(!t) return;
+    this.querySelectorAll(".tb").forEach(function(x){x.classList.remove("on");});
+    t.classList.add("on");
+    scope=t.getAttribute("data-s");
+    $("list").innerHTML=""; $("load").hidden=false;
+    load();
+  });
+
+  /* ---------- new visitor ---------- */
+  $("addBtn").addEventListener("click",function(){
+    $("shErr").className="shErr";
+    purpose="guest";
+    $("shBody").innerHTML=
+      '<div class="f"><label for="gf">Which flat</label><select id="gf"><option value="">Loading flats\u2026</option></select></div>'+
+      '<div class="f"><label>Purpose</label><div class="pgrid" id="pg">'+
+      '<button type="button" data-p="guest" class="on">Guest</button>'+
+      '<button type="button" data-p="delivery">Delivery</button>'+
+      '<button type="button" data-p="cab">Cab</button>'+
+      '<button type="button" data-p="service">Service</button>'+
+      '<button type="button" data-p="staff">Help</button>'+
+      '<button type="button" data-p="other">Other</button></div></div>'+
+      '<div class="f"><label for="gn">Visitor name</label><input type="text" id="gn" autocapitalize="words"></div>'+
+      '<div class="f"><label for="gm">Mobile <span class="opt">(optional)</span></label><input type="tel" id="gm" inputmode="numeric" maxlength="10"></div>'+
+      '<div class="f"><label for="gc">How many people</label><input type="number" id="gc" inputmode="numeric" min="1" max="20" value="1"></div>'+
+      '<div class="f"><label for="gv">Vehicle number <span class="opt">(optional)</span></label><input type="text" id="gv" autocapitalize="characters"></div>'+
+      '<div class="f"><label for="gp">Gate pass <span class="opt">(if the visitor has one)</span></label><input type="text" id="gp" maxlength="6" autocapitalize="characters" placeholder="ABC123"></div>'+
+      '<button class="go" id="gSave">Send to resident</button>';
+    veil.classList.add("show");
+
+    $("pg").addEventListener("click",function(e){
+      var b=e.target.closest("button"); if(!b) return;
+      purpose=b.getAttribute("data-p");
+      this.querySelectorAll("button").forEach(function(x){x.classList.remove("on");});
+      b.classList.add("on");
+    });
+
+    $("gm").addEventListener("input",function(){ this.value=this.value.replace(/\D/g,"").slice(0,10); });
+    $("gv").addEventListener("input",function(){ this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12); });
+    $("gp").addEventListener("input",function(){ this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6); });
+
+    if(flats){ fillFlats(); }
+    else {
+      api("flats.php").then(function(d){
+        if(d.ok){ flats=d.blocks; fillFlats(); }
+      }).catch(function(){});
+    }
+
+    $("gSave").addEventListener("click",function(){
+      var fid=$("gf").value, nm=$("gn").value.trim();
+      if(!fid) return sErr("Please choose the flat being visited.");
+      if(nm.length<2) return sErr("Please enter the visitor name.");
+      this.disabled=true;
+      api("visitors.php",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({action:"create",flat_id:parseInt(fid,10),visitor_name:nm,
+          visitor_mobile:$("gm").value||null, visitor_count:$("gc").value||1,
+          purpose:purpose, vehicle_no:$("gv").value||null, gate_pass:$("gp").value||null})})
+      .then(function(r){
+        if(!r.ok){ sErr(r.error); $("gSave").disabled=false; return; }
+        veil.classList.remove("show");
+        toast(r.message);
+        scope="pending";
+        document.querySelectorAll(".tb").forEach(function(x){x.classList.remove("on");});
+        document.querySelector('.tb[data-s="pending"]').classList.add("on");
+        load();
+      })
+      .catch(function(e){ sErr(e.message); $("gSave").disabled=false; });
+    });
+  });
+
+  function fillFlats(){
+    var sel=$("gf");
+    sel.innerHTML='<option value="">Select flat</option>';
+    flats.forEach(function(b){
+      var g=document.createElement("optgroup");
+      g.label=b.block_name;
+      (b.floors||[]).forEach(function(f){
+        (f.flats||[]).forEach(function(ft){
+          var o=document.createElement("option");
+          o.value=ft.id;
+          o.textContent=ft.flat_no+"  \u00B7  "+f.floor_label;
+          g.appendChild(o);
+        });
+      });
+      sel.appendChild(g);
+    });
+  }
+
+  function sErr(m){ var e=$("shErr"); e.textContent=m; e.className="shErr show"; }
+  veil.addEventListener("click",function(e){ if(e.target===veil) veil.classList.remove("show"); });
+
+  $("exit").addEventListener("click",function(){
+    api("logout.php",{method:"POST"}).catch(function(){}).then(function(){
+      try{localStorage.removeItem(KEY);sessionStorage.removeItem(KEY);}catch(e){}
+      location.replace("index.html");
+    });
+  });
+
+  load();
+  setInterval(function(){ if(!veil.classList.contains("show")) load(); }, 20000);
+})();
+</script>
+</body>
+</html>
