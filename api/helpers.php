@@ -46,6 +46,26 @@ function str_len($s) {
     return strlen(preg_replace('/[\x80-\xBF]/', '', $s));
 }
 
+/**
+ * Build a vehicle list from a row containing vehicle_1..3 and
+ * vehicle_1_type..3_type. Returns [{number, type, label}, ...].
+ */
+function vehicle_list($row) {
+    $out = [];
+    for ($i = 1; $i <= 3; $i++) {
+        $num = $row['vehicle_' . $i] ?? null;
+        if ($num === null || $num === '') continue;
+        $type = $row['vehicle_' . $i . '_type'] ?? null;
+        $out[] = [
+            'number' => $num,
+            'type'   => $type,
+            'label'  => $type === 'four_wheeler' ? 'Four wheeler'
+                      : ($type === 'two_wheeler' ? 'Two wheeler' : ''),
+        ];
+    }
+    return $out;
+}
+
 function fail($msg, $code = 400, $extra = []) {
     json_out(array_merge(['ok' => false, 'error' => $msg], $extra), $code);
 }
