@@ -1,6 +1,6 @@
 # Pavan Midway Residency — Community Management App
 
-Mobile-first web app for a 144-flat residential society. Built to run on Android phones and later wrap into an APK.
+Mobile-first web app for a 140-flat residential society. Built to run on Android phones and later wrap into an APK.
 
 ## Sprint 1 — Admin Authentication (current)
 
@@ -14,17 +14,55 @@ Mobile-first web app for a 144-flat residential society. Built to run on Android
 | `api/logout.php` | Session revocation |
 | `api/change_password.php` | Password change (forced on first login) |
 | `sql/01_schema.sql` | Tables |
-| `sql/02_seed.sql` | 144 flats + default admin + settings |
+| `sql/02_seed.sql` | 140 flats + default admin + settings |
+| `sql/03_migrate_flat_structure.sql` | Migration from the old 144-flat seed |
+
+## Building structure (fixed — not editable from the UI)
+
+| | |
+|---|---|
+| Blocks | 2 — Block A, Block B |
+| Floors per block | 5 — Ground, 1st, 2nd, 3rd, 4th |
+| Flats per floor | 14 — A to N |
+| **Total flats** | **140** (70 per block) |
+
+Flat numbers per floor:
+
+```
+Ground : GR-A  GR-B  GR-C … GR-N
+1st    : 1A    1B    1C   … 1N
+2nd    : 2A    2B    2C   … 2N
+3rd    : 3A    3B    3C   … 3N
+4th    : 4A    4B    4C   … 4N
+```
+
+Flat numbers repeat across blocks, so `1A` exists in both. Each flat therefore has a unique `flat_code` that includes the block:
+
+| Column | Example | Use |
+|---|---|---|
+| `flat_no` | `1A` | What residents say and see |
+| `flat_code` | `A-1A`, `B-1A` | Unique ID for receipts and lookups |
+
+Blocks and flats are seeded with `is_locked = 1`. This is structural data — the app will display it but never offer edit or delete.
 
 ## Setup
 
 **1. Create the database** in hPanel → Databases → MySQL. Note the DB name, user, and password.
 
-**2. Import the SQL** in phpMyAdmin, in order:
+**2. Import the SQL** in phpMyAdmin.
+
+*Fresh database:*
 ```
 sql/01_schema.sql
 sql/02_seed.sql
 ```
+
+*Already imported the earlier 144-flat version:*
+```
+sql/03_migrate_flat_structure.sql
+sql/02_seed.sql
+```
+The migration clears the old flats and rebuilds the correct 140. Your admin login is preserved.
 
 **3. Edit `api/config.php`** with your real DB credentials:
 ```php
@@ -40,18 +78,13 @@ Username : admin
 Password : Admin@123
 ```
 
-You will be sent to the password change screen on first login.
-
 > **Change this password immediately.** The default is public in this repo.
 
 ## Seeded data
 
-- **4 blocks** (A, B, C, D)
-- **144 flats** — 9 floors × 4 units per block, numbered `A-101` … `D-904`
-- **1 super admin**
-- **Default settings** — maintenance amount, due day, and late fee all start at 0 and need committee values
-
-Adjust the block/flat naming in `sql/02_seed.sql` before importing if your actual numbering differs.
+- 2 blocks, 140 flats, all marked vacant and locked
+- 1 super admin
+- Default settings — maintenance amount, due day, and late fee all start at 0 and need committee values
 
 ## Security notes
 
