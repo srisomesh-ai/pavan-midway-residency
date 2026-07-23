@@ -574,22 +574,23 @@ body{
       h += '</section>';
     }
 
-    /* Coming next */
+    /* Resident app */
+    var ap = d.app || {};
     h += '<section class="sec">';
-    h +=   '<div class="sec-head"><h2>Coming next</h2></div>';
-    h +=   '<div class="soon">';
-    [
-      ["Residents","M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8"],
-      ["Notices","M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9 M13.7 21a2 2 0 0 1-3.4 0"],
-      ["Maintenance","M12 1v22 M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"],
-      ["Expenses","M3 3v18h18 M18 17V9 M13 17V5 M8 17v-3"],
-      ["Visitors","M20 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75 M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8 M15 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"]
-    ].forEach(function(it){
-      h += '<div class="soon-row">';
-      h +=   '<div class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="' + it[1] + '"/></svg></div>';
-      h +=   '<div class="t">' + it[0] + '</div><div class="s">Soon</div>';
-      h += '</div>';
-    });
+    h +=   '<div class="sec-head"><h2>Resident app</h2><span class="note">' + (ap.logins || 0) + ' logins issued</span></div>';
+    h +=   '<div class="pair">';
+    h +=     '<button class="stat tapme' + (ap.complaints_open ? ' flag' : '') + '" id="goTickets" style="text-align:left;font-family:inherit;cursor:pointer">';
+    h +=       '<div class="n' + (ap.complaints_open ? '' : ' zero') + '">' + (ap.complaints_open || 0) + '</div>';
+    h +=       '<div class="l">Open tickets</div></button>';
+    h +=     '<button class="stat tapme" id="goAccounts" style="text-align:left;font-family:inherit;cursor:pointer">';
+    h +=       '<div class="n' + (ap.logins ? '' : ' zero') + '">' + (ap.logins || 0) + '</div>';
+    h +=       '<div class="l">Resident logins</div></button>';
+    h +=   '</div>';
+    h +=   '<div class="pair" style="margin-top:11px">';
+    h +=     '<div class="stat"><div class="n' + (ap.visitors_today ? '' : ' zero') + '">' + (ap.visitors_today || 0) + '</div>';
+    h +=       '<div class="l">Visitors today</div></div>';
+    h +=     '<div class="stat"><div class="n' + (ap.away_now ? '' : ' zero') + '">' + (ap.away_now || 0) + '</div>';
+    h +=       '<div class="l">Flats away</div></div>';
     h +=   '</div>';
     h += '</section>';
 
@@ -604,6 +605,12 @@ body{
 
     var gf = document.getElementById("goForm");
     if(gf) gf.addEventListener("click", shareForm);
+
+    var gt = document.getElementById("goTickets");
+    if(gt) gt.addEventListener("click", function(){ location.href = "my-tickets.html"; });
+
+    var ga = document.getElementById("goAccounts");
+    if(ga) ga.addEventListener("click", function(){ location.href = "accounts.html"; });
 
     document.getElementById("tabs").addEventListener("click", function(e){
       var t = e.target.closest(".tab");
