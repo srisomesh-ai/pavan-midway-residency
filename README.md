@@ -21,14 +21,25 @@ Mobile-first web app for a 140-flat residential society. Built to run on Android
 | `api/submit_details.php` | Receives resident form submissions |
 | `api/submissions.php` | Admin list, approve, reject |
 | `api/flat_detail.php` | Everything known about one flat |
+| `api/accounts.php` | Create resident and guard logins |
+| `api/resident_home.php` | Resident home screen data |
+| `api/visitors.php` | Visitor entries, approvals, gate passes |
+| `api/away.php` | Away and travel notices |
+| `api/complaints.php` | Complaints, suggestions, replies |
 | `dashboard.html` | Admin dashboard |
 | `resident-form.html` | Public resident form, English and Telugu |
 | `submissions.html` | Committee review screen |
+| `accounts.html` | Issue resident and guard logins |
+| `resident.html` | Resident home |
+| `my-visitors.html` | Resident visitor log and pre-approvals |
+| `my-tickets.html` | Complaints - resident and committee views |
+| `gate.html` | Security gate screen |
 | `sql/01_schema.sql` | Tables |
 | `sql/02_seed.sql` | 140 flats + default admin + settings |
 | `sql/03_migrate_flat_structure.sql` | Migration from the old 144-flat seed |
 | `sql/04_resident_form.sql` | Resident form and approval tables |
 | `sql/05_vehicle_types.sql` | Two wheeler / four wheeler per vehicle |
+| `sql/06_resident_app.sql` | Resident logins, visitors, away notices, complaints |
 
 ## Building structure (fixed — not editable from the UI)
 
@@ -121,6 +132,22 @@ Tap any flat in the register to see everything collected for it: owner and tenan
 
 The form is available in English and Telugu via the toggle in the header. Anyone with the link can submit, which is why nothing appears in the app until the committee approves it. If a flat already has details, the review screen flags that approving will replace them.
 
+## Resident app
+
+Once details are collected, the committee issues logins from **accounts.html**. Each flat gets a username and a readable password like `CalmNest89` to hand over. For rented flats the login goes to the tenant, otherwise the owner.
+
+Residents can then:
+
+- **See their visitors** - who came, when they entered and left
+- **Approve or deny** a visitor while the guard waits at the gate
+- **Pre-approve** a regular visitor (maid, cook, driver) and get a gate pass code, so they are let in without disturbing the resident again
+- **Post an away notice** with dates, a contact number, and who holds the keys
+- **Raise a complaint or suggestion**, with an anonymous option, and follow the committee's replies
+
+The **gate screen** (`gate.html`) is for security staff. The guard records a visitor, it goes to the resident for approval, and the guard then marks entry and exit. Entering a valid gate pass approves the visitor immediately.
+
+Guards can only reach the gate screen. Residents only ever see their own flat's data - this is enforced server side, not just hidden in the interface.
+
 ## Troubleshooting
 
 Open `https://your-site.com/api/diag.php` in a browser. It reports PHP version, database connection, table and flat counts, and whether the Authorization header survives your host - then lists any problems it finds. No passwords or tokens are echoed.
@@ -150,7 +177,8 @@ Set `DEBUG` to `false` in `config.php` on production (it already is).
 | Sprint | Scope |
 |---|---|
 | 1 | Auth foundation + admin dashboard ← done |
-| 2 | Resident directory |
+| 2 | Resident details form ← done |
+| 3 | Resident app, visitors, complaints ← done |
 | 3 | Notices + push |
 | 4 | Maintenance billing |
 | 5 | Payments (Razorpay) |
