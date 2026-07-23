@@ -12,7 +12,10 @@ Mobile-first web app for a 140-flat residential society. Built to run on Android
 | `api/login.php` | Login with brute-force protection |
 | `api/me.php` | Session validation |
 | `api/logout.php` | Session revocation |
-| `api/change_password.php` | Password change (forced on first login) |
+| `api/change_password.php` | Password change |
+| `api/dashboard.php` | Summary counters for the admin home |
+| `api/flats.php` | Flat register, grouped by block and floor |
+| `dashboard.html` | Admin dashboard |
 | `sql/01_schema.sql` | Tables |
 | `sql/02_seed.sql` | 140 flats + default admin + settings |
 | `sql/03_migrate_flat_structure.sql` | Migration from the old 144-flat seed |
@@ -97,15 +100,11 @@ Password : Admin@123
 
 Set `DEBUG` to `false` in `config.php` on production (it already is).
 
-## Not built yet
-
-`dashboard.html` and `change-password.html` are referenced by the login redirect but come in the next sprint. Login will succeed and then hit a 404 until they exist.
-
 ## Roadmap
 
 | Sprint | Scope |
 |---|---|
-| 1 | Auth foundation ← current |
+| 1 | Auth foundation + admin dashboard ← done |
 | 2 | Resident directory |
 | 3 | Notices + push |
 | 4 | Maintenance billing |
