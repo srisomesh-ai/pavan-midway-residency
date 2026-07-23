@@ -24,6 +24,7 @@
 
   var items = [];
   var unread = 0;
+  var notReady = false;
   var open = false;
   var seenIds = {};
   var firstLoad = true;
@@ -151,6 +152,14 @@
     dot.classList.toggle("on", unread > 0);
 
     var list = document.getElementById("nList");
+
+    if (notReady) {
+      list.innerHTML = '<div id="nEmpty" style="color:#B07A20;line-height:1.65">' +
+        '<strong style="display:block;margin-bottom:6px;color:#12211C">Notifications are not switched on</strong>' +
+        'Ask the committee to import<br><code style="font-family:\'Roboto Mono\',monospace;font-size:12px">sql/07_notifications.sql</code><br>in phpMyAdmin.</div>';
+      return;
+    }
+
     if (!items.length) {
       list.innerHTML = '<div id="nEmpty">Nothing yet.<br>You will see visitor requests, notices and replies here.</div>';
       return;
@@ -192,6 +201,17 @@
     api("notifications.php")
       .then(function (d) {
         if (!d.ok) return;
+
+        /* Table not created yet - say so instead of sitting silently at zero */
+        if (d.ready === false) {
+          notReady = true;
+          unread = 0;
+          items = [];
+          paint();
+          return;
+        }
+        notReady = false;
+
         var prevUnread = unread;
         unread = d.unread || 0;
         items = d.items || [];
