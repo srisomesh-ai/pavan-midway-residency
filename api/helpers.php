@@ -1,0 +1,153 @@
+<?php
+/**
+ * Shared helpers: JSON output, input parsing, auth, logging.
+ */
+
+/** Standard CORS + JSON headers. Call at top of every endpoint. */
+function api_init() {
+    header('Content-Type: application/json; charset=utf-8');
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('X-Content-Type-Options: nosniff');
+    if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
+        http_response_code(204);
+        exit;
+    }
+}
+
+/** Emit JSON and stop. */
+function json_out($data, $code = 200) {
+    http_response_code($code);
+    echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+function fail($msg, $code = 400, $extra = []) {
+    json_out(array_merge(['ok' => false, 'error' => $msg], $extra), $code);
+}
+
+function ok($data = []) {
+    json_out(array_merge(['ok' => true], $data));
+}
+
+/** Read JSON body, falling back to form POST. */
+function body() {
+    static $cache = null;
+    if ($cache !== null) return $cache;
+    $raw = file_get_contents('php://input');
+    $j   = json_decode($raw, true);
+    $cache = is_array($j) ? $j : $_POST;
+    return $cache;
+}
+
+function param($key, $default = null) {
+    $b = body();
+    if (isset($b[$key]))     return is_string($b[$key]) ? trim($b[$key]) : $b[$key];
+    if (isset($_GET[$key]))  return trim($_GET[$key]);
+    return $default;
+}
+
+function client_ip() {
+    foreach (['HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR'] as $k) {
+        if (!empty($_SERVER[$k])) {
+            $ip = explode(',', $_SERVER[$k])[0];
+            return substr(trim($ip), 0, 45);
+        }
+    }
+    return null;
+}
+
+function user_agent() {
+    return substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 255);
+}
+
+/** Write an audit trail row. */
+function log_activity($user_id, $action, $entity = null, $entity_id = null, $details = null) {
+    try {
+        $st = db()->prepare(
+            'INSERT INTO activity_log (user_id, action, entity, entity_id, details, ip_address)
+             VALUES (?, ?, ?, ?, ?, ?)'
+        );
+        $st->execute([$user_id, $action, $entity, $entity_id, $details, client_ip()]);
+    } catch (Exception $e) {
+        // logging must never break the request
+    }
+}
+
+/** Extract bearer token from Authorization header. */
+function bearer_token() {
+    $hdr = '';
+    if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+        $hdr = $_SERVER['HTTP_AUTHORIZATION'];
+    } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+        $hdr = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+    } elseif (function_exists('apache_request_headers')) {
+        $h = apache_request_headers();
+        $hdr = $h['Authorization'] ?? ($h['authorization'] ?? '');
+    }
+    if (preg_match('/Bearer\s+(\S+)/i', $hdr, $m)) return $m[1];
+    // fallback for clients that cannot set headers
+    return param('token');
+}
+
+/**
+ * Validate session token. Returns user row or null.
+ */
+function current_user() {
+    static $u = null;
+    static $checked = false;
+    if ($checked) return $u;
+    $checked = true;
+
+    $tok = bearer_token();
+    if (!$tok) return null;
+
+    $hash = hash('sha256', $tok);
+    $st = db()->prepare(
+        'SELECT u.id, u.name, u.email, u.username, u.mobile, u.role, u.designation,
+                u.status, u.photo_url, u.must_change_pwd, s.id AS session_id
+         FROM sessions s
+         JOIN users u ON u.id = s.user_id
+         WHERE s.token_hash = ?
+           AND s.revoked_at IS NULL
+           AND s.expires_at > NOW()
+         LIMIT 1'
+    );
+    $st->execute([$hash]);
+    $row = $st->fetch();
+
+    if (!$row || $row['status'] !== 'active') return null;
+    $u = $row;
+    return $u;
+}
+
+/** Require a logged in user, optionally restricted to given roles. */
+function require_auth($roles = null) {
+    $u = current_user();
+    if (!$u) fail('Unauthorized. Please log in again.', 401);
+    if ($roles !== null) {
+        $roles = (array) $roles;
+        if (!in_array($u['role'], $roles, true)) {
+            fail('You do not have permission for this action.', 403);
+        }
+    }
+    return $u;
+}
+
+/** Admin-level shortcut. */
+function require_admin() {
+    return require_auth(['super_admin', 'admin']);
+}
+
+/** Read a settings value. */
+function setting($key, $default = null) {
+    try {
+        $st = db()->prepare('SELECT key_value FROM settings WHERE key_name = ? LIMIT 1');
+        $st->execute([$key]);
+        $v = $st->fetchColumn();
+        return ($v === false || $v === null) ? $default : $v;
+    } catch (Exception $e) {
+        return $default;
+    }
+}
