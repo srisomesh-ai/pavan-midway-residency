@@ -75,7 +75,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
         $st->execute([$u['flat_id'], $from, $to, $mobile, $key, $note, $status, $u['id']]);
 
-        log_activity($u['id'], 'away_notice', 'away', db()->lastInsertId(), $from . ' to ' . $to);
+        $aid = (int) db()->lastInsertId();
+        log_activity($u['id'], 'away_notice', 'away', $aid, $from . ' to ' . $to);
+
+        notify_committee(
+            'away',
+            'Flat ' . ($u['flat_no'] ?? '') . ' will be away',
+            $from . ' to ' . $to . '. The flat should be empty during this time.',
+            [
+                'link'      => 'dashboard.html',
+                'entity'    => 'away',
+                'entity_id' => $aid,
+                'by'        => $u['id'],
+            ]
+        );
+
         ok(['message' => 'The committee and security have been notified.']);
     }
 
