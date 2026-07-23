@@ -65,6 +65,29 @@ function clean_mobile($m) {
 }
 
 /**
+ * True once sql/06_resident_app.sql has been imported.
+ * Checked by every resident-app endpoint so a missing migration
+ * gives a clear message instead of a blank 500.
+ */
+function resident_app_ready() {
+    static $ready = null;
+    if ($ready !== null) return $ready;
+    try {
+        $ready = (bool) db()->query("SHOW COLUMNS FROM users LIKE 'resident_type'")->fetch();
+    } catch (Exception $e) {
+        $ready = false;
+    }
+    return $ready;
+}
+
+/** Stop with a setup message if the resident app tables are missing. */
+function require_resident_app() {
+    if (!resident_app_ready()) {
+        fail('The resident app is not set up on this server yet. Import sql/06_resident_app.sql in phpMyAdmin, then reload this page.', 503);
+    }
+}
+
+/**
  * Build a vehicle list from a row containing vehicle_1..3 and
  * vehicle_1_type..3_type. Returns [{number, type, label}, ...].
  */
