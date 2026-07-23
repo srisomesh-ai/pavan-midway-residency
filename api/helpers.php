@@ -23,6 +23,29 @@ function json_out($data, $code = 200) {
     exit;
 }
 
+/* ------------------------------------------------------------
+   UTF-8 string helpers.
+   mbstring is not installed on every shared host, so these fall
+   back to byte-safe alternatives. Telugu text must survive both.
+   ------------------------------------------------------------ */
+
+/** Truncate to $len characters without splitting a UTF-8 sequence. */
+function str_cut($s, $len) {
+    if (function_exists('mb_substr')) return mb_substr($s, 0, $len, 'UTF-8');
+    if (strlen($s) <= $len) return $s;
+    $out = substr($s, 0, $len);
+    while (strlen($out) > 0 && (ord($out[strlen($out) - 1]) & 0xC0) === 0x80) {
+        $out = substr($out, 0, -1);
+    }
+    return $out;
+}
+
+/** Count characters, not bytes. */
+function str_len($s) {
+    if (function_exists('mb_strlen')) return mb_strlen($s, 'UTF-8');
+    return strlen(preg_replace('/[\x80-\xBF]/', '', $s));
+}
+
 function fail($msg, $code = 400, $extra = []) {
     json_out(array_merge(['ok' => false, 'error' => $msg], $extra), $code);
 }
