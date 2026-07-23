@@ -16,6 +16,7 @@ require_once __DIR__ . '/helpers.php';
 api_init();
 
 $me = require_auth();
+require_resident_app();
 
 /** Roll statuses forward based on today's date. */
 function refresh_away() {
