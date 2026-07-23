@@ -11,12 +11,18 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- BLOCKS
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `blocks` (
-  `id`          INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name`        VARCHAR(50)  NOT NULL,
-  `sort_order`  INT          NOT NULL DEFAULT 0,
-  `created_at`  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `id`               INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name`             VARCHAR(50)  NOT NULL,
+  `code`             VARCHAR(10)  NOT NULL COMMENT 'A, B',
+  `total_floors`     INT          NOT NULL DEFAULT 0 COMMENT 'Including ground',
+  `flats_per_floor`  INT          NOT NULL DEFAULT 0,
+  `total_flats`      INT          NOT NULL DEFAULT 0,
+  `is_locked`        TINYINT(1)   NOT NULL DEFAULT 1 COMMENT 'Structural data - not editable from UI',
+  `sort_order`       INT          NOT NULL DEFAULT 0,
+  `created_at`       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_block_name` (`name`)
+  UNIQUE KEY `uq_block_name` (`name`),
+  UNIQUE KEY `uq_block_code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
@@ -25,17 +31,22 @@ CREATE TABLE IF NOT EXISTS `blocks` (
 CREATE TABLE IF NOT EXISTS `flats` (
   `id`             INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `block_id`       INT UNSIGNED NULL,
-  `flat_no`        VARCHAR(20)  NOT NULL,
-  `floor`          INT          NULL,
+  `flat_no`        VARCHAR(20)  NOT NULL COMMENT 'GR-A, 1A, 4N - repeats across blocks',
+  `flat_code`      VARCHAR(30)  NOT NULL COMMENT 'Globally unique: A-1A, B-GR-C',
+  `floor`          INT          NULL COMMENT '0 = ground',
+  `floor_label`    VARCHAR(20)  NULL COMMENT 'Ground, 1st, 2nd...',
   `area_sqft`      DECIMAL(10,2) NULL,
   `flat_type`      VARCHAR(20)  NULL COMMENT '1BHK / 2BHK / 3BHK',
   `occupancy`      ENUM('owner','tenant','vacant') NOT NULL DEFAULT 'vacant',
+  `is_locked`      TINYINT(1)   NOT NULL DEFAULT 1 COMMENT 'Structural data - not editable from UI',
   `is_active`      TINYINT(1)   NOT NULL DEFAULT 1,
   `created_at`     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_flat_no` (`flat_no`),
+  UNIQUE KEY `uq_flat_code` (`flat_code`),
+  UNIQUE KEY `uq_block_flat` (`block_id`,`flat_no`),
   KEY `idx_flat_block` (`block_id`),
+  KEY `idx_flat_floor` (`floor`),
   CONSTRAINT `fk_flat_block` FOREIGN KEY (`block_id`) REFERENCES `blocks`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
