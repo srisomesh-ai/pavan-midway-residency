@@ -20,6 +20,7 @@ Mobile-first web app for a 140-flat residential society. Built to run on Android
 | `api/public_flats.php` | Flat list for the public form (no login) |
 | `api/submit_details.php` | Receives resident form submissions |
 | `api/submissions.php` | Admin list, approve, reject |
+| `api/flat_detail.php` | Everything known about one flat |
 | `dashboard.html` | Admin dashboard |
 | `resident-form.html` | Public resident form, English and Telugu |
 | `submissions.html` | Committee review screen |
@@ -27,6 +28,7 @@ Mobile-first web app for a 140-flat residential society. Built to run on Android
 | `sql/02_seed.sql` | 140 flats + default admin + settings |
 | `sql/03_migrate_flat_structure.sql` | Migration from the old 144-flat seed |
 | `sql/04_resident_form.sql` | Resident form and approval tables |
+| `sql/05_vehicle_types.sql` | Two wheeler / four wheeler per vehicle |
 
 ## Building structure (fixed — not editable from the UI)
 
@@ -107,13 +109,15 @@ Rather than typing in 140 flats by hand, share the resident form link and let pe
 4. Each submission waits in **Submissions** until a committee member approves it
 5. On approval the details go live and the flat occupancy updates automatically
 
-The form asks for owner name and mobile, up to three vehicle numbers, and then branches:
+The form asks for owner name and mobile, up to three vehicles (number plus two wheeler or four wheeler), and then branches:
 
 | Flat status | Extra questions |
 |---|---|
 | Owner is staying | How many people live there |
 | Given on rent | Tenant name, mobile, family size, rent, lease dates |
 | Vacant | Vacant since when, looking to rent, expected rent |
+
+Tap any flat in the register to see everything collected for it: owner and tenant names, phone numbers as tappable call links, vehicles with their type, family size, rent and lease dates. Flats with nothing collected yet say so.
 
 The form is available in English and Telugu via the toggle in the header. Anyone with the link can submit, which is why nothing appears in the app until the committee approves it. If a flat already has details, the review screen flags that approving will replace them.
 
