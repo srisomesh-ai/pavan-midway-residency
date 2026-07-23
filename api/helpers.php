@@ -82,12 +82,16 @@ function bearer_token() {
         $hdr = $_SERVER['HTTP_AUTHORIZATION'];
     } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
         $hdr = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+    } elseif (isset($_SERVER['REDIRECT_REDIRECT_HTTP_AUTHORIZATION'])) {
+        $hdr = $_SERVER['REDIRECT_REDIRECT_HTTP_AUTHORIZATION'];
     } elseif (function_exists('apache_request_headers')) {
         $h = apache_request_headers();
-        $hdr = $h['Authorization'] ?? ($h['authorization'] ?? '');
+        foreach ($h as $k => $v) {
+            if (strcasecmp($k, 'Authorization') === 0) { $hdr = $v; break; }
+        }
     }
     if (preg_match('/Bearer\s+(\S+)/i', $hdr, $m)) return $m[1];
-    // fallback for clients that cannot set headers
+    // fallback for hosts that strip the Authorization header entirely
     return param('token');
 }
 
