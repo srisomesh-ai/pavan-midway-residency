@@ -280,6 +280,17 @@ if (random_int(1, 30) === 1) {
 
 log_activity(null, 'form_submitted', 'submission', $sub_id, 'Flat ' . $flat['flat_code']);
 
+notify_committee(
+    'submission',
+    'New details for flat ' . $flat['flat_no'],
+    $owner_name . ' submitted their flat details. Tap to review and approve.',
+    [
+        'link'      => 'submissions.html',
+        'entity'    => 'submission',
+        'entity_id' => $sub_id,
+    ]
+);
+
 ok([
     'submission_id' => $sub_id,
     'flat_no'       => $flat['flat_no'],
