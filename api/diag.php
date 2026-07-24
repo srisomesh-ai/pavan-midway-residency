@@ -148,6 +148,19 @@ if ($tok) {
     }
 }
 
+/* ---- Push notifications ---- */
+$checks['php_curl']    = function_exists('curl_init');
+$checks['php_openssl'] = function_exists('openssl_sign');
+$checks['push_ready']  = function_exists('fcm_ready') ? fcm_ready() : false;
+if (!$checks['push_ready'] && function_exists('fcm_missing_reason')) {
+    $checks['push_blocked_by'] = fcm_missing_reason();
+}
+try {
+    if (in_array('push_tokens', $have ?? [], true)) {
+        $checks['devices_registered'] = (int) db()->query('SELECT COUNT(*) FROM push_tokens')->fetchColumn();
+    }
+} catch (Exception $e) {}
+
 /* ---- Server ---- */
 $checks['server_software'] = $_SERVER['SERVER_SOFTWARE'] ?? 'unknown';
 $checks['sapi']            = PHP_SAPI;
