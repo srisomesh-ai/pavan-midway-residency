@@ -3,17 +3,18 @@
 Right now notifications appear in the app's bell. This makes them arrive on a
 locked phone, the same way the BharatGPS technician app works.
 
-You have done this before for BharatGPS and HamaraService. You can **reuse an
-existing Firebase project** rather than making a new one.
+This uses its **own Firebase project**, separate from any other app you run.
+Keeping them apart means a key change or problem on one never affects the other.
 
 ---
 
-## 1. Add a Web app to your Firebase project
+## 1. Create the project and add a Web app
 
 1. Open https://console.firebase.google.com
-2. Pick your existing project, or create one (free)
-3. **Project settings** (gear icon) → **Your apps** → click the **web** icon `</>`
-4. Nickname it `Pavan Midway Residency`, register, and copy the config block
+2. **Add project** → name it `pavan-midway-residency`
+3. Google Analytics can be switched off - it is not needed
+4. Once created: **Project settings** (gear icon) → **Your apps** → click the **web** icon `</>`
+5. Nickname it `Pavan Midway Residency`, register, and copy the config block
 
 It looks like this:
 
@@ -65,8 +66,8 @@ window.PMR_VAPID_KEY = "BN...the web push key...";
 3. Rename it to **`fcm-key.json`**
 4. Upload it to **`public_html/`** — the same folder as `index.html`, *not* inside `api/`
 
-If you already have this file on your TaskManager server, it is the same file.
-Copy it across rather than generating a new one.
+Generate a fresh key from this project. Do not reuse a key file from any other
+app - that would tie the two together.
 
 > Never commit this to GitHub. It is already in `.gitignore` and the deploy
 > script refuses to push it.
