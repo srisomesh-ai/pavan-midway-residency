@@ -40,6 +40,11 @@ Mobile-first web app for a 140-flat residential society. Built to run on Android
 | `notices.html` | Notice board - post and read |
 | `assets/notify.js` | Notification bell, shared by every page |
 | `assets/qrcode.min.js` | QR generator, runs locally (MIT) |
+| `assets/push.js` | Asks permission and registers the device |
+| `assets/firebase-config.js` | Firebase settings - fill in to enable push |
+| `api/fcm_send.php` | Sends push through Firebase Cloud Messaging |
+| `api/push_register.php` | Stores device tokens |
+| `firebase-messaging-sw.js` | Shows notifications while the app is closed |
 | `sql/01_schema.sql` | Tables |
 | `sql/02_seed.sql` | 140 flats + default admin + settings |
 | `sql/03_migrate_flat_structure.sql` | Migration from the old 144-flat seed |
@@ -195,7 +200,10 @@ What triggers what:
 
 Notices can be aimed at everyone, one block, owners only, or tenants only, and urgent ones are highlighted.
 
-These are in-app notifications - they appear when the app is open, and the unread count is waiting next time it is opened. Notifications that arrive on a locked phone need Firebase Cloud Messaging; the `push_tokens` table is already in place for that.
+Notifications appear in the bell straight away. To make them arrive on a
+**locked phone**, follow `FIREBASE-SETUP.md` - it takes about ten minutes and
+reuses the same Firebase project as BharatGPS if you have one. Until then the
+app works exactly as described, just without lock-screen alerts.
 
 ## Installing on a phone
 
@@ -245,6 +253,7 @@ Set `DEBUG` to `false` in `config.php` on production (it already is).
 | 4 | Notifications and notice board ← done |
 | 5 | Visitor self-service by QR ← done |
 | 6 | Installable app, APK build files ← done |
+| 7 | Firebase push notifications ← done, needs your keys |
 | 3 | Notices + push |
 | 4 | Maintenance billing |
 | 5 | Payments (Razorpay) |
