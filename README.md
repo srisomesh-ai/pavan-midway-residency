@@ -202,7 +202,7 @@ Notices can be aimed at everyone, one block, owners only, or tenants only, and u
 
 Notifications appear in the bell straight away. To make them arrive on a
 **locked phone**, follow `FIREBASE-SETUP.md` - it takes about ten minutes and
-reuses the same Firebase project as BharatGPS if you have one. Until then the
+uses its own Firebase project, kept separate from any other app. Until then the
 app works exactly as described, just without lock-screen alerts.
 
 ## Installing on a phone
