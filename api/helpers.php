@@ -1,7 +1,11 @@
 <?php
 /**
- * Shared helpers: JSON output, input parsing, auth, logging.
+ * Shared helpers: JSON output, input parsing, auth, logging, notifications.
  */
+
+/* Firebase push sender. Safe to include even before Firebase is set up -
+   every function inside is a no-op until fcm-key.json exists. */
+require_once __DIR__ . '/fcm_send.php';
 
 /** Standard CORS + JSON headers. Call at top of every endpoint. */
 function api_init() {
@@ -108,10 +112,16 @@ function notify_ready() {
 
 /**
  * Send one notification to one user.
- * Returns true if it was stored.
+ * Stores it for the in-app bell, then pushes it to their phone if
+ * Firebase is set up. Returns true if it was stored.
  */
 function notify($user_id, $kind, $title, $body = null, $opts = []) {
     if (!$user_id || !notify_ready()) return false;
+
+    $title = str_cut($title, 120);
+    $body  = $body !== null ? str_cut($body, 400) : null;
+    $link  = $opts['link'] ?? null;
+
     try {
         $st = db()->prepare(
             'INSERT INTO notifications
@@ -121,18 +131,35 @@ function notify($user_id, $kind, $title, $body = null, $opts = []) {
         $st->execute([
             (int) $user_id,
             $kind,
-            str_cut($title, 120),
-            $body !== null ? str_cut($body, 400) : null,
-            $opts['link']      ?? null,
+            $title,
+            $body,
+            $link,
             $opts['entity']    ?? null,
             $opts['entity_id'] ?? null,
             !empty($opts['urgent']) ? 1 : 0,
             $opts['by']        ?? null,
         ]);
-        return true;
     } catch (Exception $e) {
         return false;
     }
+
+    /* Push to their phone. Catching Throwable, not just Exception, so a
+       fatal error inside the push path can never undo the notification
+       that was just stored or break the action that triggered it. */
+    try {
+        if (function_exists('fcm_ready') && fcm_ready()) {
+            fcm_send_to_user($user_id, $title, $body, [
+                'kind'      => $kind,
+                'link'      => $link ?: 'index.html',
+                'entity'    => $opts['entity']    ?? '',
+                'entity_id' => $opts['entity_id'] ?? '',
+            ]);
+        }
+    } catch (Throwable $e) {
+        error_log('push failed: ' . $e->getMessage());
+    }
+
+    return true;
 }
 
 /** Send the same notification to every active committee member. */
