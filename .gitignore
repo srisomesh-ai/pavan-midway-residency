@@ -2,6 +2,16 @@
 api/config.local.php
 config.local.php
 
+# Firebase private key - lives on the server only
+fcm-key.json
+*-firebase-adminsdk-*.json
+
+# Android signing key - lives on your computer only
+*.keystore
+*.jks
+android/app-release-signed.apk
+android/app-release-bundle.aab
+
 # Runtime
 *.log
 uploads/
